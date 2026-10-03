@@ -1,0 +1,31 @@
+# nightly_scan log — scam_hunter 夜間実行ログ (編集済み)
+#
+# 本ファイルは uBlacklist.txt の更新履歴である。生ログ (logs/*.raw.log) と DB (db/*.db) は
+# .gitignore で除外し、リポジトリには本ファイルのみを含める。
+# 記載しないもの: トークン・認証情報・ローカル絶対パス・生 HTML・Cookie。
+
+## 2026-09 (uBlacklist.txt 更新履歴)
+
+2026-09-24  uBlacklist.txt bootstrap: 常設正規表現 3 本を投入 (PR #1 → main マージ済み)
+            個別ドメイン登録 0 件 (dry-run のため出版なし)
+
+[2026-09-24T14:56+09:00] night=2026-09-24 mode=dry-run  (dry-run (初回 discovery 検証))
+  queries=14 results=20 empty_queries=12 engine_failures=0
+  domains_found=11 new_domains=8 aborted=False
+  blocked=0 hold=0 dismissed=8 whitelisted=3
+  uBlacklist.txt: published=0 would_publish=0 expired=0
+  note: 実データは db/ に保存 (本ログは編集済み。パス・トークン等は記載しない)
+
+[2026-09-24T18:16+09:00] night=2026-09-24 mode=dry-run  (dry-run (engine suspension 中断))
+  queries=1 results=10 empty_queries=0 engine_failures=4
+  domains_found=1 new_domains=0 aborted=True
+  blocked=0 hold=0 dismissed=0 whitelisted=1
+  uBlacklist.txt: published=0 would_publish=0 expired=0
+  note: 実データは db/ に保存 (本ログは編集済み。パス・トークン等は記載しない)
+
+[2026-09-24T18:34+09:00] night=2026-09-24 mode=dry-run  (dry-run (engine suspension 中断))
+  queries=1 results=10 empty_queries=0 engine_failures=3
+  domains_found=1 new_domains=1 aborted=True
+  blocked=0 hold=0 dismissed=1 whitelisted=0
+  uBlacklist.txt: published=0 would_publish=0 expired=0
+  note: 実データは db/ に保存 (本ログは編集済み。パス・トークン等は記載しない)

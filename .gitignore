@@ -1,0 +1,22 @@
+# --- 実データ (リポジトリに含めない) ---
+db/*.db
+db/*.db-journal
+db/*.db-wal
+db/*.db-shm
+
+# 未編集の生ログ (編集済みログのみ logs/nightly_scan.log* として追跡する)
+logs/*.raw.log
+logs/*.raw.log.*
+
+# 実行時生成物
+logs/report*.json
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+
+# 秘密情報は絶対に置かない (値は環境変数のみ)
+.env
+*.pem
