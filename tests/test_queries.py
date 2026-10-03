@@ -1,9 +1,9 @@
 """P0: クエリ生成 (16 用語 × 型番, 30 日重複回避) の RED テスト。"""
+
 import random
 
 import pytest
-
-from modeldb import ModelDB, SEED_CSV
+from modeldb import SEED_CSV, ModelDB
 from queries import (
     QUERY_SEPARATOR,
     TERM_GROUPS,
@@ -72,16 +72,18 @@ def test_excluded_pairs_are_skipped(db):
 
     EXCLUDE_SET.clear()
     EXCLUDE_SET.update({(m.model, t) for m in db.all()[:5] for t in TERMS})
-    qs = generate_queries(db.all(), n_models=30, n_queries=50,
-                          rng=random.Random(5), is_excluded=excluded)
+    qs = generate_queries(
+        db.all(), n_models=30, n_queries=50, rng=random.Random(5), is_excluded=excluded
+    )
     assert not (set(qs) & EXCLUDE_SET)
     assert seen, "is_excluded が呼ばれていない"
 
 
 def test_exhausted_pool_raises(db):
     with pytest.raises(QueriesExhausted):
-        generate_queries(db.all(), n_models=20, n_queries=50, rng=random.Random(6),
-                         is_excluded=lambda m, t: True)
+        generate_queries(
+            db.all(), n_models=20, n_queries=50, rng=random.Random(6), is_excluded=lambda m, t: True
+        )
 
 
 def test_build_query_format():
@@ -92,8 +94,10 @@ def test_build_query_format():
 
 # --- QueryGen (夜間オーケストレータ用のラッパ) ---
 
+
 def test_querygen_yields_query_model_pageno(db):
     from queries import QueryGen
+
     g = QueryGen(db=db, n_models=20, rng=random.Random(0))
     out = list(g.queries(limit=12))
     assert len(out) == 12
@@ -104,13 +108,15 @@ def test_querygen_yields_query_model_pageno(db):
 
 def test_querygen_queries_are_unique_within_a_run(db):
     from queries import QueryGen
+
     g = QueryGen(db=db, n_models=25, rng=random.Random(1))
-    out = [(m, t) for q, m, p in g.queries(limit=60) for t in [q[len(m):].strip()]]
+    out = [(m, t) for q, m, p in g.queries(limit=60) for t in [q[len(m) :].strip()]]
     assert len(set(out)) == len(out)
 
 
 def test_querygen_samples_20_to_50_models(db):
     from queries import QueryGen
+
     g = QueryGen(db=db, rng=random.Random(2))
     models = {m for _, m, _ in g.queries(limit=300)}
     assert 20 <= len(models) <= 50, len(models)
@@ -119,20 +125,24 @@ def test_querygen_samples_20_to_50_models(db):
 def test_querygen_avoids_pairs_seen_within_30_days(db, tmp_path):
     from queries import QueryGen
     from searchlog import SearchLog
+
     log = SearchLog(tmp_path / "s.db")
-    first = list(QueryGen(db=db, n_models=20, rng=random.Random(3)).queries(
-        limit=40, searchlog=log))
+    first = list(
+        QueryGen(db=db, n_models=20, rng=random.Random(3)).queries(limit=40, searchlog=log)
+    )
     for query, model, pageno in first:
-        log.record(model, query[len(model):].strip(), pageno)
-    second = list(QueryGen(db=db, n_models=20, rng=random.Random(4)).queries(
-        limit=40, searchlog=log))
-    pairs_a = {(m, q[len(m):].strip()) for q, m, _ in first}
-    pairs_b = {(m, q[len(m):].strip()) for q, m, _ in second}
+        log.record(model, query[len(model) :].strip(), pageno)
+    second = list(
+        QueryGen(db=db, n_models=20, rng=random.Random(4)).queries(limit=40, searchlog=log)
+    )
+    pairs_a = {(m, q[len(m) :].strip()) for q, m, _ in first}
+    pairs_b = {(m, q[len(m) :].strip()) for q, m, _ in second}
     assert not (pairs_a & pairs_b), "過去 30 日の検索と重複している"
 
 
 def test_querygen_rotate_changes_the_sample(db):
     from queries import QueryGen
+
     g = QueryGen(db=db, rng=random.Random(5))
     a = {m for _, m, _ in g.queries(limit=200)}
     g.rotate()
@@ -143,14 +153,15 @@ def test_querygen_rotate_changes_the_sample(db):
 def test_querygen_rotate_reserves_new_pageno(db, tmp_path):
     from queries import QueryGen
     from searchlog import SearchLog
+
     log = SearchLog(tmp_path / "s.db")
     g = QueryGen(db=db, n_models=20, rng=random.Random(6))
     first = g.queries(limit=5, searchlog=log)
     g.rotate()
     second = g.queries(limit=5, searchlog=log)
-    assert log.count() == 10                       # QueryGen 自身が記録する
-    pairs_a = {(m, q[len(m):].strip()) for q, m, _ in first}
-    pairs_b = {(m, q[len(m):].strip()) for q, m, _ in second}
+    assert log.count() == 10  # QueryGen 自身が記録する
+    pairs_a = {(m, q[len(m) :].strip()) for q, m, _ in first}
+    pairs_b = {(m, q[len(m) :].strip()) for q, m, _ in second}
     assert not (pairs_a & pairs_b)
 
 
@@ -158,14 +169,14 @@ def test_querygen_limit_is_respected_when_log_is_saturated(db, tmp_path):
     """30 日窓を埋め尽くしても例外を投げず、得られるだけ返す。"""
     from queries import QueryGen
     from searchlog import SearchLog
+
     log = SearchLog(tmp_path / "s.db")
     for m in db.all():
         for t in TERMS:
             log.record(m.model, t, 1)
-    out = list(QueryGen(db=db, n_models=20, rng=random.Random(7)).queries(
-        limit=10, searchlog=log))
+    out = list(QueryGen(db=db, n_models=20, rng=random.Random(7)).queries(limit=10, searchlog=log))
     assert len(out) == 10
-    assert {(m, q[len(m):].strip()) for q, m, _ in out}  # 中身がある
+    assert {(m, q[len(m) :].strip()) for q, m, _ in out}  # 中身がある
 
 
 EXCLUDE_SET = set()

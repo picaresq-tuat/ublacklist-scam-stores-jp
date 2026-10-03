@@ -4,13 +4,14 @@
 - `domain_health`: P8 失効監視用の日次到達性
 履歴は消さずに残す (expired にしても行は残る)。
 """
+
 from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime, timedelta, timezone
+from collections.abc import Iterable
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Iterable, Optional
 
 PKG_ROOT = Path(__file__).resolve().parent.parent  # リポジトリルート
 DB_DIR = PKG_ROOT / "db"
@@ -60,12 +61,12 @@ CREATE TABLE IF NOT EXISTS search_hits (
 
 
 def _utcnow() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _norm_night(night: Optional[str]) -> str:
+def _norm_night(night: str | None) -> str:
     if not night:
-        return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        return datetime.now(UTC).strftime("%Y-%m-%d")
     return night[:10]
 
 
@@ -85,16 +86,23 @@ class ScamStore:
     def close(self) -> None:
         self._con.close()
 
-    def __enter__(self) -> "ScamStore":
+    def __enter__(self) -> ScamStore:
         return self
 
     def __exit__(self, *exc) -> None:
         self.close()
 
     # --- decisions ---
-    def record(self, domain: str, *, score: float, decision: str,
-               features: Optional[dict] = None, evidence: Optional[Iterable] = None,
-               night: Optional[str] = None) -> dict:
+    def record(
+        self,
+        domain: str,
+        *,
+        score: float,
+        decision: str,
+        features: dict | None = None,
+        evidence: Iterable | None = None,
+        night: str | None = None,
+    ) -> dict:
         if decision not in DECISIONS:
             raise ValueError(f"unknown decision: {decision!r}")
         domain = domain.strip().lower()
@@ -131,9 +139,10 @@ class ScamStore:
         self._con.commit()
         return self.get(domain)
 
-    def get(self, domain: str) -> Optional[dict]:
-        row = self._con.execute("SELECT * FROM decisions WHERE domain=?",
-                                (domain.strip().lower(),)).fetchone()
+    def get(self, domain: str) -> dict | None:
+        row = self._con.execute(
+            "SELECT * FROM decisions WHERE domain=?", (domain.strip().lower(),)
+        ).fetchone()
         return dict(row) if row else None
 
     def history(self, domain: str) -> list[dict]:
@@ -149,7 +158,8 @@ class ScamStore:
 
     def blocked_domains(self) -> list[str]:
         cur = self._con.execute(
-            "SELECT domain FROM decisions WHERE decision='block' ORDER BY domain")
+            "SELECT domain FROM decisions WHERE decision='block' ORDER BY domain"
+        )
         return [str(r[0]) for r in cur.fetchall()]
 
     def cloaking_holds(self) -> list[str]:
@@ -160,8 +170,8 @@ class ScamStore:
         """
         out: list[str] = []
         for row in self._con.execute(
-                "SELECT domain, features_json FROM decisions"
-                " WHERE decision='hold' ORDER BY domain"):
+            "SELECT domain, features_json FROM decisions WHERE decision='hold' ORDER BY domain"
+        ):
             try:
                 feats = json.loads(row["features_json"] or "{}")
             except (ValueError, TypeError):
@@ -172,8 +182,9 @@ class ScamStore:
                 out.append(str(row["domain"]))
         return out
 
-    def eligible_domains(self, *, score_threshold: float = MIN_STREAK_SCORE,
-                         nights_required: int = 2) -> list[str]:
+    def eligible_domains(
+        self, *, score_threshold: float = MIN_STREAK_SCORE, nights_required: int = 2
+    ) -> list[str]:
         """登録候補: 連続 2 夜確認 または 高スコア (fast track)。"""
         cur = self._con.execute(
             "SELECT domain FROM decisions WHERE decision='block'"
@@ -184,8 +195,9 @@ class ScamStore:
         return [str(r[0]) for r in cur.fetchall()]
 
     # --- domain_health (P8) ---
-    def record_health(self, domain: str, *, reachable: bool, checked_on: Optional[str] = None,
-                      reason: str = "") -> None:
+    def record_health(
+        self, domain: str, *, reachable: bool, checked_on: str | None = None, reason: str = ""
+    ) -> None:
         day = (checked_on or _utcnow())[:10]
         self._con.execute(
             "INSERT OR REPLACE INTO domain_health(domain, checked_on, reachable, reason)"
@@ -210,10 +222,11 @@ class ScamStore:
                 break
         return streak
 
-    def monitor_targets(self, *, age_days: int = 30, now: Optional[str] = None) -> list[str]:
+    def monitor_targets(self, *, age_days: int = 30, now: str | None = None) -> list[str]:
         """登録後 age_days 以上経過した block ドメインのみを監視対象にする。"""
-        cutoff = ((_parse(now) if now else datetime.now(timezone.utc))
-                  - timedelta(days=age_days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        cutoff = ((_parse(now) if now else datetime.now(UTC)) - timedelta(days=age_days)).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
         cur = self._con.execute(
             "SELECT domain FROM decisions WHERE decision='block' AND first_seen <= ?"
             " ORDER BY domain",
@@ -227,15 +240,20 @@ class ScamStore:
             if self.unreachable_streak(domain) >= streak_days:
                 row = self.get(domain)
                 # 失効は「夜の観測」ではないので nights_confirmed を進めない。
-                self.record(domain, score=float(row["score"]), decision="expired",
-                            features=json.loads(row["features_json"] or "{}"),
-                            night=str(row["last_seen"])[:10])
+                self.record(
+                    domain,
+                    score=float(row["score"]),
+                    decision="expired",
+                    features=json.loads(row["features_json"] or "{}"),
+                    night=str(row["last_seen"])[:10],
+                )
                 expired.append(domain)
         return expired
 
     # --- search hits (任意: 夜次レポート用) ---
-    def record_hit(self, domain: str, url: str, query: str, pageno: int,
-                   night: Optional[str] = None) -> None:
+    def record_hit(
+        self, domain: str, url: str, query: str, pageno: int, night: str | None = None
+    ) -> None:
         self._con.execute(
             "INSERT INTO search_hits(domain, url, query, pageno, night) VALUES(?,?,?,?,?)",
             (domain.strip().lower(), url, query, int(pageno), _norm_night(night)),
@@ -250,5 +268,5 @@ def _parse(value: str) -> datetime:
     text = value.replace("Z", "+00:00")
     dt = datetime.fromisoformat(text)
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
+        dt = dt.replace(tzinfo=UTC)
     return dt

@@ -1,5 +1,4 @@
 """P3: 特徴量抽出 (features.py) の RED テスト。"""
-import pytest
 
 from features import (
     DARK_PATTERN_TERMS,
@@ -24,14 +23,30 @@ HTML_BASE = """
 """
 
 
-def res(url="https://shop.example/item", body=HTML_BASE, status=200, headers=None,
-        chain=None, charset="utf-8", discarded=False):
+def res(
+    url="https://shop.example/item",
+    body=HTML_BASE,
+    status=200,
+    headers=None,
+    chain=None,
+    charset="utf-8",
+    discarded=False,
+):
     from fetch import FetchResult
+
     chain = chain or [(status, url)]
-    return FetchResult(url=url, status=status, final_url=chain[-1][1], chain=chain,
-                       headers=headers or {"content-type": "text/html"}, body=body,
-                       html_sanitized=body, charset=charset, discarded=discarded,
-                       raw_bytes=len(body or ""))
+    return FetchResult(
+        url=url,
+        status=status,
+        final_url=chain[-1][1],
+        chain=chain,
+        headers=headers or {"content-type": "text/html"},
+        body=body,
+        html_sanitized=body,
+        charset=charset,
+        discarded=discarded,
+        raw_bytes=len(body or ""),
+    )
 
 
 def test_registrable_domain():
@@ -91,27 +106,40 @@ def test_tld_and_risky_flag():
 
 
 def test_offsite_redirect_flag():
-    f = extract_features("shop.example", res(chain=[(301, "https://shop.example/"),
-                                                    (200, "https://other.example/")]))
+    f = extract_features(
+        "shop.example", res(chain=[(301, "https://shop.example/"), (200, "https://other.example/")])
+    )
     assert f.offsite_redirect is True
     assert f.redirect_to_google is False
 
 
 def test_redirect_to_search_engine_flagged():
-    f = extract_features("shop.example", res(chain=[(302, "https://shop.example/"),
-                                                    (200, "https://www.google.com/")]))
+    f = extract_features(
+        "shop.example",
+        res(chain=[(302, "https://shop.example/"), (200, "https://www.google.com/")]),
+    )
     assert f.redirect_to_google is True
 
 
 def test_deep_product_path():
-    assert extract_features("shop.example", res(body='<html><a href="/product/abc">x</a></html>')).deep_product_path is True
-    assert extract_features("shop.example", res(body="<html>plain</html>")).deep_product_path is False
+    assert (
+        extract_features(
+            "shop.example", res(body='<html><a href="/product/abc">x</a></html>')
+        ).deep_product_path
+        is True
+    )
+    assert (
+        extract_features("shop.example", res(body="<html>plain</html>")).deep_product_path is False
+    )
 
 
 def test_favicon_hash_from_fixture_bytes():
     f = extract_features("shop.example", res(), favicon_bytes=b"\x89PNG\r\n\x1a\nfake")
     assert f.favicon_md5 is not None and len(f.favicon_md5) == 32
-    assert f.favicon_md5 == extract_features("s.example", res(), favicon_bytes=b"\x89PNG\r\n\x1a\nfake").favicon_md5
+    assert (
+        f.favicon_md5
+        == extract_features("s.example", res(), favicon_bytes=b"\x89PNG\r\n\x1a\nfake").favicon_md5
+    )
 
 
 def test_favicon_absent_gives_none():
@@ -152,12 +180,17 @@ def test_browser_served_binary_and_bot_served_html_is_cloaking():
 
 def test_waf_challenge_page_is_not_bot_content():
     """Cloudflare のチャレンジ/拒否ページは bot への本文提示ではない (実測: quervia.biz)。"""
-    a = res(body="<html><head><title>安心・安全なお届け！</title></head>"
-                 "<body><a href='/index.php?main_page=product_info&products_id=9'>x</a>"
-                 "</body></html>")
-    b = res(status=403, body="<html><head><title>Attention Required! | Cloudflare</title>"
-                             "</head><body>" + "z" * 4000 + "</body></html>",
-            headers={"content-type": "text/html"})
+    a = res(
+        body="<html><head><title>安心・安全なお届け！</title></head>"
+        "<body><a href='/index.php?main_page=product_info&products_id=9'>x</a>"
+        "</body></html>"
+    )
+    b = res(
+        status=403,
+        body="<html><head><title>Attention Required! | Cloudflare</title>"
+        "</head><body>" + "z" * 4000 + "</body></html>",
+        headers={"content-type": "text/html"},
+    )
     f = extract_features("abpvdb.quervia.biz", browser=a, bot=b)
     assert f.cloaking is False
     assert f.bot_only_body is False
@@ -165,8 +198,9 @@ def test_waf_challenge_page_is_not_bot_content():
 
 def test_own_domain_images_are_not_stolen():
     """自ドメインの画像は盗用ではない (実測: askul.co.jp / suruga-ya.jp の偽陽性)。"""
-    body = '<html><body><img src="https://cdn.askul.co.jp/x.png">' \
-           '<img src="/local.png"></body></html>'
+    body = (
+        '<html><body><img src="https://cdn.askul.co.jp/x.png"><img src="/local.png"></body></html>'
+    )
     f = extract_features("www.askul.co.jp", res(url="https://www.askul.co.jp/", body=body))
     assert f.n_img == 2
     assert f.stolen_image is False
@@ -189,9 +223,14 @@ def test_429_rate_limit_is_not_cloaking():
 
 def test_bot_blocked_by_site_is_not_cloaking():
     """bot 側だけ 403 になるのは「ブロック」であってクローキングではない (実測: janpara)。"""
-    a = res(body="<html><head><title>じゃんぱら</title></head><body>" + "x" * 300000 + "</body></html>")
-    b = res(status=403, body="<html><title>403 Forbidden</title></html>",
-            headers={"content-type": "text/html"})
+    a = res(
+        body="<html><head><title>じゃんぱら</title></head><body>" + "x" * 300000 + "</body></html>"
+    )
+    b = res(
+        status=403,
+        body="<html><title>403 Forbidden</title></html>",
+        headers={"content-type": "text/html"},
+    )
     f = extract_features("www.janpara.co.jp", browser=a, bot=b)
     assert f.cloaking is False
     assert f.bot_only_body is False
@@ -211,6 +250,7 @@ def test_tiny_bot_body_is_not_bot_only_body():
 
 def test_features_are_json_serialisable():
     import json
+
     f = extract_features("shop.example", res())
     assert json.loads(json.dumps(f.to_dict()))["domain"] == "shop.example"
 

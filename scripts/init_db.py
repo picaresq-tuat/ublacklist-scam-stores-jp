@@ -6,6 +6,7 @@
 生成物: db/models.db (models_seed.csv から 240 件), db/whitelist.db (seed 投入)。
 scam.db / searches.db は実行時に自動生成される。
 """
+
 from __future__ import annotations
 
 import sys
@@ -14,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "script"))
 
-from modeldb import ModelDB, SEED_CSV  # noqa: E402
+from modeldb import SEED_CSV, ModelDB  # noqa: E402
 from whitelist import SEED, WhitelistDB  # noqa: E402
 
 

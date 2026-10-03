@@ -8,6 +8,7 @@
   * <script>/<iframe>/on* 等を除去したサニタイズ済 HTML のみを特徴量抽出に渡す
   * cookie / authorization ヘッダは送らない
 """
+
 from __future__ import annotations
 
 import http.client
@@ -15,20 +16,28 @@ import ipaddress
 import re
 import socket
 import urllib.parse
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Optional
 
 USER_AGENTS = {
-    "browser": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                " (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"),
+    "browser": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        " (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
     "googlebot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
     "bingbot": "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
 }
 
-ALLOWED_CONTENT_TYPES = frozenset({
-    "text/html", "text/plain", "application/xhtml+xml", "application/json",
-    "text/xml", "application/xml",
-})
+ALLOWED_CONTENT_TYPES = frozenset(
+    {
+        "text/html",
+        "text/plain",
+        "application/xhtml+xml",
+        "application/json",
+        "text/xml",
+        "application/xml",
+    }
+)
 BLOCKED_PORTS = frozenset({22, 23, 25, 110, 143, 3306, 5432, 6379, 8080, 8443, 9200, 11211})
 ALLOWED_SCHEMES = frozenset({"http", "https"})
 ALLOWED_PORTS = frozenset({80, 443})
@@ -39,9 +48,14 @@ DEFAULT_MAX_REDIRECTS = 6
 
 _REDIRECT_STATUSES = frozenset({301, 302, 303, 307, 308})
 _CHARSET_ALIASES = {
-    "shift_jis": "cp932", "shift-jis": "cp932", "sjis": "cp932",
-    "windows-31j": "cp932", "ms_kanji": "cp932", "x-sjis": "cp932",
-    "utf8": "utf-8", "euc-jp": "euc_jp",
+    "shift_jis": "cp932",
+    "shift-jis": "cp932",
+    "sjis": "cp932",
+    "windows-31j": "cp932",
+    "ms_kanji": "cp932",
+    "x-sjis": "cp932",
+    "utf8": "utf-8",
+    "euc-jp": "euc_jp",
 }
 _DANGEROUS_HEADER_NAMES = frozenset({"cookie", "authorization", "proxy-authorization"})
 
@@ -65,9 +79,9 @@ class FetchResult:
     final_url: str
     chain: list[tuple[int, str]] = field(default_factory=list)
     headers: dict[str, str] = field(default_factory=dict)
-    body: Optional[str] = None
+    body: str | None = None
     html_sanitized: str = ""
-    charset: Optional[str] = None
+    charset: str | None = None
     discarded: bool = False
     discard_reason: str = ""
     truncated: bool = False
@@ -104,7 +118,7 @@ def _default_resolver(host: str) -> list[str]:
 
 
 def _normalise_charset(raw: str) -> str:
-    c = (raw or "").strip().strip('"\'').lower()
+    c = (raw or "").strip().strip("\"'").lower()
     return _CHARSET_ALIASES.get(c, c or "utf-8")
 
 
@@ -133,10 +147,13 @@ def sanitize_html(html: str) -> str:
     # インラインイベントハンドラ
     out = re.sub(r"\son[a-z]+\s*=\s*(\"[^\"]*\"|'[^']*'|[^\s>]+)", " ", out, flags=re.I)
     # javascript: / vbscript: / data: の href
-    out = re.sub(r"(href|src)\s*=\s*([\"'])\s*(?:javascript|vbscript|data)\s*:[^\"']*\2",
-                 r'\1="#"', out, flags=re.I)
-    out = re.sub(r"<(base|form)\b[^>]*>", " ", out, flags=re.I)
-    return out
+    out = re.sub(
+        r"(href|src)\s*=\s*([\"'])\s*(?:javascript|vbscript|data)\s*:[^\"']*\2",
+        r'\1="#"',
+        out,
+        flags=re.I,
+    )
+    return re.sub(r"<(base|form)\b[^>]*>", " ", out, flags=re.I)
 
 
 class _HttpTransport:
@@ -144,7 +161,9 @@ class _HttpTransport:
 
     def open(self, url, *, method="GET", headers=None, timeout=DEFAULT_TIMEOUT):
         parts = urllib.parse.urlsplit(url)
-        conn_cls = http.client.HTTPSConnection if parts.scheme == "https" else http.client.HTTPConnection
+        conn_cls = (
+            http.client.HTTPSConnection if parts.scheme == "https" else http.client.HTTPConnection
+        )
         port = parts.port or (443 if parts.scheme == "https" else 80)
         conn = conn_cls(parts.hostname, port, timeout=timeout)
         path = urllib.parse.urlunsplit(("", "", parts.path or "/", parts.query, ""))
@@ -165,7 +184,9 @@ class _RawResponse:
     body: bytes
 
 
-def _check_url(url: str, resolver: Callable[[str], list[str]], allow_private: bool) -> urllib.parse.SplitResult:
+def _check_url(
+    url: str, resolver: Callable[[str], list[str]], allow_private: bool
+) -> urllib.parse.SplitResult:
     parts = urllib.parse.urlsplit(url)
     if parts.scheme.lower() not in ALLOWED_SCHEMES:
         raise BlockedURL(f"scheme not allowed: {parts.scheme!r}")
@@ -187,7 +208,7 @@ def _check_url(url: str, resolver: Callable[[str], list[str]], allow_private: bo
     except ValueError:
         ips = resolver(host)
         if not ips:
-            raise FetchError(f"no address for {host!r}")
+            raise FetchError(f"no address for {host!r}") from None
     bad = [ip for ip in ips if host_is_private(ip)]
     if bad:
         raise BlockedURL(f"private address not allowed: {host} -> {bad[0]}")
@@ -239,7 +260,9 @@ def fetch(
         if status in _REDIRECT_STATUSES:
             location = hdr.get("location", "").strip()
             if not location:
-                return FetchResult(url=url, status=status, final_url=current, chain=chain, headers=hdr)
+                return FetchResult(
+                    url=url, status=status, final_url=current, chain=chain, headers=hdr
+                )
             hops += 1
             if hops > max_redirects:
                 raise TooManyRedirects(f"{hops} redirects from {url!r}")
@@ -248,8 +271,9 @@ def fetch(
 
         raw = resp.body if isinstance(resp.body, (bytes, bytearray)) else (resp.body or b"")
         raw = bytes(raw)
-        result = FetchResult(url=url, status=status, final_url=current, chain=chain,
-                             headers=hdr, raw_bytes=len(raw))
+        result = FetchResult(
+            url=url, status=status, final_url=current, chain=chain, headers=hdr, raw_bytes=len(raw)
+        )
 
         # --- 読み捨て判定 (R5) ---
         disposition = hdr.get("content-disposition", "")

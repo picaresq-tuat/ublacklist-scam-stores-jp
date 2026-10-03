@@ -3,10 +3,11 @@
 型番 × 16 用語を組み合わせ、重複なしのクエリ列を生成する。
 30 日窓の重複回避は is_excluded コールバック (searchlog 側) で注入する。
 """
+
 from __future__ import annotations
 
 import random
-from typing import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 
 from modeldb import Model
 from searchlog import pick_pageno
@@ -16,8 +17,17 @@ QUERY_SEPARATOR = " "
 # 16 語を 3 群に分類 (状態系 / 技術系 / 価格系)
 TERM_GROUPS: dict[str, tuple[str, ...]] = {
     "condition": (
-        "ジャンク", "ジャンク品", "中古", "整備済み", "訳あり",
-        "部品取り", "再生品", "リファビッシュ", "新古品", "展示品", "型落ち",
+        "ジャンク",
+        "ジャンク品",
+        "中古",
+        "整備済み",
+        "訳あり",
+        "部品取り",
+        "再生品",
+        "リファビッシュ",
+        "新古品",
+        "展示品",
+        "型落ち",
     ),
     "technical": ("bios", "BIOS 更新", "ドライバ"),
     "price": ("格安", "在庫処分"),
@@ -113,8 +123,9 @@ class QueryGen:
     - rotate() はサンプルと除外を組み直す (R5 再試行用)
     """
 
-    def __init__(self, db=None, *, n_models: int = 30, rng=None,
-                 db_path=None, max_pageno: int | None = None):
+    def __init__(
+        self, db=None, *, n_models: int = 30, rng=None, db_path=None, max_pageno: int | None = None
+    ):
         self.db = db
         self.db_path = db_path
         self.n_models = n_models
@@ -126,7 +137,8 @@ class QueryGen:
     def _ensure_models(self):
         if self._models is None:
             if self.db is None:
-                from modeldb import ModelDB, DEFAULT_DB
+                from modeldb import DEFAULT_DB, ModelDB
+
                 self.db = ModelDB(self.db_path if self.db_path is not None else DEFAULT_DB)
             pool = self.db.all()
             n = min(max(self.n_models, MIN_MODELS), MAX_MODELS, len(pool))
@@ -143,14 +155,18 @@ class QueryGen:
         if searchlog is not None:
             self._excluded = searchlog.exclusion_predicate(now=now)
         try:
-            pairs = generate_queries(models, n_models=len(models),
-                                     n_queries=limit, rng=self.rng,
-                                     is_excluded=self._excluded)
+            pairs = generate_queries(
+                models,
+                n_models=len(models),
+                n_queries=limit,
+                rng=self.rng,
+                is_excluded=self._excluded,
+            )
         except QueriesExhausted:
             # 除外が厳しく満たせない場合でも、得られるだけ返す (夜間を止めない)。
-            pairs = generate_queries(models, n_models=len(models),
-                                     n_queries=limit, rng=self.rng,
-                                     is_excluded=None)
+            pairs = generate_queries(
+                models, n_models=len(models), n_queries=limit, rng=self.rng, is_excluded=None
+            )
         out = []
         kwargs = {"now": now}
         if self.max_pageno is not None:

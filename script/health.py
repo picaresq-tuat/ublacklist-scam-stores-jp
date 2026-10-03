@@ -6,15 +6,21 @@
   * ドメイン売却・パーキングページ
   * SSRF ポリシーで拒否された (private アドレス等)
 """
+
 from __future__ import annotations
 
 from fetch import BlockedURL, FetchError, fetch
-from features import registrable_domain
 
 PARKING_MARKERS: tuple[str, ...] = (
-    "this domain is for sale", "buy this domain", "domain for sale",
-    "this domain may be for sale", "ドメインを売り", "このドメインは販売中",
-    "parked", "sedo.com", "afternic",
+    "this domain is for sale",
+    "buy this domain",
+    "domain for sale",
+    "this domain may be for sale",
+    "ドメインを売り",
+    "このドメインは販売中",
+    "parked",
+    "sedo.com",
+    "afternic",
 )
 
 
@@ -36,7 +42,5 @@ class HealthChecker:
             if res.status >= 400 or res.discarded:
                 continue
             head = (res.html_sanitized or res.body or "")[:4096].lower()
-            if any(m in head for m in PARKING_MARKERS):
-                return False
-            return True
+            return not any(m in head for m in PARKING_MARKERS)
         return False

@@ -4,6 +4,7 @@
 Bing はページング非対応のため 1 ページ目の補完としてのみ併用する。
 `engines` の明示指定は必須 (無指定だと suspension したエンジンが混じり 0 件応答になる)。
 """
+
 from __future__ import annotations
 
 import json
@@ -37,6 +38,7 @@ def engines_for(pageno: int, *, pivot: bool = False) -> str:
     if int(pageno) <= BING_MAX_PAGENO:
         return "google cse,bing"
     return PRIMARY_ENGINES
+
 
 DEFAULT_URL = "http://localhost:8888"
 DEFAULT_TIMEOUT = 30.0
@@ -86,8 +88,9 @@ class SearxClient:
             self.sleep(self.sleep_sec)
         self._calls += 1
 
-    def search(self, query: str, pageno: int = 1, *, pivot: bool = False,
-               language: str = "ja") -> list[dict]:
+    def search(
+        self, query: str, pageno: int = 1, *, pivot: bool = False, language: str = "ja"
+    ) -> list[dict]:
         engines = engines_for(pageno, pivot=pivot)
         params = {
             "q": query,
@@ -98,7 +101,8 @@ class SearxClient:
             "safesearch": "0",
         }
         url = f"{self.base_url.rstrip('/')}/search?" + urllib.parse.urlencode(
-            params, quote_via=urllib.parse.quote)
+            params, quote_via=urllib.parse.quote
+        )
         self._pace()
         try:
             status, body = self._get(url)
@@ -130,15 +134,17 @@ class SearxClient:
             if not url_ or url_ in seen:
                 continue
             seen.add(url_)
-            out.append({
-                "url": url_,
-                "title": (item.get("title") or "").strip(),
-                "snippet": (item.get("content") or item.get("snippet") or "").strip(),
-                "pubdate": item.get("pubdate") or item.get("publishedDate"),
-                "engine": item.get("engine") or engines,
-                "query": query,
-                "pageno": int(pageno),
-            })
+            out.append(
+                {
+                    "url": url_,
+                    "title": (item.get("title") or "").strip(),
+                    "snippet": (item.get("content") or item.get("snippet") or "").strip(),
+                    "pubdate": item.get("pubdate") or item.get("publishedDate"),
+                    "engine": item.get("engine") or engines,
+                    "query": query,
+                    "pageno": int(pageno),
+                }
+            )
         self.stats.queries += 1
         self.stats.results += len(out)
         if not out:

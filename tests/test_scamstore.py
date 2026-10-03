@@ -1,8 +1,8 @@
 """P6b: 判定の永続化 (scam.db / decisions / domain_health) の RED テスト。"""
-from datetime import datetime, timedelta, timezone
+
+from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from scamstore import DECISIONS, ScamStore
 
 
@@ -11,7 +11,7 @@ def store(tmp_path):
 
 
 def day(n: int) -> str:
-    return (datetime.now(timezone.utc) - timedelta(days=n)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return (datetime.now(UTC) - timedelta(days=n)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def test_decisions_are_the_defined_ones():
@@ -20,8 +20,14 @@ def test_decisions_are_the_defined_ones():
 
 def test_record_and_fetch(tmp_path):
     db = store(tmp_path)
-    db.record("card.hika-jp.casa", score=74.0, features={"zencart_hits": 4}, evidence={},
-              decision="block", night="2026-09-24")
+    db.record(
+        "card.hika-jp.casa",
+        score=74.0,
+        features={"zencart_hits": 4},
+        evidence={},
+        decision="block",
+        night="2026-09-24",
+    )
     row = db.get("card.hika-jp.casa")
     assert row["score"] == 74.0
     assert row["decision"] == "block"
@@ -66,8 +72,8 @@ def test_eligible_for_block_requires_two_nights_or_fast_track(tmp_path):
     db.record("fast.example", score=61, decision="block", night="2026-09-24")
     db.record("fresh.example", score=35, decision="block", night="2026-09-24")
     eligible = set(db.eligible_domains())
-    assert "slow.example" not in eligible      # 1 夜だけでは早い
-    assert "fast.example" in eligible          # fast_track (>=60)
+    assert "slow.example" not in eligible  # 1 夜だけでは早い
+    assert "fast.example" in eligible  # fast_track (>=60)
     assert "fresh.example" not in eligible
 
 
@@ -119,7 +125,7 @@ def test_expire_removes_from_block_list(tmp_path):
     expired = db.expire_unreachable(streak_days=7)
     assert expired == ["dead.example"]
     assert db.get("dead.example")["decision"] == "expired"
-    assert db.get("dead.example")["nights_confirmed"] == 1     # 履歴は残る
+    assert db.get("dead.example")["nights_confirmed"] == 1  # 履歴は残る
 
 
 def test_expire_keeps_six_day_streak(tmp_path):

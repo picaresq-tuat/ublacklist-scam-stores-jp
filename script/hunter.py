@@ -8,17 +8,17 @@
 R5: 1巡目で scam.db に新規が入らなければ、クエリ生成/pageno を変えて
     最大 3 回 discovery をやり直す。
 """
+
 from __future__ import annotations
 
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 from urllib.parse import urlsplit
 
 from publish import build_entries, merge_list
-from searchlog import PageRangeExhausted, pick_pageno
 from scamstore import ScamStore
+from searchlog import PageRangeExhausted, pick_pageno
 
 MAX_ROUNDS = 3
 MONITOR_AGE_DAYS = 30
@@ -40,7 +40,7 @@ from searxng import PRIMARY_MAX_PAGENO as DEFAULT_MAX_PAGENO  # noqa: E402
 
 
 def _today() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return datetime.now(UTC).strftime("%Y-%m-%d")
 
 
 def term_of(query: str, model: str) -> str:
@@ -48,7 +48,7 @@ def term_of(query: str, model: str) -> str:
     q = (query or "").strip()
     m = (model or "").strip()
     if m and q.startswith(m):
-        return q[len(m):].strip()
+        return q[len(m) :].strip()
     return q
 
 
@@ -62,19 +62,28 @@ def _host_of(url: str) -> str:
         return ""
 
 
-def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
-              db_dir: Path | str, ulist_path: Optional[Path | str] = None,
-              publish: bool = False, dry_run: bool = False,
-              max_queries: int = 12, health=None,
-              max_pageno_attempts: int = 3,
-              max_pageno: Optional[int] = None,
-              max_engine_failures: int = MAX_ENGINE_FAILURES,
-              engine_backoff_sec: float = DEFAULT_ENGINE_BACKOFF_SEC,
-              engine_backoff_max_sec: float = MAX_ENGINE_BACKOFF_SEC,
-              sleep=None,
-              gen=None, models_db=None,
-              cloaking_list_path: Optional[Path | str] = None,
-              ) -> dict:
+def run_night(
+    *,
+    night: str | None = None,
+    searx,
+    pipeline,
+    store: ScamStore,
+    db_dir: Path | str,
+    ulist_path: Path | str | None = None,
+    publish: bool = False,
+    dry_run: bool = False,
+    max_queries: int = 12,
+    health=None,
+    max_pageno_attempts: int = 3,
+    max_pageno: int | None = None,
+    max_engine_failures: int = MAX_ENGINE_FAILURES,
+    engine_backoff_sec: float = DEFAULT_ENGINE_BACKOFF_SEC,
+    engine_backoff_max_sec: float = MAX_ENGINE_BACKOFF_SEC,
+    sleep=None,
+    gen=None,
+    models_db=None,
+    cloaking_list_path: Path | str | None = None,
+) -> dict:
     night = night or _today()
     _sleep = sleep if sleep is not None else time.sleep
     db_dir = Path(db_dir)
@@ -82,15 +91,15 @@ def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
     if max_pageno is None:
         max_pageno = DEFAULT_MAX_PAGENO
 
-    from searchlog import SearchLog
     from queries import QueryGen
-    from whitelist import Whitelist, SEED
+    from searchlog import SearchLog
+    from whitelist import SEED, Whitelist
 
     searchlog = SearchLog(db_dir / "searches.db")
     wl = Whitelist(SEED)
     if gen is None:
         gen = QueryGen(db=models_db, max_pageno=max_pageno)
-    gen.rotate()          # 夜のはじめにサンプルを組み直す
+    gen.rotate()  # 夜のはじめにサンプルを組み直す
     round_no = 0
     new_domains: int = 0
     seen_domains: set[str] = set()
@@ -119,8 +128,9 @@ def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
                 aborted = True
             else:
                 # 429 は連投が原因。指数的に間隔を空ける (上限で頭打ち)。
-                delay = min(engine_backoff_sec * (2 ** (engine_failures - 1)),
-                            engine_backoff_max_sec)
+                delay = min(
+                    engine_backoff_sec * (2 ** (engine_failures - 1)), engine_backoff_max_sec
+                )
                 _sleep(delay)
             return None
 
@@ -142,8 +152,14 @@ def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
             while not results and attempts < max_pageno_attempts:
                 attempts += 1
                 try:
-                    alt = pick_pageno(searchlog, model, term_of(query, model),
-                                      gen.rng, max_pageno=max_pageno, exclude=tried)
+                    alt = pick_pageno(
+                        searchlog,
+                        model,
+                        term_of(query, model),
+                        gen.rng,
+                        max_pageno=max_pageno,
+                        exclude=tried,
+                    )
                 except PageRangeExhausted:
                     break
                 tried.add(alt)
@@ -152,17 +168,18 @@ def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
                     break
                 if results:
                     pageno = alt
-                    searchlog.record_result(model, term_of(query, model), alt,
-                                            result_count=len(results))
+                    searchlog.record_result(
+                        model, term_of(query, model), alt, result_count=len(results)
+                    )
             if not results:
                 empty_queries += 1
                 # P9c: 空応答 pageno を実結果数 0 として記録し、
                 # pick_pageno の 30 日空応答プールで再利用を避ける。
-                searchlog.record_result(model, term_of(query, model), pageno,
-                                        result_count=0)
+                searchlog.record_result(model, term_of(query, model), pageno, result_count=0)
             else:
-                searchlog.record_result(model, term_of(query, model), pageno,
-                                        result_count=len(results))
+                searchlog.record_result(
+                    model, term_of(query, model), pageno, result_count=len(results)
+                )
             for item in results:
                 host = _host_of(item.get("url", ""))
                 if not host:
@@ -181,16 +198,20 @@ def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
 
         if not found_this_round:
             if round_no < MAX_ROUNDS and not aborted:
-                gen.rotate()          # R5: クエリ生成と pageno の取り直し
+                gen.rotate()  # R5: クエリ生成と pageno の取り直し
                 continue
             break
 
         for domain in found_this_round:
             res = pipeline.run_domain(domain)
-            store.record(domain, score=res.score, decision=res.decision,
-                         features=res.features,
-                         evidence=[res.reasons] if isinstance(res.reasons, dict) else list(res.reasons),
-                         night=night)
+            store.record(
+                domain,
+                score=res.score,
+                decision=res.decision,
+                features=res.features,
+                evidence=[res.reasons] if isinstance(res.reasons, dict) else list(res.reasons),
+                night=night,
+            )
             if res.decision == "block":
                 blocked.append(domain)
             elif res.decision == "hold":
@@ -222,12 +243,13 @@ def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
         eligible = store.eligible_domains()
         wanted = build_entries(eligible)
         if publish:
-            text = merge_list(current, eligible)      # merge_list 側で entry 化する
-            from publish import domains_to_remove, _ENTRY_RE
+            text = merge_list(current, eligible)  # merge_list 側で entry 化する
+            from publish import domains_to_remove
+
             if expired:
                 text = domains_to_remove(text, expired)
             Path(ulist_path).write_text(text, encoding="utf-8")
-            published = wanted          # entry 形式 (*://*.d/*)
+            published = wanted  # entry 形式 (*://*.d/*)
             if dry_run:
                 would_publish = wanted  # entry 形式で統一
         else:
@@ -237,7 +259,8 @@ def run_night(*, night: Optional[str] = None, searx, pipeline, store: ScamStore,
     cloaking_holds = store.cloaking_holds()
     cloaking_would: list[str] = []
     if cloaking_list_path is not None:
-        from cloaking_publish import write_cloaking_list, render_cloaking_list
+        from cloaking_publish import write_cloaking_list
+
         if dry_run:
             cloaking_would = build_entries(cloaking_holds)
         else:

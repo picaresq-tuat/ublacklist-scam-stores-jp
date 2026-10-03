@@ -1,14 +1,12 @@
 """P7d: 実パイプライン (probe.py) / 到達性チェック (health.py) / CLI の RED テスト。"""
+
 from __future__ import annotations
 
 import json
-from pathlib import Path
-
-import pytest
 
 import health as health_mod
 import probe
-
+import pytest
 
 HTML = """<html><head><title>dynabook R734 中古 格安</title>
 <link rel="icon" href="/favicon.ico"></head>
@@ -18,10 +16,16 @@ HTML = """<html><head><title>dynabook R734 中古 格安</title>
 class FakeFetchResult:
     def __init__(self, url, status=200, body=HTML, **kw):
         from fetch import FetchResult
-        self._r = FetchResult(url=url, status=status, final_url=url, headers=kw.get("headers", {}) or {},
-                              body=None if kw.get("discarded") else body,
-                              discarded=bool(kw.get("discarded")),
-                              discard_reason=kw.get("discard_reason", ""))
+
+        self._r = FetchResult(
+            url=url,
+            status=status,
+            final_url=url,
+            headers=kw.get("headers", {}) or {},
+            body=None if kw.get("discarded") else body,
+            discarded=bool(kw.get("discarded")),
+            discard_reason=kw.get("discard_reason", ""),
+        )
         self._r.html_sanitized = body if not kw.get("discarded") else ""
         self._r.raw_bytes = len(body.encode())
         self._r.chain = kw.get("chain", [])
@@ -43,6 +47,7 @@ def fake_fetch(monkeypatch):
 
 
 # --- probe: 3 UA で取得しスコアを返す ---
+
 
 def test_probe_run_domain_returns_scored_result(fake_fetch, tmp_path):
     p = probe.Pipeline(db_dir=tmp_path)
@@ -104,15 +109,14 @@ def test_probe_records_pages_for_pivot(tmp_path, monkeypatch):
 
 # --- health: 到達性チェック ---
 
+
 def test_health_check_true_for_200(monkeypatch):
-    monkeypatch.setattr(health_mod, "fetch",
-                        lambda url, **kw: FakeFetchResult(url, status=200))
+    monkeypatch.setattr(health_mod, "fetch", lambda url, **kw: FakeFetchResult(url, status=200))
     assert health_mod.HealthChecker().check("alive.example") is True
 
 
 def test_health_check_false_for_404(monkeypatch):
-    monkeypatch.setattr(health_mod, "fetch",
-                        lambda url, **kw: FakeFetchResult(url, status=404))
+    monkeypatch.setattr(health_mod, "fetch", lambda url, **kw: FakeFetchResult(url, status=404))
     assert health_mod.HealthChecker().check("gone.example") is False
 
 
@@ -129,8 +133,9 @@ def test_health_check_false_on_error(monkeypatch):
 def test_health_check_false_on_dns_wildcard_parking(monkeypatch):
     """到達しても「ドメイン売ります」ページなら失効扱い。"""
     parked = "<html><title>This domain is for sale</title><body>Buy this domain</body></html>"
-    monkeypatch.setattr(health_mod, "fetch",
-                        lambda url, **kw: FakeFetchResult(url, status=200, body=parked))
+    monkeypatch.setattr(
+        health_mod, "fetch", lambda url, **kw: FakeFetchResult(url, status=200, body=parked)
+    )
     assert health_mod.HealthChecker().check("parked.example") is False
 
 
@@ -146,20 +151,28 @@ def test_health_blocked_url_is_unreachable(monkeypatch, tmp_path):
 
 # --- CLI ---
 
+
 def test_cli_dry_run_writes_report(tmp_path, monkeypatch):
     import cli
 
     out = tmp_path / "report.json"
     monkeypatch.setattr(cli, "_build_searx", lambda **kw: _EmptySearx())
     monkeypatch.setattr(cli, "_build_pipeline", lambda **kw: _NullPipeline())
-    rc = cli.main([
-        "--night", "2026-09-24",
-        "--db-dir", str(tmp_path / "db"),
-        "--scam-db", str(tmp_path / "scam.db"),
-        "--report", str(out),
-        "--dry-run",
-        "--max-queries", "0",
-    ])
+    rc = cli.main(
+        [
+            "--night",
+            "2026-09-24",
+            "--db-dir",
+            str(tmp_path / "db"),
+            "--scam-db",
+            str(tmp_path / "scam.db"),
+            "--report",
+            str(out),
+            "--dry-run",
+            "--max-queries",
+            "0",
+        ]
+    )
     assert rc == 0
     data = json.loads(out.read_text(encoding="utf-8"))
     assert data["night"] == "2026-09-24"
@@ -190,8 +203,20 @@ def test_cli_accepts_google_cse_engine(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "_build_searx", lambda **kw: _EmptySearx())
     monkeypatch.setattr(cli, "_build_pipeline", lambda **kw: _NullPipeline())
     out = tmp_path / "r.json"
-    rc = cli.main(["--db-dir", str(tmp_path / "db"), "--scam-db", str(tmp_path / "s.db"),
-                   "--engine", "google cse", "--report", str(out), "--max-queries", "0"])
+    rc = cli.main(
+        [
+            "--db-dir",
+            str(tmp_path / "db"),
+            "--scam-db",
+            str(tmp_path / "s.db"),
+            "--engine",
+            "google cse",
+            "--report",
+            str(out),
+            "--max-queries",
+            "0",
+        ]
+    )
     assert rc == 0
     assert json.loads(out.read_text(encoding="utf-8"))["engine_failures"] == 0
 
@@ -206,6 +231,7 @@ def test_cli_report_includes_engine_failure_fields(tmp_path, monkeypatch):
 
         def __init__(self):
             from searxng import SearxStats
+
             self.stats = SearxStats()
 
         def search(self, query, *, pageno):
@@ -215,9 +241,22 @@ def test_cli_report_includes_engine_failure_fields(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "_build_searx", lambda **kw: Dead())
     monkeypatch.setattr(cli, "_build_pipeline", lambda **kw: _NullPipeline())
     out = tmp_path / "r.json"
-    rc = cli.main(["--db-dir", str(tmp_path / "db"), "--scam-db", str(tmp_path / "s.db"),
-                   "--report", str(out), "--max-queries", "10",
-                   "--engine-backoff-sec", "0", "--engine-backoff-max-sec", "0"])
+    rc = cli.main(
+        [
+            "--db-dir",
+            str(tmp_path / "db"),
+            "--scam-db",
+            str(tmp_path / "s.db"),
+            "--report",
+            str(out),
+            "--max-queries",
+            "10",
+            "--engine-backoff-sec",
+            "0",
+            "--engine-backoff-max-sec",
+            "0",
+        ]
+    )
     assert rc == 0, "エンジン停止で CLI が異常終了してはいけない"
     data = json.loads(out.read_text(encoding="utf-8"))
     assert data["aborted"] is True
@@ -252,4 +291,5 @@ class _EmptySearx:
 class _NullPipeline:
     def run_domain(self, domain):
         from probe import DomainResult
+
         return DomainResult(domain=domain, score=0.0, decision="dismissed")

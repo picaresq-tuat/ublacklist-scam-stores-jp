@@ -1,10 +1,9 @@
 """P2: SearXNG クライアント (Bing 主体 + pivot のみ Google CSE) の RED テスト。"""
+
 import json
 
 import pytest
-
 from searxng import (
-    PIVOT_ENGINES,
     PRIMARY_ENGINES,
     EngineUnavailable,
     SearxClient,
@@ -23,6 +22,7 @@ def make(pages=None, unresponsive=None):
     def http_get(url, timeout):
         calls.append(url)
         import urllib.parse as up
+
         q = up.parse_qs(up.urlsplit(url).query)
         key = (q.get("q", [""])[0], int(q.get("pageno", ["1"])[0]), q.get("engines", [""])[0])
         body = pages.get(key, payload([]))
@@ -39,19 +39,28 @@ def make(pages=None, unresponsive=None):
 # ページング可能な Google CSE を主引擎として初めて機能する。
 # 1 ページ目のみ Bing を併用 (Bing が応答できる唯一のページ)。
 
+
 def test_engine_defaults_match_decision():
     assert PRIMARY_ENGINES == "google cse", "主引擎は Google CSE (ページング可能)"
 
 
 def test_first_page_adds_bing_complement():
     from searxng import engines_for
+
     assert engines_for(1) == "google cse,bing", "Bing が応答できるのは 1 ページ目のみ"
 
 
 def test_search_uses_primary_engine_and_pageno():
-    g = make({("dynabook R734 ジャンク", 1, "google cse,bing"):
-              payload([{"url": "https://a.example/p", "title": "a"},
-                       {"url": "https://b.example/p", "title": "b"}])})
+    g = make(
+        {
+            ("dynabook R734 ジャンク", 1, "google cse,bing"): payload(
+                [
+                    {"url": "https://a.example/p", "title": "a"},
+                    {"url": "https://b.example/p", "title": "b"},
+                ]
+            )
+        }
+    )
     c = SearxClient("http://localhost:8888", http_get=g, sleep_sec=0)
     res = c.search("dynabook R734 ジャンク", pageno=1)
     assert [r["url"] for r in res] == ["https://a.example/p", "https://b.example/p"]
@@ -75,8 +84,9 @@ def test_empty_results_is_not_an_error_but_is_flagged():
 
 
 def test_unresponsive_engines_raise_engine_unavailable():
-    c = SearxClient("http://localhost:8888", http_get=make(unresponsive=[["bing", "Suspended"]]),
-                    sleep_sec=0)
+    c = SearxClient(
+        "http://localhost:8888", http_get=make(unresponsive=[["bing", "Suspended"]]), sleep_sec=0
+    )
     with pytest.raises(EngineUnavailable):
         c.search("x", pageno=1)
 
@@ -101,19 +111,23 @@ def test_malformed_json_raises_searx_error():
 
 def test_rate_limit_sleeps_between_calls(monkeypatch):
     slept = []
-    c = SearxClient("http://localhost:8888", http_get=make(), sleep_sec=1.5,
-                    sleep=slept.append)
+    c = SearxClient("http://localhost:8888", http_get=make(), sleep_sec=1.5, sleep=slept.append)
     c.search("a", pageno=1)
     c.search("b", pageno=1)
     assert slept == [1.5], "1 回目は sleep せず、2 回目で sleep する"
 
 
 def test_results_are_deduped_and_normalised():
-    dup = [{"url": "https://a.example/p", "title": "a", "content": "s", "pubdate": None},
-           {"url": "https://a.example/p", "title": "a"},
-           {"url": "https://b.example/q", "title": "b"}]
-    c = SearxClient("http://localhost:8888",
-                    http_get=make({("q t", 1, "google cse,bing"): payload(dup)}), sleep_sec=0)
+    dup = [
+        {"url": "https://a.example/p", "title": "a", "content": "s", "pubdate": None},
+        {"url": "https://a.example/p", "title": "a"},
+        {"url": "https://b.example/q", "title": "b"},
+    ]
+    c = SearxClient(
+        "http://localhost:8888",
+        http_get=make({("q t", 1, "google cse,bing"): payload(dup)}),
+        sleep_sec=0,
+    )
     res = c.search("q t", pageno=1)
     assert [r["url"] for r in res] == ["https://a.example/p", "https://b.example/q"]
     assert set(res[0]) >= {"url", "title", "snippet", "pubdate"}
@@ -133,13 +147,14 @@ def test_stats_accumulate_queries_and_results():
 #     Google CSE は pageno<=5 で 20 件、pageno>=6 で 0 件。
 #     → pageno ランダム化は「ページング可能なエンジン」に委ねる必要がある。
 
+
 def test_engine_paging_caps_match_measurements():
     from searxng import (
         BING_MAX_PAGENO,
         GOOGLE_CSE_MAX_PAGENO,
         PRIMARY_MAX_PAGENO,
-        engines_for,
     )
+
     assert BING_MAX_PAGENO == 1, "Bing はページング非対応 (実測: pageno>=2 で常に 0 件)"
     assert GOOGLE_CSE_MAX_PAGENO == 5, "Google CSE は実測 pageno<=5 で応答"
     assert PRIMARY_MAX_PAGENO == GOOGLE_CSE_MAX_PAGENO
@@ -147,6 +162,7 @@ def test_engine_paging_caps_match_measurements():
 
 def test_engines_for_keeps_google_cse_primary_on_all_pages():
     from searxng import engines_for
+
     assert engines_for(1) == "google cse,bing", "1 ページ目のみ Bing を補完"
     for pageno in (2, 3, 5):
         assert engines_for(pageno) == "google cse", f"pageno={pageno} は Google CSE 主体"
@@ -154,6 +170,7 @@ def test_engines_for_keeps_google_cse_primary_on_all_pages():
 
 def test_engines_for_enables_google_cse_only_when_paging():
     from searxng import engines_for
+
     for pageno in (2, 3, 5):
         eng = engines_for(pageno)
         assert "google cse" in eng, f"pageno={pageno} はページングが必要 → Google CSE を併用"

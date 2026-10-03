@@ -3,17 +3,17 @@
 ネットワークは FakeTransport / resolver 注入でスタブする。
 R5: 通常ブラウザより厳格な防御 (添付・非 HTML 読み捨て、SSRF 拒否、スキーム制限) を検証。
 """
-import pytest
 
+import pytest
 from fetch import (
     ALLOWED_CONTENT_TYPES,
+    USER_AGENTS,
     BlockedURL,
     FetchError,
     TooManyRedirects,
-    USER_AGENTS,
     fetch,
-    sanitize_html,
     host_is_private,
+    sanitize_html,
 )
 
 
@@ -33,8 +33,9 @@ class FakeTransport:
         self.calls = []
 
     def open(self, url, *, method="GET", headers=None, timeout=20.0):
-        self.calls.append({"url": url, "method": method, "headers": dict(headers or {}),
-                           "timeout": timeout})
+        self.calls.append(
+            {"url": url, "method": method, "headers": dict(headers or {}), "timeout": timeout}
+        )
         if not self.responses:
             raise AssertionError("FakeTransport ran out of queued responses")
         return self.responses.pop(0)
@@ -54,6 +55,7 @@ def ok(body=HTML, headers=None, url="https://shop.example/item"):
 
 
 # ---- 正常系 ----
+
 
 def test_fetch_returns_text_for_html():
     r = fetch("https://shop.example/item", transport=FakeTransport(ok()), resolver=public_resolver)
@@ -83,22 +85,32 @@ def test_default_ua_is_browser_and_three_ua_variants_exist():
 
 def test_unknown_ua_key_raises():
     with pytest.raises(ValueError):
-        fetch("https://shop.example/", transport=FakeTransport(ok()),
-              resolver=public_resolver, ua="nope")
+        fetch(
+            "https://shop.example/",
+            transport=FakeTransport(ok()),
+            resolver=public_resolver,
+            ua="nope",
+        )
 
 
 def test_shift_jis_is_decoded_as_cp932():
     body = "<html><body>ジャンク品</body></html>".encode("cp932")
-    r = fetch("https://shop.example/", transport=FakeTransport(
-        ok(body, {"Content-Type": "text/html; charset=Shift_JIS"})), resolver=public_resolver)
+    r = fetch(
+        "https://shop.example/",
+        transport=FakeTransport(ok(body, {"Content-Type": "text/html; charset=Shift_JIS"})),
+        resolver=public_resolver,
+    )
     assert "ジャンク品" in r.body
     assert r.charset == "cp932"
 
 
 def test_charset_meta_sniffed_when_header_missing():
     body = '<html><head><meta charset="shift_jis"></head><body>中古</body></html>'.encode("cp932")
-    r = fetch("https://shop.example/", transport=FakeTransport(ok(body, {"Content-Type": "text/html"})),
-              resolver=public_resolver)
+    r = fetch(
+        "https://shop.example/",
+        transport=FakeTransport(ok(body, {"Content-Type": "text/html"})),
+        resolver=public_resolver,
+    )
     assert "中古" in r.body
     assert r.charset == "cp932"
 
@@ -121,40 +133,70 @@ def test_language_header_and_no_execution_surface():
 
 # ---- セキュリティ: スキーム / ポート / SSRF ----
 
-@pytest.mark.parametrize("url", [
-    "file:///etc/passwd",
-    "ftp://shop.example/x",
-    "javascript:alert(1)",
-    "data:text/html,<b>x</b>",
-    "gopher://shop.example/",
-    "//shop.example/x",
-])
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "file:///etc/passwd",
+        "ftp://shop.example/x",
+        "javascript:alert(1)",
+        "data:text/html,<b>x</b>",
+        "gopher://shop.example/",
+        "//shop.example/x",
+    ],
+)
 def test_disallowed_schemes_are_blocked(url):
     with pytest.raises(BlockedURL):
         fetch(url, transport=FakeTransport(ok()), resolver=public_resolver)
 
 
-@pytest.mark.parametrize("url", [
-    "http://shop.example:8080/x",
-    "https://shop.example:22/x",
-    "http://shop.example:3306/x",
-])
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://shop.example:8080/x",
+        "https://shop.example:22/x",
+        "http://shop.example:3306/x",
+    ],
+)
 def test_nonstandard_ports_are_blocked(url):
     with pytest.raises(BlockedURL):
         fetch(url, transport=FakeTransport(ok()), resolver=public_resolver)
 
 
-@pytest.mark.parametrize("host", [
-    "127.0.0.1", "10.0.0.5", "172.16.9.9", "192.168.1.10", "169.254.169.254",
-    "100.64.0.1", "0.0.0.0", "::1", "fc00::1", "fe80::1",
-])
+@pytest.mark.parametrize(
+    "host",
+    [
+        "127.0.0.1",
+        "10.0.0.5",
+        "172.16.9.9",
+        "192.168.1.10",
+        "169.254.169.254",
+        "100.64.0.1",
+        "0.0.0.0",
+        "::1",
+        "fc00::1",
+        "fe80::1",
+    ],
+)
 def test_private_literal_hosts_are_blocked(host):
     with pytest.raises(BlockedURL):
         fetch(f"http://{host}/x", transport=FakeTransport(ok()), resolver=public_resolver)
 
 
-@pytest.mark.parametrize("ip", ["127.0.0.1", "10.1.2.3", "172.20.0.1", "192.168.0.1",
-                                "169.254.169.254", "100.100.0.1", "::1", "fd00::1", "93.184.216.34"])
+@pytest.mark.parametrize(
+    "ip",
+    [
+        "127.0.0.1",
+        "10.1.2.3",
+        "172.20.0.1",
+        "192.168.0.1",
+        "169.254.169.254",
+        "100.100.0.1",
+        "::1",
+        "fd00::1",
+        "93.184.216.34",
+    ],
+)
 def test_host_is_private_classification(ip):
     expected_private = not ip.startswith("93.")
     assert host_is_private(ip) is expected_private
@@ -162,13 +204,20 @@ def test_host_is_private_classification(ip):
 
 def test_hostname_resolving_to_private_ip_is_blocked():
     with pytest.raises(BlockedURL):
-        fetch("http://rebind.example/x", transport=FakeTransport(ok()),
-              resolver=lambda h: ["127.0.0.1"])
+        fetch(
+            "http://rebind.example/x",
+            transport=FakeTransport(ok()),
+            resolver=lambda h: ["127.0.0.1"],
+        )
 
 
 def test_private_allowed_only_with_explicit_flag():
-    r = fetch("http://127.0.0.1:8000/x", transport=FakeTransport(ok()),
-              resolver=lambda h: ["127.0.0.1"], allow_private=True)
+    r = fetch(
+        "http://127.0.0.1:8000/x",
+        transport=FakeTransport(ok()),
+        resolver=lambda h: ["127.0.0.1"],
+        allow_private=True,
+    )
     assert r.status == 200
 
 
@@ -187,38 +236,68 @@ def test_redirect_to_disallowed_scheme_is_blocked():
 
 
 def test_too_many_redirects_raises():
-    chain = [FakeResponse(f"https://shop.example/{i}", 302,
-                          {"Location": f"https://shop.example/{i+1}"}, b"") for i in range(9)]
+    chain = [
+        FakeResponse(
+            f"https://shop.example/{i}", 302, {"Location": f"https://shop.example/{i + 1}"}, b""
+        )
+        for i in range(9)
+    ]
     with pytest.raises(TooManyRedirects):
-        fetch("https://shop.example/", transport=FakeTransport(chain),
-              resolver=public_resolver, max_redirects=3)
+        fetch(
+            "https://shop.example/",
+            transport=FakeTransport(chain),
+            resolver=public_resolver,
+            max_redirects=3,
+        )
 
 
 # ---- セキュリティ: 添付・非テキストの読み捨て ----
 
+
 def test_binary_content_type_body_is_discarded():
-    for ct in ("application/octet-stream", "application/pdf", "application/zip",
-               "image/png", "application/x-msdownload"):
-        r = fetch("https://shop.example/f.bin", transport=FakeTransport(
-            ok(b"\x00\x01\x02binary", {"Content-Type": ct, "Content-Length": "8"})),
-            resolver=public_resolver)
+    for ct in (
+        "application/octet-stream",
+        "application/pdf",
+        "application/zip",
+        "image/png",
+        "application/x-msdownload",
+    ):
+        r = fetch(
+            "https://shop.example/f.bin",
+            transport=FakeTransport(
+                ok(b"\x00\x01\x02binary", {"Content-Type": ct, "Content-Length": "8"})
+            ),
+            resolver=public_resolver,
+        )
         assert r.body is None, ct
         assert r.discarded is True
         assert r.discard_reason.startswith("content-type")
 
 
 def test_attachment_disposition_is_discarded():
-    r = fetch("https://shop.example/x.exe", transport=FakeTransport(
-        ok(b"MZ\x90\x00", {"Content-Type": "application/x-msdownload; "
-                           "name=\"x.exe\"", "Content-Disposition": "attachment; filename=x.exe"})),
-        resolver=public_resolver)
+    r = fetch(
+        "https://shop.example/x.exe",
+        transport=FakeTransport(
+            ok(
+                b"MZ\x90\x00",
+                {
+                    "Content-Type": 'application/x-msdownload; name="x.exe"',
+                    "Content-Disposition": "attachment; filename=x.exe",
+                },
+            )
+        ),
+        resolver=public_resolver,
+    )
     assert r.body is None and r.discarded is True
     assert r.discard_reason == "content-disposition:attachment"
 
 
 def test_attachment_disposition_discards_even_html():
-    r = fetch("https://shop.example/x.html", transport=FakeTransport(
-        ok(HTML, {"Content-Disposition": "attachment; filename=x.html"})), resolver=public_resolver)
+    r = fetch(
+        "https://shop.example/x.html",
+        transport=FakeTransport(ok(HTML, {"Content-Disposition": "attachment; filename=x.html"})),
+        resolver=public_resolver,
+    )
     assert r.body is None and r.discarded is True
 
 
@@ -229,17 +308,26 @@ def test_allowed_content_types_set():
 
 def test_oversized_body_is_truncated_not_kept():
     body = b"A" * 5000
-    r = fetch("https://shop.example/big", transport=FakeTransport(
-        ok(body, {"Content-Type": "text/html"})), resolver=public_resolver, max_bytes=1024)
+    r = fetch(
+        "https://shop.example/big",
+        transport=FakeTransport(ok(body, {"Content-Type": "text/html"})),
+        resolver=public_resolver,
+        max_bytes=1024,
+    )
     assert r.truncated is True
     assert len(r.body.encode(r.charset or "utf-8")) <= 1024
     assert r.raw_bytes == 5000
 
 
 def test_content_length_header_over_limit_is_discarded_early():
-    r = fetch("https://shop.example/big", transport=FakeTransport(
-        ok(b"", {"Content-Type": "text/html", "Content-Length": str(99_000_000)})),
-        resolver=public_resolver, max_bytes=1024)
+    r = fetch(
+        "https://shop.example/big",
+        transport=FakeTransport(
+            ok(b"", {"Content-Type": "text/html", "Content-Length": str(99_000_000)})
+        ),
+        resolver=public_resolver,
+        max_bytes=1024,
+    )
     assert r.discarded is True
     assert r.discard_reason == "content-length"
     assert r.body is None
@@ -262,11 +350,18 @@ def test_timeout_is_passed_to_transport():
 
 # ---- サニタイズ ----
 
-@pytest.mark.parametrize("snippet", [
-    "<script>alert(1)</script>", "<iframe src=//evil></iframe>",
-    "<object data=x></object>", "<embed src=x>", "<applet code=x></applet>",
-    "<meta http-equiv=refresh content='0;url=http://evil'>",
-])
+
+@pytest.mark.parametrize(
+    "snippet",
+    [
+        "<script>alert(1)</script>",
+        "<iframe src=//evil></iframe>",
+        "<object data=x></object>",
+        "<embed src=x>",
+        "<applet code=x></applet>",
+        "<meta http-equiv=refresh content='0;url=http://evil'>",
+    ],
+)
 def test_dangerous_blocks_removed(snippet):
     out = sanitize_html(f"<div>ok</div>{snippet}<p>after</p>")
     assert "ok" in out and "after" in out
@@ -286,7 +381,8 @@ def test_javascript_href_neutralised():
 
 
 def test_link_and_img_src_are_preserved_for_features():
-    out = sanitize_html('<a href="https://shop.example/p">p</a>'
-                        '<img src="https://image.rakuten.co.jp/x.jpg">')
+    out = sanitize_html(
+        '<a href="https://shop.example/p">p</a><img src="https://image.rakuten.co.jp/x.jpg">'
+    )
     assert "https://shop.example/p" in out
     assert "https://image.rakuten.co.jp/x.jpg" in out
