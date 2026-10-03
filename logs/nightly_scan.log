@@ -1,0 +1,10 @@
+# nightly_scan log — scam_hunter 夜間実行ログ (編集済み)
+#
+# 本ファイルは uBlacklist.txt の更新履歴である。生ログ (logs/*.raw.log) と DB (db/*.db) は
+# .gitignore で除外し、リポジトリには本ファイルのみを含める。
+# 記載しないもの: トークン・認証情報・ローカル絶対パス・生 HTML・Cookie。
+
+# 当月分。月替わりで nightly_scan.log.YYYYMM へ退避する。
+
+2026-09-30  リポジトリ再編成 (script/ tests/ db/ logs/ cloaking_detected/ へ移動)
+            uBlacklist.txt は変更なし。実データ (db/*.db, 生ログ) を .gitignore で除外。
