@@ -5,14 +5,14 @@
   `store_empty` が true のとき空 pageno を searchlog にも記録して
   30 日窓の再利用を防ぐ。
 """
+
 from __future__ import annotations
 
 import random
 
-import pytest
-
 import hunter
-from searchlog import SearchLog, pick_pageno, PageRangeExhausted
+import pytest
+from searchlog import SearchLog, pick_pageno
 
 
 class FakeSearx:
@@ -55,26 +55,26 @@ class _Pipe:
 
 
 def test_pick_pageno_excludes_blacklisted_pool(env):
-    log, store, gen, searx, tmp_path = env
+    log, _store, _gen, _searx, _tmp_path = env
     # 過去に p4 が空だった記録があれば candidate から外れる
     log.record("m", "t", 4, result_count=0)
-    pool = {pick_pageno(log, "m", "t", random.Random(1), max_pageno=5,
-                        exclude={4}) for _ in range(20)}
+    pool = {
+        pick_pageno(log, "m", "t", random.Random(1), max_pageno=5, exclude={4}) for _ in range(20)
+    }
     assert 4 not in pool
 
 
 def test_empty_pageno_recorded_and_excluded_next_round(env):
     """空応答の pageno は searchlog に result_count=0 で記録され、
     以降の pick_pageno (30日窓) で除外される。"""
-    log, store, gen, searx, tmp_path = env
+    log, _store, _gen, _searx, _tmp_path = env
     log.record("modelX", "termY", 4, result_count=0)
-    used = {pick_pageno(log, "modelX", "termY", random.Random(7), max_pageno=5)
-            for _ in range(20)}
+    used = {pick_pageno(log, "modelX", "termY", random.Random(7), max_pageno=5) for _ in range(20)}
     assert 4 not in used
 
 
 def test_pick_pageno_all_empty_falls_back_to_least_recent(env):
-    log, store, gen, searx, tmp_path = env
+    log, _store, _gen, _searx, _tmp_path = env
     for p in range(1, 6):
         log.record("m", "t", p, result_count=0)
     # 全部空でも PageRangeExhausted にはならない (fallback 再利用)
@@ -84,12 +84,13 @@ def test_pick_pageno_all_empty_falls_back_to_least_recent(env):
 
 def test_hunter_passes_result_count_to_searchlog(monkeypatch, env):
     """hunter が空応答 pageno を result_count=0 で記録すること。"""
-    log, store, gen, searx, tmp_path = env
+    _log, store, gen, searx, tmp_path = env
     rng = random.Random(3)
     gen.rng = rng
     seen = []
 
     import searchlog as sl
+
     orig = sl.pick_pageno
 
     def spy(*a, **kw):
@@ -100,9 +101,16 @@ def test_hunter_passes_result_count_to_searchlog(monkeypatch, env):
     monkeypatch.setattr(hunter, "pick_pageno", spy)
     monkeypatch.setattr(sl, "pick_pageno", spy)
     rep = hunter.run_night(
-        night="2026-09-27", searx=searx, pipeline=_Pipe(), store=store,
-        db_dir=tmp_path / "db", ulist_path=None, gen=gen, models_db=None,
-        max_queries=2, sleep=lambda *_: None,
+        night="2026-09-27",
+        searx=searx,
+        pipeline=_Pipe(),
+        store=store,
+        db_dir=tmp_path / "db",
+        ulist_path=None,
+        gen=gen,
+        models_db=None,
+        max_queries=2,
+        sleep=lambda *_: None,
     )
     assert rep["new_domains"] >= 1
     # run_night が自前生成した searches.db を読み直して検証する

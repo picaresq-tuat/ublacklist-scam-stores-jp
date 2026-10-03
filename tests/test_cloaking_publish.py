@@ -1,15 +1,11 @@
 """(b) hunter 統合 + PR 運用テスト: run_night の cloaking リスト書き出しと cli --pr の統合。"""
+
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
-import pytest
-
 import hunter
+import pytest
 from publish import existing_entries
 from scamstore import ScamStore
-from searchlog import SearchLog
 
 
 class _FakeRes:
@@ -81,10 +77,16 @@ def test_run_night_writes_cloaking_list(env):
     sx = _FakeSearx([_res("cloak-shop.example")])
     pipe = _CloakPipe(score=60, reasons={"cloaking": 45})
     rep = hunter.run_night(
-        night="2026-09-27", searx=sx, pipeline=pipe,
-        store=ScamStore(env["scam"]), db_dir=env["db"],
-        ulist_path=None, publish=False, dry_run=False,
-        max_queries=1, cloaking_list_path=env["cloaking"],
+        night="2026-09-27",
+        searx=sx,
+        pipeline=pipe,
+        store=ScamStore(env["scam"]),
+        db_dir=env["db"],
+        ulist_path=None,
+        publish=False,
+        dry_run=False,
+        max_queries=1,
+        cloaking_list_path=env["cloaking"],
     )
     text = env["cloaking"].read_text(encoding="utf-8")
     assert "*://*.cloak-shop.example/*" in existing_entries(text)
@@ -96,10 +98,16 @@ def test_run_night_cloaking_dry_run(env):
     sx = _FakeSearx([_res("cloak-shop.example")])
     pipe = _CloakPipe(score=60, reasons={"cloaking": 45})
     rep = hunter.run_night(
-        night="2026-09-27", searx=sx, pipeline=pipe,
-        store=ScamStore(env["scam"]), db_dir=env["db"],
-        ulist_path=None, publish=False, dry_run=True,
-        max_queries=1, cloaking_list_path=env["cloaking"],
+        night="2026-09-27",
+        searx=sx,
+        pipeline=pipe,
+        store=ScamStore(env["scam"]),
+        db_dir=env["db"],
+        ulist_path=None,
+        publish=False,
+        dry_run=True,
+        max_queries=1,
+        cloaking_list_path=env["cloaking"],
     )
     assert not env["cloaking"].exists()
     assert rep["would_cloaking_holds"] == ["*://*.cloak-shop.example/*"]
@@ -111,10 +119,16 @@ def test_run_night_cloaking_merge_is_idempotent(env):
     pipe = _CloakPipe(score=60, reasons={"cloaking": 45})
     for _ in range(2):
         hunter.run_night(
-            night="2026-09-27", searx=sx, pipeline=pipe,
-            store=ScamStore(env["scam"]), db_dir=env["db"],
-            ulist_path=None, publish=False, dry_run=False,
-            max_queries=1, cloaking_list_path=env["cloaking"],
+            night="2026-09-27",
+            searx=sx,
+            pipeline=pipe,
+            store=ScamStore(env["scam"]),
+            db_dir=env["db"],
+            ulist_path=None,
+            publish=False,
+            dry_run=False,
+            max_queries=1,
+            cloaking_list_path=env["cloaking"],
         )
     text = env["cloaking"].read_text(encoding="utf-8")
     assert text.count("*://*.cloak-shop.example/*") == 1
@@ -151,16 +165,25 @@ def test_cli_pr_commits_cloaking_list(tmp_path, monkeypatch):
 
     ulist = tmp_path / "uBlacklist.txt"
     cloak = tmp_path / "cloaking_detected" / "uBlacklist.txt"
-    rc = cli.main([
-        "--night", "2026-09-27",
-        "--db-dir", str(tmp_path / "db"),
-        "--scam-db", str(tmp_path / "s.db"),
-        "--ulist", str(ulist),
-        "--cloaking-list", str(cloak),
-        "--max-queries", "0",
-        "--repo", "owner/repo",
-        "--pr",
-    ])
+    rc = cli.main(
+        [
+            "--night",
+            "2026-09-27",
+            "--db-dir",
+            str(tmp_path / "db"),
+            "--scam-db",
+            str(tmp_path / "s.db"),
+            "--ulist",
+            str(ulist),
+            "--cloaking-list",
+            str(cloak),
+            "--max-queries",
+            "0",
+            "--repo",
+            "owner/repo",
+            "--pr",
+        ]
+    )
     assert rc == 0
     rels = [c[0] for c in calls.get("commits", [])]
     assert "uBlacklist.txt" in rels
@@ -177,8 +200,10 @@ def test_cli_pr_cloaking_only_still_opens_pr(tmp_path, monkeypatch):
 
     monkeypatch.setattr(cli, "ensure_branch", lambda *a: None)
     monkeypatch.setattr(
-        cli, "write_and_commit",
-        lambda repo_dir, rel, text, *, message, branch: calls["commits"].append(rel) or True)
+        cli,
+        "write_and_commit",
+        lambda repo_dir, rel, text, *, message, branch: calls["commits"].append(rel) or True,
+    )
     monkeypatch.setattr(cli, "push", lambda *a: calls.__setitem__("push", calls["push"] + 1))
     monkeypatch.setattr(cli, "git_run", lambda *a, **kw: None)
 
@@ -195,25 +220,33 @@ def test_cli_pr_cloaking_only_still_opens_pr(tmp_path, monkeypatch):
     ulist.write_text("# empty\n", encoding="utf-8")
     cloak = tmp_path / "cloaking_detected" / "uBlacklist.txt"
     cloak.parent.mkdir()
-    cloak.write_text(
-        "# c\n\n## Hermes nightly\n\n*://*.already.example/*\n", encoding="utf-8")
+    cloak.write_text("# c\n\n## Hermes nightly\n\n*://*.already.example/*\n", encoding="utf-8")
 
     # store に既存ドメインと同一の cloaking hold を仕込む → マージで変化なし
     from scamstore import ScamStore
-    store = ScamStore(tmp_path / "s.db")
-    store.record("already.example", score=60, decision="hold",
-                 features={"cloaking": True})
 
-    rc = cli.main([
-        "--night", "2026-09-27",
-        "--db-dir", str(tmp_path / "db"),
-        "--scam-db", str(tmp_path / "s.db"),
-        "--ulist", str(ulist),
-        "--cloaking-list", str(cloak),
-        "--max-queries", "0",
-        "--repo", "owner/repo",
-        "--pr",
-    ])
+    store = ScamStore(tmp_path / "s.db")
+    store.record("already.example", score=60, decision="hold", features={"cloaking": True})
+
+    rc = cli.main(
+        [
+            "--night",
+            "2026-09-27",
+            "--db-dir",
+            str(tmp_path / "db"),
+            "--scam-db",
+            str(tmp_path / "s.db"),
+            "--ulist",
+            str(ulist),
+            "--cloaking-list",
+            str(cloak),
+            "--max-queries",
+            "0",
+            "--repo",
+            "owner/repo",
+            "--pr",
+        ]
+    )
     assert rc == 0
     assert "cloaking_detected/uBlacklist.txt" in calls["commits"]
     assert calls["push"] >= 1
@@ -224,15 +257,16 @@ def test_cli_pr_cloaking_only_still_opens_pr(tmp_path, monkeypatch):
 # 元 (b) リスト生成テストの復元 (2026-09-27 上書き事故からの復旧)
 # ---------------------------------------------------------------------------
 
-def _rec(store, dom, *, decision="hold", score=60.0, cloaking=True,
-         promoted=False, night="2026-09-27"):
+
+def _rec(
+    store, dom, *, decision="hold", score=60.0, cloaking=True, promoted=False, night="2026-09-27"
+):
     feats = {}
     if cloaking:
         feats["cloaking"] = True
     if promoted:
         feats["cloaking_promoted"] = True
-    return store.record(dom, score=score, decision=decision, features=feats,
-                        night=night)
+    return store.record(dom, score=score, decision=decision, features=feats, night=night)
 
 
 @pytest.fixture()
@@ -268,8 +302,8 @@ def test_cloaking_holds_ignores_missing_features(store):
 
 
 def test_cloaking_list_render_and_validate(store):
-    from publish import validate
     from cloaking_publish import render_cloaking_list
+    from publish import validate
 
     text = render_cloaking_list(["blog.shop.example"])
     assert validate(text) == []
@@ -277,8 +311,8 @@ def test_cloaking_list_render_and_validate(store):
 
 
 def test_cloaking_list_skips_permanent_shape(store):
-    from publish import validate
     from cloaking_publish import render_cloaking_list
+    from publish import validate
 
     text = render_cloaking_list(["blog.shop.example"])
     # 汎用 .co / xn-- 正規表現が cloaking ドメインのせいで広がらないこと
@@ -287,9 +321,8 @@ def test_cloaking_list_skips_permanent_shape(store):
 
 
 def test_cloaking_list_idempotent_merge(store):
+    from cloaking_publish import merge_cloaking_list, render_cloaking_list
     from publish import existing_entries
-    from cloaking_publish import (
-        render_cloaking_list, merge_cloaking_list)
 
     first = render_cloaking_list(["blog.shop.example"])
     merged = merge_cloaking_list(first, ["blog.shop.example"])
@@ -299,9 +332,9 @@ def test_cloaking_list_idempotent_merge(store):
 def test_cloaking_pr_body_includes_evidence(store):
     from cloaking_publish import cloaking_pr_body
 
-    body = cloaking_pr_body("2026-09-27", [
-        {"domain": "blog.shop.example", "score": 60,
-         "reasons": {"cloaking": 45}}])
+    body = cloaking_pr_body(
+        "2026-09-27", [{"domain": "blog.shop.example", "score": 60, "reasons": {"cloaking": 45}}]
+    )
     assert "blog.shop.example" in body
     assert "2026-09-27" in body
     assert "cloaking" in body

@@ -2,11 +2,11 @@
 
 ネットワークは Api スタブで置換。トークンは決して戻り値・例外に出さない。
 """
+
 import subprocess
 
-import pytest
-
 import gitops
+import pytest
 
 
 def git(*args, cwd):
@@ -43,8 +43,10 @@ class FakeApi:
         if method == "POST" and path.endswith("/pulls"):
             if self.fail_pull:
                 return 422, {"message": "Validation Failed"}
-            return 201, {"number": self.pr_number,
-                         "html_url": f"https://github.com/o/r/pull/{self.pr_number}"}
+            return 201, {
+                "number": self.pr_number,
+                "html_url": f"https://github.com/o/r/pull/{self.pr_number}",
+            }
         if method == "GET":
             return 200, {"number": self.pr_number, "state": "open"}
         return 200, {}
@@ -65,8 +67,13 @@ def test_run_rejects_nonzero(tmp_path):
 
 
 def test_commit_and_push_cycle(repo):
-    gitops.write_and_commit(repo, "uBlacklist.txt", "# new\n*://*.a.example/*\n",
-                            message="nightly: +1", branch="nightly/2026-09-24")
+    gitops.write_and_commit(
+        repo,
+        "uBlacklist.txt",
+        "# new\n*://*.a.example/*\n",
+        message="nightly: +1",
+        branch="nightly/2026-09-24",
+    )
     log = git("log", "--oneline", "-1", cwd=repo).stdout
     assert "nightly: +1" in log
     branches = git("branch", "--list", cwd=repo).stdout
@@ -77,17 +84,24 @@ def test_commit_and_push_cycle(repo):
 
 
 def test_write_and_commit_without_changes_is_noop(repo):
-    gitops.write_and_commit(repo, "uBlacklist.txt", "# seed\n", message="x",
-                            branch="nightly/2026-09-24")
+    gitops.write_and_commit(
+        repo, "uBlacklist.txt", "# seed\n", message="x", branch="nightly/2026-09-24"
+    )
     changed = gitops.has_changes(repo)
     assert changed is False
 
 
 def test_open_pr_returns_number_and_url(repo):
     api = FakeApi(pr_number=7)
-    res = gitops.open_pr(api=api, token="[REDACTED]", owner="picaresq-tuat",
-                         repo_name="ublacklist-scam-stores-jp", head="nightly/2026-09-24",
-                         title="nightly 2026-09-24", body="table here")
+    res = gitops.open_pr(
+        api=api,
+        token="[REDACTED]",
+        owner="picaresq-tuat",
+        repo_name="ublacklist-scam-stores-jp",
+        head="nightly/2026-09-24",
+        title="nightly 2026-09-24",
+        body="table here",
+    )
     assert res["number"] == 7
     assert res["url"].endswith("/pull/7")
     method, path, payload = api.calls[-1]
@@ -100,8 +114,15 @@ def test_open_pr_returns_number_and_url(repo):
 def test_open_pr_failure_raises_without_token(repo):
     api = FakeApi(fail_pull=True)
     with pytest.raises(gitops.GitError) as exc:
-        gitops.open_pr(api=api, token="[REDACTED]", owner="o", repo_name="r",
-                       head="nightly/2026-09-24", title="t", body="b")
+        gitops.open_pr(
+            api=api,
+            token="[REDACTED]",
+            owner="o",
+            repo_name="r",
+            head="nightly/2026-09-24",
+            title="t",
+            body="b",
+        )
     assert "[REDACTED]" not in str(exc.value)
     assert "422" in str(exc.value)
 
@@ -109,8 +130,15 @@ def test_open_pr_failure_raises_without_token(repo):
 def test_token_never_appears_in_arguments_or_errors(repo):
     api = FakeApi(fail_pull=True)
     with pytest.raises(gitops.GitError) as exc:
-        gitops.open_pr(api=api, token="sentinel-SHOULDNEVERLEAK", owner="o", repo_name="r",
-                       head="nightly/2026-09-24", title="t", body="b")
+        gitops.open_pr(
+            api=api,
+            token="sentinel-SHOULDNEVERLEAK",
+            owner="o",
+            repo_name="r",
+            head="nightly/2026-09-24",
+            title="t",
+            body="b",
+        )
     assert "SHOULDNEVERLEAK" not in str(exc.value)
     for _, _, payload in api.calls:
         assert "SHOULDNEVERLEAK" not in str(payload)
@@ -118,8 +146,15 @@ def test_token_never_appears_in_arguments_or_errors(repo):
 
 def test_api_payload_never_contains_token_field(repo):
     api = FakeApi()
-    gitops.open_pr(api=api, token="dummy-pat-value", owner="o", repo_name="r",
-                   head="nightly/2026-09-24", title="t", body="b")
+    gitops.open_pr(
+        api=api,
+        token="dummy-pat-value",
+        owner="o",
+        repo_name="r",
+        head="nightly/2026-09-24",
+        title="t",
+        body="b",
+    )
     for _, _, payload in api.calls:
         assert set(payload) == {"title", "body", "head", "base", "draft"}
 
@@ -134,15 +169,16 @@ def test_env_token_is_read_but_never_echoed(monkeypatch):
 
 
 def test_merge_uses_no_ff(repo):
-    gitops.write_and_commit(repo, "uBlacklist.txt", "# 2\n*://*.b.example/*\n",
-                            message="m", branch="nightly/2026-09-24")
+    gitops.write_and_commit(
+        repo, "uBlacklist.txt", "# 2\n*://*.b.example/*\n", message="m", branch="nightly/2026-09-24"
+    )
     gitops.push(repo, "nightly/2026-09-24")
     gitops.merge_no_ff(repo, "nightly/2026-09-24", message="merge nightly")
     log = git("log", "--oneline", "--graph", cwd=repo).stdout
     assert "merge nightly" in log
-    assert "*" in log or "|" in log     # merge commit が存在する
+    assert "*" in log or "|" in log  # merge commit が存在する
     parents = git("rev-list", "--parents", "-1", "HEAD", cwd=repo).stdout.split()
-    assert len(parents) == 3            # <commit> <p1> <p2>
+    assert len(parents) == 3  # <commit> <p1> <p2>
 
 
 def test_default_branch_guard():

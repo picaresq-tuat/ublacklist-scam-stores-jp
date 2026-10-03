@@ -1,9 +1,9 @@
 """P2: 検索履歴 (R2) と pageno ランダム化 (R3) の RED テスト。"""
+
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from searchlog import (
     DEFAULT_MAX_PAGENO,
     DEFAULT_WINDOW_DAYS,
@@ -11,7 +11,7 @@ from searchlog import (
     pick_pageno,
 )
 
-NOW = datetime(2026, 9, 24, 3, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 9, 24, 3, 0, tzinfo=UTC)
 
 
 @pytest.fixture()
@@ -83,7 +83,9 @@ def test_pick_pageno_in_range_and_not_recently_used(log):
     for p in range(1, 4):
         log.record("dynabook R734", "ジャンク", p, ran_at=NOW)
     used = log.recent_pagenos("dynabook R734", "ジャンク", now=NOW)
-    picks = {pick_pageno(log, "dynabook R734", "ジャンク", random.Random(i), now=NOW) for i in range(30)}
+    picks = {
+        pick_pageno(log, "dynabook R734", "ジャンク", random.Random(i), now=NOW) for i in range(30)
+    }
     assert picks <= {4, 5}
     assert picks & used == set(), "過去 30 日の pageno を再使用している"
 
@@ -102,8 +104,7 @@ def test_pick_pageno_is_deterministic_with_seed(log):
 
 
 def test_pick_pageno_excludes_engine_rejected_values(log):
-    v = pick_pageno(log, "m", "t", random.Random(0), now=NOW, exclude={1, 2, 3},
-                    max_pageno=10)
+    v = pick_pageno(log, "m", "t", random.Random(0), now=NOW, exclude={1, 2, 3}, max_pageno=10)
     assert v not in {1, 2, 3}
 
 
@@ -112,6 +113,7 @@ def test_pick_pageno_raises_when_all_values_rejected():
         pass
 
     from searchlog import PageRangeExhausted
+
     with pytest.raises(PageRangeExhausted):
         pick_pageno(None, "m", "t", random.Random(0), now=NOW, exclude=set(range(1, 11)))
 

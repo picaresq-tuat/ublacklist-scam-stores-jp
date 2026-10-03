@@ -3,14 +3,15 @@
 日本で 2011〜2021 年 (15〜5 年前) に発売された国内ノート PC の型番を保持する。
 シードは data/models_seed.csv、実行時 DB は models.db (SQLite)。
 """
+
 from __future__ import annotations
 
 import csv
 import random
 import sqlite3
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Optional
 
 YEAR_MIN = 2011
 YEAR_MAX = 2021
@@ -52,7 +53,9 @@ def load_seed(path: Path | str = SEED_CSV) -> list[Model]:
             model = row["model"].strip()
             if not model:
                 continue
-            out.append(Model(row["brand"].strip(), model, year, (row.get("source_url") or "").strip()))
+            out.append(
+                Model(row["brand"].strip(), model, year, (row.get("source_url") or "").strip())
+            )
     return out
 
 
@@ -66,7 +69,7 @@ class ModelDB:
     def close(self) -> None:
         self._con.close()
 
-    def __enter__(self) -> "ModelDB":
+    def __enter__(self) -> ModelDB:
         return self
 
     def __exit__(self, *exc) -> None:
@@ -95,7 +98,7 @@ class ModelDB:
         cur = self._con.execute("SELECT DISTINCT brand FROM models ORDER BY brand")
         return [r[0] for r in cur.fetchall()]
 
-    def get(self, model: str) -> Optional[Model]:
+    def get(self, model: str) -> Model | None:
         cur = self._con.execute(
             "SELECT brand, model, released_year, source_url FROM models WHERE model = ?", (model,)
         )
@@ -109,8 +112,9 @@ class ModelDB:
             raise ValueError(f"requested {n} but only {len(pool)} models")
         return rng.sample(pool, n)
 
-    def sample_by_year_range(self, year_from: int, year_to: int, n: int,
-                             rng: random.Random | None = None) -> list[Model]:
+    def sample_by_year_range(
+        self, year_from: int, year_to: int, n: int, rng: random.Random | None = None
+    ) -> list[Model]:
         rng = rng or random.Random()
         cur = self._con.execute(
             "SELECT brand, model, released_year, source_url FROM models"
@@ -119,7 +123,9 @@ class ModelDB:
         )
         pool = [Model(*row) for row in cur.fetchall()]
         if n > len(pool):
-            raise ValueError(f"requested {n} but pool has {len(pool)} (years {year_from}-{year_to})")
+            raise ValueError(
+                f"requested {n} but pool has {len(pool)} (years {year_from}-{year_to})"
+            )
         return rng.sample(pool, n)
 
 

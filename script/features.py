@@ -4,6 +4,7 @@ fetch.py が返した FetchResult (ブラウザ UA / Googlebot UA / favicon バ�
 スコアリング用の特徴量を取り出す。閾値や重みはここでは持たない (scoring.yaml / scorer.py)。
 生 HTML は保持せず、テキストとリンク・img src のみを扱う。
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -14,36 +15,103 @@ from urllib.parse import urlsplit
 from fetch import FetchResult
 
 ZENCART_MARKERS: tuple[str, ...] = (
-    "main_page=", "products_id=", "zenid=", "manufacturers_id", "template_default",
-    "shopping_cart.php", "index.php?cPath", "includes/modules/", "zen_get",
-    "E-Commerce Engine", "zc_install", "?currency=",
+    "main_page=",
+    "products_id=",
+    "zenid=",
+    "manufacturers_id",
+    "template_default",
+    "shopping_cart.php",
+    "index.php?cPath",
+    "includes/modules/",
+    "zen_get",
+    "E-Commerce Engine",
+    "zc_install",
+    "?currency=",
 )
 
 # WordPress 等の汎用 favicon (テーマ同梱の既定アイコン)。
 # これらのハッシュは cross-origin 判定から除外する (誰のサイトでも同じ画像になるため)。
-GENERIC_FAVICON_MD5S: frozenset[str] = frozenset({
-    "8a1e3a9b3f8e4a2c"[:0] or "dummy-placeholder-not-a-real-hash",  # 末尾 test 用ダミー
-})
+GENERIC_FAVICON_MD5S: frozenset[str] = frozenset(
+    {
+        "8a1e3a9b3f8e4a2c"[:0] or "dummy-placeholder-not-a-real-hash",  # 末尾 test 用ダミー
+    }
+)
 
 DARK_PATTERN_TERMS: tuple[str, ...] = (
-    "タイムセール", "在庫限り", "在庫処分", "激安", "%OFF", "％OFF", "今すぐ", "送料無料",
-    "限定販売", "数量限定", "訳あり", "大幅値下げ", "破格",
+    "タイムセール",
+    "在庫限り",
+    "在庫処分",
+    "激安",
+    "%OFF",
+    "％OFF",
+    "今すぐ",
+    "送料無料",
+    "限定販売",
+    "数量限定",
+    "訳あり",
+    "大幅値下げ",
+    "破格",
 )
 
 STORE_ASSET_HOSTS: tuple[str, ...] = (
-    "rakuten.co.jp", "r10s.jp", "yimg.jp", "amazon.co.jp", "media-amazon.com", "yahoo.co.jp",
-    "yahoocdn.com", "mercari.com", "static.mercdn.net", "suruga-ya.jp", "askul.co.jp",
-    "komeri.com", "shopping.yahoo.co.jp", "a-ads.com",
+    "rakuten.co.jp",
+    "r10s.jp",
+    "yimg.jp",
+    "amazon.co.jp",
+    "media-amazon.com",
+    "yahoo.co.jp",
+    "yahoocdn.com",
+    "mercari.com",
+    "static.mercdn.net",
+    "suruga-ya.jp",
+    "askul.co.jp",
+    "komeri.com",
+    "shopping.yahoo.co.jp",
+    "a-ads.com",
 )
 
-RISKY_TLDS: frozenset[str] = frozenset({
-    "casa", "shop", "biz", "love", "click", "top", "xyz", "online", "site", "store",
-    "icu", "cyou", "news", "cam", "vin", "live", "wiki", "work", "rest", "bar",
-})
+RISKY_TLDS: frozenset[str] = frozenset(
+    {
+        "casa",
+        "shop",
+        "biz",
+        "love",
+        "click",
+        "top",
+        "xyz",
+        "online",
+        "site",
+        "store",
+        "icu",
+        "cyou",
+        "news",
+        "cam",
+        "vin",
+        "live",
+        "wiki",
+        "work",
+        "rest",
+        "bar",
+    }
+)
 
 MULTI_LABEL_SUFFIXES: tuple[str, ...] = (
-    "co.jp", "ne.jp", "or.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp",
-    "com.au", "co.uk", "co.kr", "com.tw", "com.br", "co.in", "com.cn",
+    "co.jp",
+    "ne.jp",
+    "or.jp",
+    "ac.jp",
+    "ad.jp",
+    "ed.jp",
+    "go.jp",
+    "gr.jp",
+    "lg.jp",
+    "com.au",
+    "co.uk",
+    "co.kr",
+    "com.tw",
+    "com.br",
+    "co.in",
+    "com.cn",
 )
 
 SEARCH_ENGINE_HOSTS: tuple[str, ...] = ("google.", "bing.com", "yahoo.co.jp", "search.")
@@ -54,9 +122,15 @@ RATE_LIMIT_STATUSES: frozenset[int] = frozenset({429})
 MIN_BOT_BODY_BYTES = 60
 # WAF/チャレンジの interstitial は bot への「本文提示」ではない (実測: Cloudflare, quervia.biz)。
 CHALLENGE_MARKERS: tuple[str, ...] = (
-    "attention required! | cloudflare", "just a moment...", "checking your browser",
-    "cf-browser-verification", "cf_chl_", "ddos protection by", "sucuri website firewall",
-    "access denied |", "one more step",
+    "attention required! | cloudflare",
+    "just a moment...",
+    "checking your browser",
+    "cf-browser-verification",
+    "cf_chl_",
+    "ddos protection by",
+    "sucuri website firewall",
+    "access denied |",
+    "one more step",
 )
 
 _PRODUCT_PATH = re.compile(r"/(product|products|item|items|goods|shop|detail|dp)/", re.I)
@@ -199,8 +273,11 @@ def extract_features(
         # WordPress 等の汎用 favicon も除外。origin map は「他人の単独ドメイン」を指す。
         origin = (favicon_origin_map or {}).get(f.favicon_md5, "")
         f.favicon_cross_origin_of = origin
-        if (origin and f.favicon_md5 not in GENERIC_FAVICON_MD5S
-                and registrable_domain(origin) != reg):
+        if (
+            origin
+            and f.favicon_md5 not in GENERIC_FAVICON_MD5S
+            and registrable_domain(origin) != reg
+        ):
             f.favicon_cross_origin = True
     if domain_2ld_counts:
         f.shared_2ld = domain_2ld_counts.get(reg, 0) >= 3
@@ -209,8 +286,12 @@ def extract_features(
         f.redirect_hops = max(0, len(browser.chain) - 1)
         final_host = urlsplit(browser.final_url or "").netloc.lower().split(":")[0]
         final_host = final_host[4:] if final_host.startswith("www.") else final_host
-        if final_host and final_host != dom and not final_host.endswith("." + dom) \
-                and not dom.endswith("." + final_host):
+        if (
+            final_host
+            and final_host != dom
+            and not final_host.endswith("." + dom)
+            and not dom.endswith("." + final_host)
+        ):
             f.offsite_redirect = True
             f.redirect_to_google = any(h in final_host for h in SEARCH_ENGINE_HOSTS)
 
@@ -220,11 +301,17 @@ def extract_features(
         denom = max(f.body_len, f.bot_body_len, 1)
         f.len_ratio_gap = round(abs(f.body_len - f.bot_body_len) / denom, 3)
         # bot 側が「実コンテンツを返した」と言える条件 (拒否ページ・429 の本文は数えない)
-        bot_usable = bool(_usable(bot) and f.bot_status == 200
-                          and f.bot_body_len >= MIN_BOT_BODY_BYTES
-                          and not _is_challenge(bot))
-        browser_denied = (browser is not None and not _usable(browser)
-                          and (f.discarded or f.status >= 400 or f.body_len == 0))
+        bot_usable = bool(
+            _usable(bot)
+            and f.bot_status == 200
+            and f.bot_body_len >= MIN_BOT_BODY_BYTES
+            and not _is_challenge(bot)
+        )
+        browser_denied = (
+            browser is not None
+            and not _usable(browser)
+            and (f.discarded or f.status >= 400 or f.body_len == 0)
+        )
         rate_limited = f.status in RATE_LIMIT_STATUSES
         f.bot_only_body = bool(bot_usable and browser_denied and not rate_limited)
         title_differs = _title(bot) != f.title and bool(_title(bot) or f.title)
@@ -233,5 +320,6 @@ def extract_features(
             f.cloaking = False
         else:
             f.cloaking = bool(bot_usable and title_differs and f.len_ratio_gap >= 0.3) or bool(
-                browser_denied and bot_usable)
+                browser_denied and bot_usable
+            )
     return f

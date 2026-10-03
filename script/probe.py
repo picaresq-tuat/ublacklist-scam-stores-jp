@@ -4,15 +4,14 @@
 WAF チャレンジ・タイムアウト・DNS 失敗などのノイズで夜間を止めない
 (例外は握って dismissed に落とす)。
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
-from urllib.parse import urlsplit
 
+from features import extract_features
 from fetch import BlockedURL, FetchError, fetch
-from features import extract_features, registrable_domain
 from scorer import Scorer
 
 PIVOT_QUERY_CAP = 4
@@ -30,8 +29,9 @@ class DomainResult:
 class Pipeline:
     """ページ取得 → 特徴量 → スコア を 1 ドメイン単位で実行する。"""
 
-    def __init__(self, *, db_dir: Path | str = ".", scorer=None, config=None,
-                 timeout: float = 12.0):
+    def __init__(
+        self, *, db_dir: Path | str = ".", scorer=None, config=None, timeout: float = 12.0
+    ):
         self.db_dir = Path(db_dir)
         self.scorer = scorer or Scorer(config) if config else (scorer or Scorer())
         self.timeout = timeout
@@ -49,13 +49,18 @@ class Pipeline:
     def run_domain(self, domain: str) -> DomainResult:
         dom = (domain or "").strip().lower()
         if not dom or "/" in dom or " " in dom:
-            return DomainResult(domain=dom, score=0.0, decision="dismissed",
-                                features={"error": "invalid_domain"})
+            return DomainResult(
+                domain=dom, score=0.0, decision="dismissed", features={"error": "invalid_domain"}
+            )
         try:
             return self._probe(dom)
         except (BlockedURL, FetchError, OSError, ValueError) as exc:
-            return DomainResult(domain=dom, score=0.0, decision="dismissed",
-                                features={"error": f"{type(exc).__name__}: {exc}"})
+            return DomainResult(
+                domain=dom,
+                score=0.0,
+                decision="dismissed",
+                features={"error": f"{type(exc).__name__}: {exc}"},
+            )
 
     def _probe(self, dom: str) -> DomainResult:
         base = f"https://{dom}/"
@@ -85,11 +90,20 @@ class Pipeline:
                 favicon_bytes = (fav.body or "").encode("utf-8", "replace")[:64] or b"fav"
                 break
 
-        reg = registrable_domain(dom)
-        feats = extract_features(dom, browser, bot, favicon_bytes=favicon_bytes,
-                                known_favicons=self._favicon_counts,
-                                domain_2ld_counts=None)
+        feats = extract_features(
+            dom,
+            browser,
+            bot,
+            favicon_bytes=favicon_bytes,
+            known_favicons=self._favicon_counts,
+            domain_2ld_counts=None,
+        )
         score = self.scorer.score(feats)
         decision = {"auto_block": "block", "hold": "hold", "allow": "dismissed"}[score.verdict]
-        return DomainResult(domain=dom, score=score.total, decision=decision,
-                            reasons=dict(score.reasons), features=feats.to_dict())
+        return DomainResult(
+            domain=dom,
+            score=score.total,
+            decision=decision,
+            reasons=dict(score.reasons),
+            features=feats.to_dict(),
+        )

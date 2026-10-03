@@ -5,6 +5,7 @@
 - **トークンは絶対に引数・ログ・例外メッセージ・コミットに載せない。**
   実装は `os.environ` から読み、値を一切印字しない (エラー時もステータスコードのみ)。
 """
+
 from __future__ import annotations
 
 import json
@@ -13,8 +14,8 @@ import re
 import subprocess
 import urllib.error
 import urllib.request
+from collections.abc import Callable, Sequence
 from pathlib import Path
-from typing import Callable, Optional, Sequence
 
 API_ROOT = "https://api.github.com"
 ALLOWED_BRANCH_PREFIX = "nightly/"
@@ -39,14 +40,16 @@ def assert_feature_branch(branch: str) -> str:
     return branch
 
 
-def run(args: Sequence[str], *, cwd: Path | str, check: bool = True,
-        timeout: float = 120.0) -> subprocess.CompletedProcess:
-    proc = subprocess.run([str(a) for a in args], cwd=str(cwd), capture_output=True,
-                          text=True, timeout=timeout)
+def run(
+    args: Sequence[str], *, cwd: Path | str, check: bool = True, timeout: float = 120.0
+) -> subprocess.CompletedProcess:
+    proc = subprocess.run(
+        [str(a) for a in args], cwd=str(cwd), capture_output=True, text=True, timeout=timeout
+    )
     if check and proc.returncode != 0:
         first = (proc.stderr or proc.stdout or "").strip().splitlines()
-        raise GitError(f"{' '.join(str(a) for a in args[:2])} failed: "
-                       f"{first[0] if first else 'exit %d' % proc.returncode}")
+        detail = first[0] if first else f"exit {proc.returncode}"
+        raise GitError(f"{' '.join(str(a) for a in args[:2])} failed: {detail}")
     return proc
 
 
@@ -73,8 +76,9 @@ def ensure_branch(repo: Path | str, branch: str) -> str:
     return branch
 
 
-def write_and_commit(repo: Path | str, rel_path: str, content: str, *,
-                     message: str, branch: str) -> bool:
+def write_and_commit(
+    repo: Path | str, rel_path: str, content: str, *, message: str, branch: str
+) -> bool:
     """ブランチを用意して内容を書き、変化があればコミットする。無変化なら False。"""
     ensure_branch(repo, branch)
     target = Path(repo) / rel_path
@@ -92,8 +96,9 @@ def push(repo: Path | str, branch: str, *, remote: str = "origin") -> None:
     git(repo, "push", "-u", remote, branch)
 
 
-def merge_no_ff(repo: Path | str, branch: str, *, message: str,
-                base: str = DEFAULT_BASE, push_base: bool = True) -> None:
+def merge_no_ff(
+    repo: Path | str, branch: str, *, message: str, base: str = DEFAULT_BASE, push_base: bool = True
+) -> None:
     """人手承認後にだけ呼ぶ。`--no-ff` でマージコミットを作る。"""
     assert_feature_branch(branch)
     if base.startswith(ALLOWED_BRANCH_PREFIX):
@@ -106,8 +111,14 @@ def merge_no_ff(repo: Path | str, branch: str, *, message: str,
 
 # --- HTTP ---
 
-def _default_api(method: str, path: str, payload: Optional[dict] = None,
-                 token: Optional[str] = None, timeout: float = 30.0) -> tuple[int, dict]:
+
+def _default_api(
+    method: str,
+    path: str,
+    payload: dict | None = None,
+    token: str | None = None,
+    timeout: float = 30.0,
+) -> tuple[int, dict]:
     data = json.dumps(payload).encode("utf-8") if payload is not None else None
     req = urllib.request.Request(API_ROOT + path, data=data, method=method)
     req.add_header("Accept", "application/vnd.github+json")
@@ -138,10 +149,18 @@ def token_from_env(var: str = "GITHUB_TOKEN") -> str:
     return tok
 
 
-def open_pr(*, head: str, title: str, body: str, owner: str, repo_name: str,
-            token: Optional[str] = None, base: str = DEFAULT_BASE,
-            api: Optional[Callable[..., tuple[int, dict]]] = None,
-            draft: bool = False) -> dict:
+def open_pr(
+    *,
+    head: str,
+    title: str,
+    body: str,
+    owner: str,
+    repo_name: str,
+    token: str | None = None,
+    base: str = DEFAULT_BASE,
+    api: Callable[..., tuple[int, dict]] | None = None,
+    draft: bool = False,
+) -> dict:
     assert_feature_branch(head)
     api = api or _default_api
     payload = {"title": title, "body": body, "head": head, "base": base, "draft": draft}
@@ -152,9 +171,14 @@ def open_pr(*, head: str, title: str, body: str, owner: str, repo_name: str,
     return {"number": int(data.get("number", 0)), "url": str(data.get("html_url", ""))}
 
 
-def get_pr(*, number: int, owner: str, repo_name: str,
-           token: Optional[str] = None,
-           api: Optional[Callable[..., tuple[int, dict]]] = None) -> dict:
+def get_pr(
+    *,
+    number: int,
+    owner: str,
+    repo_name: str,
+    token: str | None = None,
+    api: Callable[..., tuple[int, dict]] | None = None,
+) -> dict:
     api = api or _default_api
     status, data = api("GET", f"/repos/{owner}/{repo_name}/pulls/{number}", None, token=token)
     if status != 200:
@@ -162,21 +186,34 @@ def get_pr(*, number: int, owner: str, repo_name: str,
     return data
 
 
-def pr_body(night: str, rows: Sequence[dict], *, permanent_rules: Sequence[str],
-            added: int, removed: int, dry_run: bool = False) -> str:
+def pr_body(
+    night: str,
+    rows: Sequence[dict],
+    *,
+    permanent_rules: Sequence[str],
+    added: int,
+    removed: int,
+    dry_run: bool = False,
+) -> str:
     """PR 本文 (判定根拠つき)。レビュー担当が表だけで判断できる形にする。"""
     lines = [f"## nightly {night}", ""]
     if dry_run:
         lines += ["> **dry-run**: 実マージ前のレビュー用差分です。", ""]
     lines += [f"- 追加: {added} 件", f"- 削除 (失効): {removed} 件", ""]
     if rows:
-        lines += ["| domain | score | nights | decision | reasons |",
-                  "| --- | ---: | ---: | --- | --- |"]
+        lines += [
+            "| domain | score | nights | decision | reasons |",
+            "| --- | ---: | ---: | --- | --- |",
+        ]
         for r in rows:
-            reasons = ", ".join(f"{k}:{v:g}" for k, v in sorted((r.get("reasons") or {}).items(),
-                                                               key=lambda kv: -kv[1]))
-            lines.append(f"| `{r.get('domain','')}` | {r.get('score', 0):g} | "
-                         f"{r.get('nights', 0)} | {r.get('decision','')} | {reasons} |")
+            reasons = ", ".join(
+                f"{k}:{v:g}"
+                for k, v in sorted((r.get("reasons") or {}).items(), key=lambda kv: -kv[1])
+            )
+            lines.append(
+                f"| `{r.get('domain', '')}` | {r.get('score', 0):g} | "
+                f"{r.get('nights', 0)} | {r.get('decision', '')} | {reasons} |"
+            )
         lines.append("")
     lines += ["### 常設正規表現", ""]
     lines += [f"- `{rule}`" for rule in permanent_rules]

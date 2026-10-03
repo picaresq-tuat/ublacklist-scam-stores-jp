@@ -5,34 +5,37 @@
 # ただし:
 #   * サブドメイン (同一 registrable domain 内) は cross-origin ではない
 #   * WordPress 等の汎用 favicon (既知の generic ハッシュ) は除外
-import pytest
 
-from features import extract_features, GENERIC_FAVICON_MD5S
+from features import GENERIC_FAVICON_MD5S, extract_features
 from scorer import Scorer, load_weights
 
 
 def res(status=200, body="<html><title>shop</title></html>"):
     from fetch import FetchResult
-    return FetchResult(url="https://x/", status=status, final_url="https://x/",
-                       body=body, html_sanitized=body)
+
+    return FetchResult(
+        url="https://x/", status=status, final_url="https://x/", body=body, html_sanitized=body
+    )
 
 
 # --- features 層 ---
 
+
 def test_cross_origin_favicon_detected():
     """他人のドメインの favicon と一致 → favicon_cross_origin=True."""
-    f = extract_features("scam.example", res(),
-                         favicon_bytes=b"OTHERSITE-FAVICON",
-                         known_favicons={"aa" * 16: 2})
+    f = extract_features(
+        "scam.example", res(), favicon_bytes=b"OTHERSITE-FAVICON", known_favicons={"aa" * 16: 2}
+    )
     # md5 は unknown (known_favicons に本物の md5 が無い) なので別の導線で確認
     assert f.favicon_md5 is not None
 
 
 def test_favicon_cross_origin_true_when_md5_belongs_to_single_other_domain():
     f = extract_features(
-        "scam.example", res(),
+        "scam.example",
+        res(),
         favicon_bytes=b"UNIQUE-BYTES-OF-LEGIT-SITE",
-        known_favicons={"x" * 32: 1},          # collision 判定には使われない
+        known_favicons={"x" * 32: 1},  # collision 判定には使われない
         favicon_origin_map={"md5:unknown": "legit-shop.example"},
     )
     # md5 が分からないと origin map も引けないため、まずは collision 導線のみ確認
@@ -42,9 +45,11 @@ def test_favicon_cross_origin_true_when_md5_belongs_to_single_other_domain():
 def test_favicon_cross_origin_via_origin_map():
     """favicon の md5 が「別ドメイン単独」の登録 favicon と一致 → cross_origin."""
     import hashlib
+
     md5 = hashlib.md5(b"LEGIT-FAVICON-BYTES").hexdigest()
     f = extract_features(
-        "scam.example", res(),
+        "scam.example",
+        res(),
         favicon_bytes=b"LEGIT-FAVICON-BYTES",
         known_favicons={md5: 1},
         favicon_origin_map={md5: "legit-shop.example"},
@@ -56,12 +61,14 @@ def test_favicon_cross_origin_via_origin_map():
 def test_favicon_same_origin_is_not_cross_origin():
     """同一 registrable domain (サブドメイン含む) は cross-origin ではない."""
     import hashlib
+
     md5 = hashlib.md5(b"SELF-FAVICON").hexdigest()
     f = extract_features(
-        "shop.example", res(),
+        "shop.example",
+        res(),
         favicon_bytes=b"SELF-FAVICON",
         known_favicons={md5: 1},
-        favicon_origin_map={md5: "blog.shop.example"},   # サブドメイン
+        favicon_origin_map={md5: "blog.shop.example"},  # サブドメイン
     )
     assert f.favicon_cross_origin is False
     assert f.favicon_cross_origin_of == "" or f.favicon_cross_origin_of == "blog.shop.example"
@@ -69,10 +76,10 @@ def test_favicon_same_origin_is_not_cross_origin():
 
 def test_generic_favicon_wordpress_is_excluded():
     """WordPress 等の汎用 favicon は cross-origin 判定から除外."""
-    import hashlib
     wp = next(iter(GENERIC_FAVICON_MD5S))
     f = extract_features(
-        "scam.example", res(),
+        "scam.example",
+        res(),
         favicon_bytes=b"WP-GENERIC",
         known_favicons={wp: 1},
         favicon_origin_map={wp: "legit-shop.example"},
@@ -87,13 +94,16 @@ def test_generic_favicon_set_contains_common_hashes():
 
 # --- scorer 層 ---
 
+
 def test_scorer_adds_low_weight_for_cross_origin_favicon():
     w = load_weights()
     s = Scorer()
     import hashlib
+
     md5 = hashlib.md5(b"CROSS-FAVICON").hexdigest()
     feats = extract_features(
-        "scam.example", res(),
+        "scam.example",
+        res(),
         favicon_bytes=b"CROSS-FAVICON",
         known_favicons={md5: 1},
         favicon_origin_map={md5: "legit-shop.example"},
@@ -110,14 +120,18 @@ def test_cross_origin_weight_is_low():
 
 def test_cross_origin_weight_is_configurable():
     """scoring.yaml で重みを変えられること."""
-    import tempfile, pathlib
+    import pathlib
+    import tempfile
+
     cfg = pathlib.Path(tempfile.mkdtemp()) / "scoring.yaml"
     cfg.write_text("weights:\n  favicon_cross_origin: 7\n", encoding="utf-8")
     s = Scorer(cfg)
     import hashlib
+
     md5 = hashlib.md5(b"CFG-FAVICON").hexdigest()
     feats = extract_features(
-        "scam.example", res(),
+        "scam.example",
+        res(),
         favicon_bytes=b"CFG-FAVICON",
         known_favicons={md5: 1},
         favicon_origin_map={md5: "legit-shop.example"},

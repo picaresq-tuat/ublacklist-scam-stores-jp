@@ -1,5 +1,4 @@
 """P7a: uBlacklist リスト生成 (publish.py) の RED テスト。"""
-import pytest
 
 from publish import (
     HEADER,
@@ -28,15 +27,16 @@ def test_permanent_rules_are_three():
 
 
 def test_shortened_co_rule_is_anchored_shape():
-    rule = [r for r in PERMANENT_RULES if "\\.co\\/" in r][0]
+    rule = next(r for r in PERMANENT_RULES if "\\.co\\/" in r)
     assert rule.startswith("/") and rule.endswith("/")
 
 
 def test_punycode_rule_is_valid_regex():
     import re
-    rule = [r for r in PERMANENT_RULES if "xn--" in r][0]
+
+    rule = next(r for r in PERMANENT_RULES if "xn--" in r)
     pattern = rule[1:-1]
-    re.compile(pattern)          # 例外が出ないこと
+    re.compile(pattern)  # 例外が出ないこと
     assert re.search(pattern, "https://www.example.com/item/1") is None
     assert re.search(pattern, "https://shop.example.co.jp/item/1") is None
     assert re.search(pattern, "https://shop.xn--eckwd4c7c.example/item") is not None
@@ -45,6 +45,7 @@ def test_punycode_rule_is_valid_regex():
 
 def test_regex_payloads_actually_compile_after_unescaping():
     import re
+
     for rule in PERMANENT_RULES:
         re.compile(rule[1:-1].replace("\\/", "/"))
 

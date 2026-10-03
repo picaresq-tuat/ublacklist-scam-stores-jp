@@ -4,10 +4,11 @@
 - `.co` 短縮形・Punycode・`.com.xx` に該当するドメインは個別登録しない (常設ルールで足りる)。
 - 追記は冪等 (同じ入力で同じ出力)。
 """
+
 from __future__ import annotations
 
 import re
-from typing import Iterable
+from collections.abc import Iterable
 
 HEADER = (
     "# uBlacklist - scam stores JP (Hermes nightly)\n"
@@ -44,9 +45,8 @@ def is_permanent_shape(domain: str) -> bool:
         return True
     labels = d.split(".")
     puny = [p for p in labels if p in ("com", "net", "org")]
-    if puny and len(labels) >= 3 and len(labels[-1]) == 2:
-        return True       # x.com.xx / y.net.zz
-    return False
+    # x.com.xx / y.net.zz
+    return bool(puny and len(labels) >= 3 and len(labels[-1]) == 2)
 
 
 def build_entries(domains: Iterable[str]) -> list[str]:

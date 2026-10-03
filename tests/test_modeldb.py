@@ -1,15 +1,23 @@
 """P0: 型番 DB (models.db) の RED テスト。"""
+
 import csv
 import sqlite3
 from pathlib import Path
 
 import pytest
-
-from modeldb import Model, ModelDB, SEED_CSV, YEAR_MIN, YEAR_MAX, load_seed
+from modeldb import SEED_CSV, YEAR_MAX, YEAR_MIN, Model, ModelDB, load_seed
 
 EXPECTED_BRANDS = {
-    "dynabook", "Lenovo ThinkPad", "Panasonic Let's note", "VAIO", "NEC LaVie",
-    "Fujitsu", "HP", "Dell", "ASUS", "Acer",
+    "dynabook",
+    "Lenovo ThinkPad",
+    "Panasonic Let's note",
+    "VAIO",
+    "NEC LaVie",
+    "Fujitsu",
+    "HP",
+    "Dell",
+    "ASUS",
+    "Acer",
 }
 
 
@@ -21,7 +29,8 @@ def db(tmp_path):
 
 
 def test_seed_csv_exists_and_is_large_enough():
-    rows = list(csv.DictReader(Path(SEED_CSV).open(encoding="utf-8")))
+    with Path(SEED_CSV).open(encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
     assert len(rows) >= 200, f"seed rows={len(rows)}"
     assert {"brand", "model", "released_year"} <= set(rows[0])
 
@@ -64,6 +73,7 @@ def test_sample_by_year_range_rejects_unavailable(db):
 
 def test_sample_is_deterministic_with_seed(db):
     import random
+
     a = [m.model for m in db.sample(12, rng=random.Random(7))]
     b = [m.model for m in db.sample(12, rng=random.Random(7))]
     assert a == b
@@ -77,7 +87,7 @@ def test_load_csv_is_idempotent(tmp_path):
 
 def test_schema_is_queryable_by_sql(db):
     con = sqlite3.connect(db.path)
-    n, = con.execute("SELECT COUNT(*) FROM models").fetchone()
+    (n,) = con.execute("SELECT COUNT(*) FROM models").fetchone()
     assert n == db.count()
 
 

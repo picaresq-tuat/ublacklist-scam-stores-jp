@@ -1,4 +1,5 @@
 """リポジトリ直下の conftest: `script/` を import パスに載せる。"""
+
 from __future__ import annotations
 
 import sys

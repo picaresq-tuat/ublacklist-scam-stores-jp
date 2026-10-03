@@ -3,10 +3,11 @@
 - 通常の uBlacklist.txt (publish.py) とは別パスに出力する。
 - 生成ロジックは publish.py の render_list/merge_list/validate を再利用する。
 """
+
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 from publish import HEADER, SECTION_MARKER, build_entries, merge_list
 
@@ -24,6 +25,7 @@ def render_cloaking_list(domains: Iterable[str]) -> str:
         "## Permanent rules (regex)",
     ]
     from publish import PERMANENT_RULES
+
     lines += list(PERMANENT_RULES)
     lines += ["", SECTION_MARKER]
     lines += entries
@@ -42,8 +44,10 @@ def cloaking_pr_body(night: str, rows: list[dict]) -> str:
     if rows:
         lines += ["| domain | score | reasons |", "| --- | ---: | --- |"]
         for r in rows:
-            reasons = ", ".join(f"{k}:{v:g}" for k, v in sorted(
-                (r.get("reasons") or {}).items(), key=lambda kv: -kv[1]))
+            reasons = ", ".join(
+                f"{k}:{v:g}"
+                for k, v in sorted((r.get("reasons") or {}).items(), key=lambda kv: -kv[1])
+            )
             lines.append(f"| `{r.get('domain', '')}` | {r.get('score', 0):g} | {reasons} |")
         lines.append("")
     lines += ["cloaking 検知 + hold 判定のドメイン。レビュー後に通常 uBlacklist.txt へ昇格。"]
@@ -54,8 +58,9 @@ def write_cloaking_list(path: Path | str, domains: Iterable[str]) -> str:
     """既存ファイルがあれば追記、なければ新規生成して書き出す。"""
     path = Path(path)
     current = path.read_text(encoding="utf-8") if path.exists() else ""
-    text = merge_cloaking_list(current, domains) if current.strip() else \
-        render_cloaking_list(domains)
+    text = (
+        merge_cloaking_list(current, domains) if current.strip() else render_cloaking_list(domains)
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
     return text

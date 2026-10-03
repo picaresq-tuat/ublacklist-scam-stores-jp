@@ -1,7 +1,7 @@
 """P6a: ホワイトリスト (triage ゲート) の RED テスト。"""
-import pytest
 
-from whitelist import CATEGORIES, Whitelist, WhitelistDB
+import pytest
+from whitelist import CATEGORIES, WhitelistDB
 
 
 def wl(tmp_path):
@@ -10,8 +10,13 @@ def wl(tmp_path):
 
 def test_categories_are_the_defined_ones():
     assert set(CATEGORIES) == {
-        "vendor_support", "official_store", "used_store",
-        "news_media", "blog_platform", "favicon_reference", "aggregator",
+        "vendor_support",
+        "official_store",
+        "used_store",
+        "news_media",
+        "blog_platform",
+        "favicon_reference",
+        "aggregator",
     }
 
 
@@ -50,6 +55,7 @@ def test_seed_domains_are_never_the_known_scam_cluster(tmp_path):
     db = wl(tmp_path)
     db.load_seed()
     from whitelist import SEED
+
     joined = " ".join(SEED)
     for bad in ("hika-jp", "quervia", "sagidame"):
         assert bad not in joined
@@ -59,10 +65,12 @@ def test_seed_covers_all_measured_legit_domains(tmp_path):
     """2026-09-24 のゴールデン採取で「正規」と確認した 20 件を triage が除外できること。"""
     import json
     from pathlib import Path
+
     db = wl(tmp_path)
     db.load_seed()
     golden = json.loads(
-        (Path(__file__).resolve().parent / "golden" / "domains.json").read_text(encoding="utf-8"))
+        (Path(__file__).resolve().parent / "golden" / "domains.json").read_text(encoding="utf-8")
+    )
     uncovered = [e["domain"] for e in golden["legit"] if not db.match(e["domain"])]
     assert uncovered == [], uncovered
 
@@ -70,10 +78,12 @@ def test_seed_covers_all_measured_legit_domains(tmp_path):
 def test_no_measured_scam_domain_is_whitelisted(tmp_path):
     import json
     from pathlib import Path
+
     db = wl(tmp_path)
     db.load_seed()
     golden = json.loads(
-        (Path(__file__).resolve().parent / "golden" / "domains.json").read_text(encoding="utf-8"))
+        (Path(__file__).resolve().parent / "golden" / "domains.json").read_text(encoding="utf-8")
+    )
     leaked = [(e["domain"], db.match(e["domain"])) for e in golden["scam"] if db.match(e["domain"])]
     assert leaked == [], leaked
 

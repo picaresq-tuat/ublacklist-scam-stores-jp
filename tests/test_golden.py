@@ -7,13 +7,13 @@
   scam : auto_block 18/20 (残り2件は既にドメインが死んでいる/プレースホルダ)
   legit: auto_block 0/20, hold 3/20
 """
-import pytest
 
+import pytest
 from scorer import Scorer
 
-RECALL_MIN = 18          # / 20
-LEGIT_FP_MAX = 0         # auto_block に到達してはならない
-LEGIT_HOLD_MAX = 3       # 保留域までは許容 (人手承認で弾く)
+RECALL_MIN = 18  # / 20
+LEGIT_FP_MAX = 0  # auto_block に到達してはならない
+LEGIT_HOLD_MAX = 3  # 保留域までは許容 (人手承認で弾く)
 
 
 @pytest.fixture(scope="module")
@@ -115,6 +115,7 @@ def test_score_gap_between_classes(scored):
 
 def test_all_reasons_are_known_weights(scored):
     from scorer import load_weights
+
     w = load_weights()
     scam, legit = scored
     known = set(w["weights"]) | {"dark_pattern", "page_max", "general_hits", "pivot_hits"}

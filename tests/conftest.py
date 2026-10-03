@@ -4,6 +4,7 @@
 の生レスポンスを読み込み、テスト実行時点の extract_features で特徴量を再計算する。
 つまり「記録した特徴量」ではなく「現在の実装が実際に出した特徴量」で検証できる。
 """
+
 from __future__ import annotations
 
 import gzip
@@ -13,7 +14,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import pytest
-
 from features import PageFeatures, extract_features
 from fetch import FetchResult
 
@@ -55,10 +55,12 @@ class GoldenSet:
 def load_golden() -> GoldenSet:
     meta = json.loads((GOLDEN_DIR / "domains.json").read_text(encoding="utf-8"))
     raws = json.loads(gzip.decompress((GOLDEN_DIR / "raw.json.gz").read_bytes()))
-    gs = GoldenSet(recorded_at=meta.get("recorded_at", ""),
-                   probe_errors=meta.get("probe_errors", {}))
-    md5_counts = Counter(e["favicon_md5"] for lab in ("scam", "legit")
-                         for e in meta[lab] if e.get("favicon_md5"))
+    gs = GoldenSet(
+        recorded_at=meta.get("recorded_at", ""), probe_errors=meta.get("probe_errors", {})
+    )
+    md5_counts = Counter(
+        e["favicon_md5"] for lab in ("scam", "legit") for e in meta[lab] if e.get("favicon_md5")
+    )
     reg_counts: Counter = Counter()
     for lab in ("scam", "legit"):
         for e in meta[lab]:
@@ -77,7 +79,9 @@ def load_golden() -> GoldenSet:
                 continue
             fav = entry.get("favicon_md5")
             f = extract_features(
-                domain, _fetch_result(rec["browser"]), _fetch_result(rec["bot"]),
+                domain,
+                _fetch_result(rec["browser"]),
+                _fetch_result(rec["bot"]),
             )
             f.favicon_md5 = fav
             f.favicon_collision = bool(fav and md5_counts[fav] > 1)

@@ -3,11 +3,11 @@
 重み・閾値は scoring.yaml のみを源とする (ハードコード禁止)。
 verdict: allow (<hold) / hold (hold<=x<auto_block) / auto_block (>=auto_block)
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 from features import PageFeatures
 
@@ -15,14 +15,29 @@ DEFAULT_CONFIG = Path(__file__).resolve().parent / "scoring.yaml"
 
 _FALLBACK = {
     "weights": {
-        "redirect_to_google": 35, "favicon_collision": 30, "favicon_cross_origin": 5, "zencart": 25,
-        "bot_only_body": 20, "cloaking": 12, "cloaking_promoted": 20,
-        "stolen_image": 15, "dark_pattern_per_hit": 3, "dark_pattern_cap": 9,
-        "risky_tld": 8, "shared_2ld": 6, "offsite_redirect": 10,
-        "deep_product_path": 2, "young_index": 5,
+        "redirect_to_google": 35,
+        "favicon_collision": 30,
+        "favicon_cross_origin": 5,
+        "zencart": 25,
+        "bot_only_body": 20,
+        "cloaking": 12,
+        "cloaking_promoted": 20,
+        "stolen_image": 15,
+        "dark_pattern_per_hit": 3,
+        "dark_pattern_cap": 9,
+        "risky_tld": 8,
+        "shared_2ld": 6,
+        "offsite_redirect": 10,
+        "deep_product_path": 2,
+        "young_index": 5,
     },
-    "thresholds": {"auto_block": 30, "hold": 12, "fast_track": 60,
-                   "zencart_min_hits": 2, "nights_required": 2},
+    "thresholds": {
+        "auto_block": 30,
+        "hold": 12,
+        "fast_track": 60,
+        "zencart_min_hits": 2,
+        "nights_required": 2,
+    },
     "pivot": {"max_queries": 4, "hold_trigger": 12},
     "domain": {"general_hit": 3, "pivot_hit": 1, "pivot_cap": 4},
 }
@@ -37,11 +52,13 @@ def load_weights(path: Path | str = DEFAULT_CONFIG) -> dict:
         if p.suffix in (".yaml", ".yml"):
             try:
                 import yaml  # type: ignore
+
                 data = yaml.safe_load(text) or {}
             except ImportError:
                 data = _mini_yaml(text)
         else:
             import json
+
             data = json.loads(text)
     merged = {k: dict(v) for k, v in _FALLBACK.items()}
     for section, values in (data or {}).items():
@@ -88,15 +105,21 @@ class Score:
     evidence: dict = field(default_factory=dict)
 
     def explain(self) -> str:
-        lines = [f"{name}:{self.reasons[name]:+.0f}" for name in
-                 sorted(self.reasons, key=lambda n: -self.reasons[n])]
+        lines = [
+            f"{name}:{self.reasons[name]:+.0f}"
+            for name in sorted(self.reasons, key=lambda n: -self.reasons[n])
+        ]
         return "\n".join(lines)
 
     def to_dict(self) -> dict:
         return {
-            "domain": self.domain, "total": self.total, "verdict": self.verdict,
-            "reasons": dict(self.reasons), "reasons_src": dict(self.reasons_src),
-            "fast_track": self.fast_track, "evidence": dict(self.evidence),
+            "domain": self.domain,
+            "total": self.total,
+            "verdict": self.verdict,
+            "reasons": dict(self.reasons),
+            "reasons_src": dict(self.reasons_src),
+            "fast_track": self.fast_track,
+            "evidence": dict(self.evidence),
         }
 
 
@@ -115,7 +138,7 @@ class Scorer:
         reasons: dict = {}
         src: dict = {}
 
-        def add(key: str, weight: float, source: Optional[str] = None) -> None:
+        def add(key: str, weight: float, source: str | None = None) -> None:
             if weight <= 0:
                 return
             reasons[key] = reasons.get(key, 0) + weight
@@ -154,8 +177,11 @@ class Scorer:
 
         total = round(float(sum(reasons.values())), 1)
         return Score(
-            domain=f.domain, total=total, verdict=self._verdict(total),
-            reasons=reasons, reasons_src=src,
+            domain=f.domain,
+            total=total,
+            verdict=self._verdict(total),
+            reasons=reasons,
+            reasons_src=src,
             fast_track=total >= t["fast_track"],
             evidence={"features": f.to_dict()},
         )
@@ -168,11 +194,14 @@ class Scorer:
         return "allow"
 
     # --- ドメインスコア ---
-    def domain_score(self, domain: str, page_scores: list[Score], *,
-                     pivot_hits: int = 0, general_hits: int = 0) -> Score:
+    def domain_score(
+        self, domain: str, page_scores: list[Score], *, pivot_hits: int = 0, general_hits: int = 0
+    ) -> Score:
         max_page = max((s.total for s in page_scores), default=0.0)
         general_w = self.domain_cfg["general_hit"] * max(0, general_hits)
-        pivot_w = self.domain_cfg["pivot_hit"] * max(0, min(pivot_hits, self.domain_cfg["pivot_cap"]))
+        pivot_w = self.domain_cfg["pivot_hit"] * max(
+            0, min(pivot_hits, self.domain_cfg["pivot_cap"])
+        )
         total = round(max_page + general_w + pivot_w, 1)
         reasons: dict = {}
         if max_page:
@@ -182,7 +211,10 @@ class Scorer:
         if pivot_w:
             reasons["pivot_hits"] = pivot_w
         return Score(
-            domain=domain, total=total, verdict=self._verdict(total), reasons=reasons,
+            domain=domain,
+            total=total,
+            verdict=self._verdict(total),
+            reasons=reasons,
             reasons_src={},
             fast_track=total >= self.thresholds["fast_track"],
             evidence={
