@@ -1,0 +1,325 @@
+"""特徴量抽出 (P3)。
+
+fetch.py が返した FetchResult (ブラウザ UA / Googlebot UA / favicon バイト列) から
+スコアリング用の特徴量を取り出す。閾値や重みはここでは持たない (scoring.yaml / scorer.py)。
+生 HTML は保持せず、テキストとリンク・img src のみを扱う。
+"""
+
+from __future__ import annotations
+
+import hashlib
+import re
+from dataclasses import asdict, dataclass, field
+from urllib.parse import urlsplit
+
+from fetch import FetchResult
+
+ZENCART_MARKERS: tuple[str, ...] = (
+    "main_page=",
+    "products_id=",
+    "zenid=",
+    "manufacturers_id",
+    "template_default",
+    "shopping_cart.php",
+    "index.php?cPath",
+    "includes/modules/",
+    "zen_get",
+    "E-Commerce Engine",
+    "zc_install",
+    "?currency=",
+)
+
+# WordPress 等の汎用 favicon (テーマ同梱の既定アイコン)。
+# これらのハッシュは cross-origin 判定から除外する (誰のサイトでも同じ画像になるため)。
+GENERIC_FAVICON_MD5S: frozenset[str] = frozenset(
+    {
+        "8a1e3a9b3f8e4a2c"[:0] or "dummy-placeholder-not-a-real-hash",  # 末尾 test 用ダミー
+    }
+)
+
+DARK_PATTERN_TERMS: tuple[str, ...] = (
+    "タイムセール",
+    "在庫限り",
+    "在庫処分",
+    "激安",
+    "%OFF",
+    "％OFF",
+    "今すぐ",
+    "送料無料",
+    "限定販売",
+    "数量限定",
+    "訳あり",
+    "大幅値下げ",
+    "破格",
+)
+
+STORE_ASSET_HOSTS: tuple[str, ...] = (
+    "rakuten.co.jp",
+    "r10s.jp",
+    "yimg.jp",
+    "amazon.co.jp",
+    "media-amazon.com",
+    "yahoo.co.jp",
+    "yahoocdn.com",
+    "mercari.com",
+    "static.mercdn.net",
+    "suruga-ya.jp",
+    "askul.co.jp",
+    "komeri.com",
+    "shopping.yahoo.co.jp",
+    "a-ads.com",
+)
+
+RISKY_TLDS: frozenset[str] = frozenset(
+    {
+        "casa",
+        "shop",
+        "biz",
+        "love",
+        "click",
+        "top",
+        "xyz",
+        "online",
+        "site",
+        "store",
+        "icu",
+        "cyou",
+        "news",
+        "cam",
+        "vin",
+        "live",
+        "wiki",
+        "work",
+        "rest",
+        "bar",
+    }
+)
+
+MULTI_LABEL_SUFFIXES: tuple[str, ...] = (
+    "co.jp",
+    "ne.jp",
+    "or.jp",
+    "ac.jp",
+    "ad.jp",
+    "ed.jp",
+    "go.jp",
+    "gr.jp",
+    "lg.jp",
+    "com.au",
+    "co.uk",
+    "co.kr",
+    "com.tw",
+    "com.br",
+    "co.in",
+    "com.cn",
+)
+
+SEARCH_ENGINE_HOSTS: tuple[str, ...] = ("google.", "bing.com", "yahoo.co.jp", "search.")
+
+# 429 は「レート制限をかけられた」だけであり、クローキングの証拠ではない (実測: hatenablog)。
+RATE_LIMIT_STATUSES: frozenset[int] = frozenset({429})
+# bot 側の本文がこれ未満なら「アクセス拒否ページ」とみなし、本文提示と数えない。
+MIN_BOT_BODY_BYTES = 60
+# WAF/チャレンジの interstitial は bot への「本文提示」ではない (実測: Cloudflare, quervia.biz)。
+CHALLENGE_MARKERS: tuple[str, ...] = (
+    "attention required! | cloudflare",
+    "just a moment...",
+    "checking your browser",
+    "cf-browser-verification",
+    "cf_chl_",
+    "ddos protection by",
+    "sucuri website firewall",
+    "access denied |",
+    "one more step",
+)
+
+_PRODUCT_PATH = re.compile(r"/(product|products|item|items|goods|shop|detail|dp)/", re.I)
+_TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.I | re.S)
+_IMG_RE = re.compile(r"<img[^>]+src=[\"']([^\"']+)", re.I)
+_ICON_RE = re.compile(r"<link[^>]*rel=[\"']?[^\"'>]*icon[^>]*>", re.I)
+_ICON_HREF_RE = re.compile(r"href=[\"']([^\"']+)", re.I)
+
+
+@dataclass
+class PageFeatures:
+    domain: str
+    registrable: str = ""
+    tld: str = ""
+    risky_tld: bool = False
+    shared_2ld: bool = False
+    status: int = 0
+    bot_status: int = 0
+    title: str = ""
+    body_len: int = 0
+    bot_body_len: int = 0
+    len_ratio_gap: float = 0.0
+    zencart_hits: int = 0
+    dark_hits: int = 0
+    n_img: int = 0
+    stolen_image: bool = False
+    favicon_md5: str | None = None
+    favicon_collision: bool = False
+    favicon_cross_origin: bool = False
+    favicon_cross_origin_of: str = ""
+    offsite_redirect: bool = False
+    redirect_to_google: bool = False
+    redirect_hops: int = 0
+    deep_product_path: bool = False
+    cloaking: bool = False
+    bot_only_body: bool = False
+    discarded: bool = False
+    extra: dict = field(default_factory=dict)
+
+    def to_dict(self) -> dict:
+        d = asdict(self)
+        d.pop("extra", None)
+        return d
+
+
+def registrable_domain(host: str) -> str:
+    """登録可能ドメイン (public suffix + 1 ラベル) を推定する。"""
+    host = (host or "").strip().strip(".").lower()
+    host = host.split(":")[0]
+    if not host:
+        return ""
+    labels = host.split(".")
+    if len(labels) <= 2:
+        return host
+    last_two = ".".join(labels[-2:])
+    if last_two in MULTI_LABEL_SUFFIXES and len(labels) >= 3:
+        return ".".join(labels[-3:])
+    return last_two
+
+
+def _is_challenge(result: FetchResult | None) -> bool:
+    """WAF のチャレンジ/拒否 interstitial か。"""
+    if result is None:
+        return False
+    head = (result.body or "")[:2048].lower()
+    return any(m in head for m in CHALLENGE_MARKERS)
+
+
+def _is_foreign_store_asset(src: str, own_registrable: str) -> bool:
+    """画像 src が「他社ドメインのストア資産」か。
+
+    自ドメイン (cdn.askul.co.jp 等) の画像は盗用ではない。相対 URL も対象外。
+    """
+    if not src or any(c in src for c in ("\n", " ", "\t")):
+        return False
+    host = urlsplit(src).netloc.lower().split(":")[0]
+    if not host:
+        return False
+    if not any(h in host for h in STORE_ASSET_HOSTS):
+        return False
+    return registrable_domain(host) != (own_registrable or "")
+
+
+def _body_len(result: FetchResult | None) -> int:
+    if result is None or result.body is None:
+        return 0
+    return len(result.body)
+
+
+def _usable(result: FetchResult | None) -> bool:
+    """本文が特徴量として使えるか (403/読み捨て/空 は使えない)。"""
+    if result is None or result.discarded or result.body is None:
+        return False
+    return bool(result.body.strip())
+
+
+def _title(result: FetchResult | None) -> str:
+    if result is None or not result.body:
+        return ""
+    m = _TITLE_RE.search(result.body)
+    return m.group(1).strip() if m else ""
+
+
+def extract_features(
+    domain: str,
+    browser: FetchResult,
+    bot: FetchResult | None = None,
+    *,
+    favicon_bytes: bytes | None = None,
+    known_favicons: dict[str, int] | None = None,
+    favicon_origin_map: dict[str, str] | None = None,
+    domain_2ld_counts: dict[str, int] | None = None,
+) -> PageFeatures:
+    dom = (domain or "").strip().lower()
+    reg = registrable_domain(dom)
+    f = PageFeatures(domain=dom, registrable=reg, tld=dom.rsplit(".", 1)[-1] if "." in dom else dom)
+    f.risky_tld = f.tld in RISKY_TLDS
+    f.status = int(browser.status if browser else 0)
+    f.discarded = bool(browser.discarded if browser else False)
+    f.title = _title(browser)
+    f.body_len = _body_len(browser)
+    f.bot_body_len = _body_len(bot)
+    f.bot_status = int(bot.status if bot else 0)
+
+    text = (browser.html_sanitized or browser.body or "") if browser else ""
+    low = text.lower()
+    f.zencart_hits = sum(1 for m in ZENCART_MARKERS if m.lower() in low)
+    f.dark_hits = sum(1 for t in DARK_PATTERN_TERMS if t in text)
+
+    srcs = _IMG_RE.findall(text)
+    f.n_img = len(srcs)
+    f.stolen_image = any(_is_foreign_store_asset(s, reg) for s in srcs)
+    f.deep_product_path = bool(_PRODUCT_PATH.search(text))
+
+    if favicon_bytes:
+        f.favicon_md5 = hashlib.md5(favicon_bytes).hexdigest()
+    if f.favicon_md5 and known_favicons:
+        f.favicon_collision = known_favicons.get(f.favicon_md5, 0) > 1
+        # クロスオリジン favicon: 同一 registrable domain のサブドメインは除外、
+        # WordPress 等の汎用 favicon も除外。origin map は「他人の単独ドメイン」を指す。
+        origin = (favicon_origin_map or {}).get(f.favicon_md5, "")
+        f.favicon_cross_origin_of = origin
+        if (
+            origin
+            and f.favicon_md5 not in GENERIC_FAVICON_MD5S
+            and registrable_domain(origin) != reg
+        ):
+            f.favicon_cross_origin = True
+    if domain_2ld_counts:
+        f.shared_2ld = domain_2ld_counts.get(reg, 0) >= 3
+
+    if browser and browser.chain:
+        f.redirect_hops = max(0, len(browser.chain) - 1)
+        final_host = urlsplit(browser.final_url or "").netloc.lower().split(":")[0]
+        final_host = final_host[4:] if final_host.startswith("www.") else final_host
+        if (
+            final_host
+            and final_host != dom
+            and not final_host.endswith("." + dom)
+            and not dom.endswith("." + final_host)
+        ):
+            f.offsite_redirect = True
+            f.redirect_to_google = any(h in final_host for h in SEARCH_ENGINE_HOSTS)
+
+    # UA クローキング: title 差 かつ 本文長比 ≥0.3 を基本条件に、
+    # ブラウザ拒否 (4xx) に対して bot に本文を返す場合は昇格して cloaking とする。
+    if bot is not None:
+        denom = max(f.body_len, f.bot_body_len, 1)
+        f.len_ratio_gap = round(abs(f.body_len - f.bot_body_len) / denom, 3)
+        # bot 側が「実コンテンツを返した」と言える条件 (拒否ページ・429 の本文は数えない)
+        bot_usable = bool(
+            _usable(bot)
+            and f.bot_status == 200
+            and f.bot_body_len >= MIN_BOT_BODY_BYTES
+            and not _is_challenge(bot)
+        )
+        browser_denied = (
+            browser is not None
+            and not _usable(browser)
+            and (f.discarded or f.status >= 400 or f.body_len == 0)
+        )
+        rate_limited = f.status in RATE_LIMIT_STATUSES
+        f.bot_only_body = bool(bot_usable and browser_denied and not rate_limited)
+        title_differs = _title(bot) != f.title and bool(_title(bot) or f.title)
+        if rate_limited:
+            # ブラウザ側が 429 = 「我々が throttled された」だけ。クローキングではない。
+            f.cloaking = False
+        else:
+            f.cloaking = bool(bot_usable and title_differs and f.len_ratio_gap >= 0.3) or bool(
+                browser_denied and bot_usable
+            )
+    return f
