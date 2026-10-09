@@ -8,3 +8,9 @@
 
 2026-09-30  リポジトリ再編成 (script/ tests/ db/ logs/ cloaking_detected/ へ移動)
             uBlacklist.txt は変更なし。実データ (db/*.db, 生ログ) を .gitignore で除外。
+
+[2026-10-07T00:02+09:00] night=2026-10-07 mode=publish
+  queries=1 empty_queries=8 engine_failures=2
+  domains_found=220 new_domains=177 aborted=False
+  blocked=0 hold=0 dismissed=0 whitelisted=0
+  uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=16
