@@ -166,7 +166,9 @@ def test_bot_only_body_when_browser_denied():
     b = res(body="<html>" + "z" * 500 + "</html>")
     f = extract_features("shop.example", browser=a, bot=b)
     assert f.bot_only_body is True
-    assert f.cloaking is True
+    # 実バグ回帰: 非 200 (拒否ページ) は cloaking としない。拒否は bot_only_body 側の
+    # 信号であり、cloaking は「双方が 200 で応答し内容が違う」ことを指す。
+    assert f.cloaking is False
 
 
 def test_browser_served_binary_and_bot_served_html_is_cloaking():
@@ -265,3 +267,46 @@ def test_extract_never_raises_on_garbage():
     for body in ("", "not html at all", "<html>", "\x00\x01\x02", "<html><body><script>x</script>"):
         f = extract_features("shop.example", res(body=body))
         assert f.domain == "shop.example"
+
+
+# --- 実バグ回帰: cloaking は「双方が実際に取得できた」ときだけ成立する ---
+
+
+def _html(title: str, pad: int) -> str:
+    return f"<html><head><title>{title}</title></head><body>{'x' * pad}</body></html>"
+
+
+def test_cloaking_is_false_when_browser_fetch_was_rejected():
+    """通常取得が 400 (エラーページ) のとき、bot との差を cloaking と呼ばない。
+
+    実測 (2026-10-11): facebook.com が status=400/title="Error"/1542B を返し、
+    bot は 469KB を返した。これは「内容を出し分けた」ではなく
+    「我々の通常取得が拒否された」だけ (実バグ) 。
+    """
+    browser = res(status=400, body=_html("Error", 1500))
+    bot = res(status=200, body=_html("Facebook", 460000))
+    f = extract_features("facebook.com", browser, bot)
+    assert f.cloaking is False
+
+
+def test_cloaking_is_false_when_browser_fetch_forbidden():
+    browser = res(status=403, body=_html("403 Forbidden", 900))
+    bot = res(status=200, body=_html("Shop", 60000))
+    f = extract_features("waf-shop.example", browser, bot)
+    assert f.cloaking is False
+
+
+def test_cloaking_still_detected_when_both_fetches_succeed():
+    """両方 200 で title が違い本文長比 >= 0.3 なら cloaking (機能を壊していない)。"""
+    browser = res(status=200, body=_html("Shop A", 1000))
+    bot = res(status=200, body=_html("Shop B", 50000))
+    f = extract_features("cloaker.example", browser, bot)
+    assert f.cloaking is True
+    assert f.len_ratio_gap >= 0.3
+
+
+def test_cloaking_is_false_when_both_fetches_agree():
+    browser = res(status=200, body=_html("Shop", 5000))
+    bot = res(status=200, body=_html("Shop", 5000))
+    f = extract_features("plain.example", browser, bot)
+    assert f.cloaking is False

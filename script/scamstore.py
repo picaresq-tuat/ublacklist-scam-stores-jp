@@ -182,6 +182,23 @@ class ScamStore:
                 out.append(str(row["domain"]))
         return out
 
+    def reconfirm_targets(
+        self, *, nights_required: int = 2, score_threshold: float = MIN_STREAK_SCORE
+    ) -> list[str]:
+        """翌夜に再評価すべき `block` ドメイン (連続 2 夜確認が未了のもの)。
+
+        `known_before` は既判定ドメインを discovery から除外するため、これが無いと
+        `nights_confirmed` が 1 のまま固定され `eligible_domains(nights_required=2)` が
+        永久に発火しない (実バグ)。fast_track (score >= score_threshold) は 1 夜で
+        登録されるので対象外。
+        """
+        cur = self._con.execute(
+            "SELECT domain FROM decisions WHERE decision='block'"
+            " AND nights_confirmed < ? AND score < ? ORDER BY domain",
+            (nights_required, score_threshold),
+        )
+        return [str(r[0]) for r in cur.fetchall()]
+
     def eligible_domains(
         self, *, score_threshold: float = MIN_STREAK_SCORE, nights_required: int = 2
     ) -> list[str]:

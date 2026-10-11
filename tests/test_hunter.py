@@ -821,3 +821,102 @@ def test_pageno_never_exceeds_engine_cap(empty_store, tmp_path):
     )
     assert sx.pagenos, "クエリが 1 本も実行されていない"
     assert max(sx.pagenos) <= PRIMARY_MAX_PAGENO
+
+
+# --- 実バグ回帰: pageno 引き直し中のエンジン失敗で None を反復しない ---
+
+# 実測 (2026-10-11): 10-05 / 10-08 の cron 実行が
+#   File "hunter.py", line 183, in run_night
+#     for item in results:
+#   TypeError: 'NoneType' object is not iterable
+# で失敗した。初回 0 件 → pageno 引き直しで 429 (None) となった場合に起きる。
+
+
+def test_engine_failure_during_pageno_retry_does_not_crash(empty_store, tmp_path):
+    from searxng import EngineUnavailable
+
+    class EmptyThenDead:
+        def __init__(self):
+            self.n = 0
+
+        def search(self, query, *, pageno):
+            self.n += 1
+            if self.n == 1:
+                return []
+            raise EngineUnavailable("engines unavailable: ['google cse']")
+
+    rep = hunter.run_night(
+        night="2026-09-24",
+        searx=EmptyThenDead(),
+        pipeline=FakePipeline(),
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=1,
+        max_pageno_attempts=3,
+        sleep=lambda _sec: None,
+    )
+    assert rep["engine_failures"] >= 1
+    # エンジン失敗を「空応答」として二重計上しない
+    assert rep["empty_queries"] == 0
+    assert rep["new_domains"] == 0
+
+
+# --- 実バグ回帰: block 判定は翌夜に再評価され nights_confirmed が進む ---
+
+# 実測 (2026-10-11): decisions 530 行すべて nights_confirmed=1、複数夜に現れた
+# ドメインは 0 件。既判定ドメインが known_before で除外されるため
+# eligible_domains(nights_required=2) の「連続2夜確認」が永久に発火しなかった。
+
+
+def _seed_block(store, domain, score=35.0, night="2026-09-24"):
+    store.record(domain, score=score, decision="block", features={}, night=night)
+
+
+def test_block_domain_is_reconfirmed_on_a_later_night(empty_store, tmp_path):
+    _seed_block(empty_store, "repeat.example")
+    pipe = FakePipeline({"repeat.example": (35.0, {}, "block")})
+    rep = hunter.run_night(
+        night="2026-09-25",
+        searx=FakeSearx([["other.example"]]),
+        pipeline=pipe,
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=1,
+    )
+    assert "repeat.example" in pipe.probed, "block ドメインが再評価されていない"
+    assert empty_store.get("repeat.example")["nights_confirmed"] == 2
+    assert rep["reconfirmed"] == ["repeat.example"]
+
+
+def test_reconfirm_skips_already_confirmed_and_low_score(empty_store, tmp_path):
+    """2 夜確認済み / block 未満のドメインは再評価しない (無駄な取得をしない)。"""
+    empty_store.record("done.example", score=35.0, decision="block", night="2026-09-24")
+    empty_store.record("done.example", score=35.0, decision="block", night="2026-09-25")
+    empty_store.record("weak.example", score=20.0, decision="hold", night="2026-09-24")
+    pipe = FakePipeline()
+    rep = hunter.run_night(
+        night="2026-09-26",
+        searx=FakeSearx([["other.example"]]),
+        pipeline=pipe,
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=1,
+    )
+    assert "done.example" not in pipe.probed, "2 夜確認済みは再評価しない"
+    assert "weak.example" not in pipe.probed, "block 未満は再評価しない"
+    assert rep["reconfirmed"] == []
+
+
+def test_reconfirmed_block_domain_becomes_eligible(empty_store, tmp_path):
+    """再確認で nights_confirmed が 2 に達した block ドメインは登録候補になる。"""
+    _seed_block(empty_store, "repeat.example")
+    assert empty_store.eligible_domains() == []
+    hunter.run_night(
+        night="2026-09-25",
+        searx=FakeSearx([["other.example"]]),
+        pipeline=FakePipeline({"repeat.example": (35.0, {}, "block")}),
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=1,
+    )
+    assert empty_store.eligible_domains() == ["repeat.example"]
