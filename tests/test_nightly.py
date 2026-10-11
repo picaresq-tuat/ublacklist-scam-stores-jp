@@ -304,3 +304,61 @@ def test_searx_url_accepts_bare_host(monkeypatch):
     assert nightly._searx_url() == "http://searx.local:8888"
     monkeypatch.delenv("SEARXNG_URL")
     assert nightly._searx_url() == "http://127.0.0.1:8888"
+
+
+# --- cron 応答 (Cronjob Response) に cloaking 追加数を載せる ---
+
+
+def test_format_log_block_has_cloaking_added():
+    block = nightly.format_log_block(
+        _report(cloaking_holds=["cloak.example"], cloaking_added=["*://*.cloak.example/*"]),
+        now=datetime(2026, 10, 5, 4, 30, tzinfo=JST),
+    )
+    assert "cloaking_added=1" in block
+
+
+def test_format_log_block_cloaking_added_defaults_to_zero():
+    block = nightly.format_log_block(_report(), now=datetime(2026, 10, 5, 4, 30, tzinfo=JST))
+    assert "cloaking_added=0" in block
+
+
+def test_main_stdout_reports_cloaking_added(tmp_path, monkeypatch, capsys):
+    """Cronjob Response に届く stdout に cloaking 追加数を含める。"""
+    monkeypatch.setattr(
+        nightly,
+        "run",
+        lambda **kw: {
+            "night": "2026-10-05",
+            "stage": "publish",
+            "report": _report(
+                published=[],
+                expired=[],
+                cloaking_holds=["cloak.example"],
+                cloaking_added=["*://*.cloak.example/*"],
+            ),
+            "changes": False,
+            "pr": None,
+        },
+    )
+    rc = nightly.main(["--night", "2026-10-05"])
+    out = capsys.readouterr().out
+    assert rc == 0
+    assert "cloaking_added=1" in out
+
+
+def test_main_stdout_reports_cloaking_added_with_pr(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(
+        nightly,
+        "run",
+        lambda **kw: {
+            "night": "2026-10-05",
+            "stage": "publish",
+            "report": _report(cloaking_added=["*://*.cloak.example/*"]),
+            "changes": True,
+            "pr": {"number": 4, "url": "https://github.com/o/r/pull/4"},
+        },
+    )
+    nightly.main(["--night", "2026-10-05"])
+    out = capsys.readouterr().out
+    assert "cloaking_added=1" in out
+    assert "pull/4" in out
