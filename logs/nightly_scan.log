@@ -26,3 +26,9 @@
   domains_found=195 new_domains=110 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=42
+
+[2026-10-12T04:30+09:00] night=2026-10-12 mode=publish
+  queries=1 empty_queries=7 engine_failures=0
+  domains_found=255 new_domains=147 aborted=False
+  blocked=0 hold=0 dismissed=0 whitelisted=0
+  uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=51 cloaking_added=9
