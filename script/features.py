@@ -118,6 +118,52 @@ SEARCH_ENGINE_HOSTS: tuple[str, ...] = ("google.", "bing.com", "yahoo.co.jp", "s
 
 # 429 は「レート制限をかけられた」だけであり、クローキングの証拠ではない (実測: hatenablog)。
 RATE_LIMIT_STATUSES: frozenset[int] = frozenset({429})
+
+# --- (A) bot エラーページ・ガード ---
+# bot へエラーページを返した差分は「内容の出し分け」ではない (実測 2026-10-12:
+# bandai-hobby.net はブラウザ 194,898 B に対し Googlebot へ 200 で「404 NOT FOUND」13,157 B)。
+ERROR_TITLE_MARKERS: tuple[str, ...] = (
+    "404",
+    "410",
+    "not found",
+    "page not found",
+    "error",
+    "forbidden",
+    "access denied",
+    "service unavailable",
+    "bad gateway",
+    "ページが見つかりません",
+    "ページが存在しません",
+    "お探しのページ",
+    "見つかりませんでした",
+    "エラー",
+    "メンテナンス",
+)
+# title が無いエラーページ用。本文先頭 2048 B のみを対象にし、定型文に限定する
+# (本文全体を走査すると「404」を含む通常ページを誤判定するため)。
+ERROR_BODY_MARKERS: tuple[str, ...] = (
+    "404 not found",
+    "page not found",
+    "the requested url was not found",
+    "ページが見つかりません",
+    "お探しのページは見つかりません",
+)
+
+# --- (B) 年齢認証ゲート・ガード ---
+# 年齢認証 interstitial との差分も「内容の出し分け」ではない (実測 2026-10-12:
+# dmm.co.jp はブラウザ「年齢認証 - FANZA」30,207 B に対し Googlebot へ 731 KB の実ページ)。
+# 商品ページの文言 ("アダルト" 等) を拾わないよう、ゲート固有の言い回しだけを並べる。
+AGE_GATE_MARKERS: tuple[str, ...] = (
+    "年齢認証",
+    "年齢確認",
+    "18歳未満",
+    "18歳以上",
+    "are you over 18",
+    "age verification",
+    "age check",
+    "成人向けコンテンツ",
+    "18+",
+)
 # bot 側の本文がこれ未満なら「アクセス拒否ページ」とみなし、本文提示と数えない。
 MIN_BOT_BODY_BYTES = 60
 # WAF/チャレンジの interstitial は bot への「本文提示」ではない (実測: Cloudflare, quervia.biz)。
@@ -167,6 +213,10 @@ class PageFeatures:
     deep_product_path: bool = False
     cloaking: bool = False
     bot_only_body: bool = False
+    # (A)/(B) ガード: 差分が「出し分け」以外で説明できるときの記録 (監査用)
+    bot_error_page: bool = False
+    age_gate: bool = False
+    age_gate_side: str = ""
     discarded: bool = False
     extra: dict = field(default_factory=dict)
 
@@ -234,6 +284,38 @@ def _title(result: FetchResult | None) -> str:
     return m.group(1).strip() if m else ""
 
 
+def _matches_markers(result: FetchResult | None, markers: tuple[str, ...]) -> bool:
+    """title に marker を含むか。title が無ければ本文先頭 2048 B を定型文として見る。"""
+    if result is None:
+        return False
+    title = _title(result).lower()
+    if title:
+        return any(m in title for m in markers)
+    head = (result.body or "")[:2048].lower()
+    return any(m in head for m in markers)
+
+
+def _is_error_page(result: FetchResult | None) -> bool:
+    """(A) bot へ返されたのがエラーページか。
+
+    status 200 でも「404 NOT FOUND」のようなエラーページを返すサイトがあり、
+    ブラウザとの本文差は出し分けの証拠にならない (実測: bandai-hobby.net)。
+    title が無い場合は本文先頭の定型文のみを見る (「404」を含む通常ページを拾わない)。
+    """
+    if result is None:
+        return False
+    title = _title(result).lower()
+    if title:
+        return any(m in title for m in ERROR_TITLE_MARKERS)
+    head = (result.body or "")[:2048].lower()
+    return any(m in head for m in ERROR_BODY_MARKERS)
+
+
+def _is_age_gate(result: FetchResult | None) -> bool:
+    """(B) 年齢認証 interstitial か (実測: dmm.co.jp の「年齢認証 - FANZA」)。"""
+    return _matches_markers(result, AGE_GATE_MARKERS)
+
+
 def extract_features(
     domain: str,
     browser: FetchResult,
@@ -254,6 +336,13 @@ def extract_features(
     f.body_len = _body_len(browser)
     f.bot_body_len = _body_len(bot)
     f.bot_status = int(bot.status if bot else 0)
+
+    # (A)/(B) ガードの判定結果は features_json に残す (監査用)。
+    f.bot_error_page = bool(bot is not None and _is_error_page(bot))
+    browser_gate = _is_age_gate(browser)
+    bot_gate = bool(bot is not None and _is_age_gate(bot))
+    f.age_gate = bool(browser_gate or bot_gate)
+    f.age_gate_side = "browser" if browser_gate else ("bot" if bot_gate else "")
 
     text = (browser.html_sanitized or browser.body or "") if browser else ""
     low = text.lower()
@@ -300,12 +389,15 @@ def extract_features(
     if bot is not None:
         denom = max(f.body_len, f.bot_body_len, 1)
         f.len_ratio_gap = round(abs(f.body_len - f.bot_body_len) / denom, 3)
-        # bot 側が「実コンテンツを返した」と言える条件 (拒否ページ・429 の本文は数えない)
+        # bot 側が「実コンテンツを返した」と言える条件 (拒否ページ・429・(A) エラーページ・
+        # (B) 年齢認証ゲートの本文は数えない)
         bot_usable = bool(
             _usable(bot)
             and f.bot_status == 200
             and f.bot_body_len >= MIN_BOT_BODY_BYTES
             and not _is_challenge(bot)
+            and not f.bot_error_page
+            and not bot_gate
         )
         browser_denied = (
             browser is not None
@@ -323,8 +415,11 @@ def extract_features(
             # ブラウザ側が 429 = 「我々が throttled された」だけ。クローキングではない。
             f.cloaking = False
         else:
+            # ブラウザ側の年齢認証ゲート (実測: dmm.co.jp「年齢認証 - FANZA」) との差は
+            # 出し分けではないため cloaking としない。
             f.cloaking = bool(
                 browser_ok
+                and not browser_gate
                 and bot_usable
                 and ((title_differs and f.len_ratio_gap >= 0.3) or browser_denied)
             )
