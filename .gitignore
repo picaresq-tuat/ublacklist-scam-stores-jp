@@ -10,6 +10,7 @@ logs/*.raw.log.*
 
 # 実行時生成物
 logs/report*.json
+logs/cloak_audit*.json
 __pycache__/
 *.py[cod]
 .pytest_cache/
