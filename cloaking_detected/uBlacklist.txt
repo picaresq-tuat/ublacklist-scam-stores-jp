@@ -11,13 +11,11 @@
 ## Hermes nightly
 *://*.20bet.id/*
 *://*.aardschok.net/*
-*://*.bandai-hobby.net/*
 *://*.blackairclari.net/*
 *://*.bless-n-wish.com/*
 *://*.corporatelearninguk.com/*
 *://*.diagakbari.com/*
 *://*.digitalpolicylaw.com/*
-*://*.dmm.co.jp/*
 *://*.donanimhaber.com/*
 *://*.flamingobeach.holiday/*
 *://*.iifscindia.com/*
