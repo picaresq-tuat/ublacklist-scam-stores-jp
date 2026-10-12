@@ -169,7 +169,24 @@ MEASURED_LEGIT_BLOGS: tuple[str, ...] = (
     "websumaho.blog.fc2.com",
 )
 
-SEED = SEED + MEASURED_LEGIT_BLOGS
+# 実測で「cloaking ではない」と確認した大規模正規サイト (2026-10-12)。
+# どちらも通常ブラウザ取得と bot 取得で内容が変わるが、差の向きが正規の挙動:
+#   bandai-hobby.net — browser 200/194,898B「バンダイ ホビーサイト」に対し
+#                      googlebot/bingbot は 200/13,157B「404 NOT FOUND｜バンダイホビーサイト」
+#                      (クローラにエラーページを返す = 反スクレイピング側の挙動)
+#   dmm.co.jp        — browser 200/30,403B「年齢認証 - FANZA」(年齢ゲート) に対し
+#                      googlebot/bingbot は 200/731KB で www.fanza.jp/top/ へリダイレクト
+#                      (人間に法定のゲートを出す挙動)
+# PC UA とモバイル UA の差はそれぞれ jaccard=0.977 / ゲート同一で、レスポンシブ差ではない。
+MEASURED_NON_CLOAKING: tuple[str, ...] = ("bandai-hobby.net", "dmm.co.jp")
+
+# 上記のうち `_guess_category` の部分一致では正しく分類できないものの明示カテゴリ。
+_EXPLICIT_CATEGORIES: dict[str, str] = {
+    "bandai-hobby.net": "official_store",
+    "dmm.co.jp": "aggregator",
+}
+
+SEED = SEED + MEASURED_LEGIT_BLOGS + MEASURED_NON_CLOAKING
 
 
 def _now() -> str:
@@ -262,7 +279,7 @@ class WhitelistDB:
     def load_seed(self, entries=SEED, category: str = "") -> int:
         added = 0
         for d in entries:
-            cat = category or _guess_category(d)
+            cat = category or _EXPLICIT_CATEGORIES.get(d) or _guess_category(d)
             added += int(self.add(d, cat, source="seed"))
         return added
 
