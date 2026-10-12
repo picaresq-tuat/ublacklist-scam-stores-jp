@@ -22,7 +22,7 @@
 │   ├── scoring.yaml
 │   ├── fetch.py              # 実ページ取得 (SSRF ガード / 3 UA / 5 MiB 上限)
 │   ├── probe.py, health.py   # 深掘り / P8 失効監視
-│   ├── publish.py, cloaking_publish.py, gitops.py
+│   ├── publish.py, cloaking_publish.py, cloaking_audit.py, gitops.py
 │   ├── modeldb.py, queries.py, searchlog.py, scamstore.py, whitelist.py, searxng.py
 │   └── data/models_seed.csv  # 型番シード (240 件)
 ├── tests/                    # pytest (golden セット回帰を含む)
@@ -39,6 +39,22 @@ python3 -m pytest                               # テスト
 python3 script/cli.py --night 2026-09-30 --dry-run --report logs/report.json
 python3 script/cli.py --night 2026-09-30 --publish --ulist uBlacklist.txt     --cloaking-list cloaking_detected/uBlacklist.txt --repo picaresq-tuat/ublacklist-scam-stores-jp --pr
 ```
+
+### cloaking リストの監査 (非 200 偽陽性の剪定)
+
+cloaking 判定は「通常ブラウザ取得が 200 で bot 取得と差がある」ことを証拠にする。
+2026-10-12 より前のリストには、通常取得が 400/403/404 等を返すドメインが混ざっているため、
+配布中のリストを再取得して剪定する。
+
+```bash
+python3 script/cloaking_audit.py --dry-run --json logs/cloak_audit.json   # 検出だけ
+python3 script/cloaking_audit.py --pr --repo picaresq-tuat/ublacklist-scam-stores-jp
+```
+
+- 除外するのは **HTTP 応答が非 200 だった行のみ** (feature 側と同じ基準)。
+- 応答が得られない (DNS 失敗 / タイムアウト) ドメインは既定で残す
+  (一時障害で正当な検知を消さないため)。`--include-unreachable` で明示的に除外できる。
+- ヘッダ・常設正規表現・セクション見出しは変更せず、`publish.validate()` 通過時のみ書き込む。
 
 ## 取り扱い
 
