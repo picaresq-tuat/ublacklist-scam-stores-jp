@@ -345,3 +345,37 @@ def test_cloaking_holds_feature_flag_semantics(store):
     _rec(store, "b.example", cloaking=False, promoted=True)
     # promoted 単体では cloaking とみなさない (features.cloaking が真であること)
     assert store.cloaking_holds() == ["a.example"]
+
+
+# --- cron 応答に載せる cloaking 追加数 ---
+
+
+def _run(env, night, domain="cloak-shop.example", dry_run=False):
+    return hunter.run_night(
+        night=night,
+        searx=_FakeSearx([_res(domain)]),
+        pipeline=_CloakPipe(score=60, reasons={"cloaking": 45}),
+        store=ScamStore(env["scam"]),
+        db_dir=env["db"],
+        ulist_path=None,
+        publish=False,
+        dry_run=dry_run,
+        max_queries=1,
+        cloaking_list_path=env["cloaking"],
+    )
+
+
+def test_run_night_reports_cloaking_added(env):
+    """初回は追加 1 件、2 回目 (冪等) は追加 0 件を report に載せる。"""
+    rep1 = _run(env, "2026-09-27")
+    assert rep1["cloaking_added"] == ["*://*.cloak-shop.example/*"]
+
+    rep2 = _run(env, "2026-09-28")
+    assert rep2["cloaking_added"] == []
+
+
+def test_run_night_reports_cloaking_added_in_dry_run(env):
+    """dry-run でも「追加されるはずの件数」を report に載せる。"""
+    rep = _run(env, "2026-09-27", dry_run=True)
+    assert rep["cloaking_added"] == ["*://*.cloak-shop.example/*"]
+    assert not env["cloaking"].exists()

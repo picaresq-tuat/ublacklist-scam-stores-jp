@@ -116,6 +116,10 @@ def run_night(
     from searxng import EngineUnavailable
 
     known_before = {r["domain"] for r in store.all_decisions()}
+    # 夜の開始時点で「block かつ連続 2 夜確認が未了」のドメインを控えておく。
+    # known_before で discovery から除外されるため、ここで掬わないと nights_confirmed
+    # が進まない (実バグ回帰)。
+    pending_confirmation = store.reconfirm_targets()
 
     def _search(query: str, pageno: int):
         """検索 1 回。エンジン suspension は数え上げて None を返す (夜を落とさない)。"""
@@ -171,6 +175,13 @@ def run_night(
                     searchlog.record_result(
                         model, term_of(query, model), alt, result_count=len(results)
                     )
+            if results is None:
+                # pageno 引き直し中のエンジン失敗。engine_failures で計上済みなので
+                # 空応答として二重計上せず、None を反復しない (実バグ回帰: 10-05/10-08 の
+                # cron が `for item in results:` で TypeError になっていた)。
+                if aborted:
+                    break
+                continue
             if not results:
                 empty_queries += 1
                 # P9c: 空応答 pageno を実結果数 0 として記録し、
@@ -222,6 +233,25 @@ def run_night(
         new_domains += len(found_this_round)
         break
 
+    # --- 再確認: block 判定の「連続 2 夜確認」を進める ---
+    # 再評価して「今夜も block」だったときだけ記録する (nights_confirmed が進む)。
+    # それ以外は既存の block 行をそのまま残す: 1 夜の観測で自動公開の判断を
+    # 覆さないため、また一時的な取得失敗で誤って解除しないため。
+    reconfirmed: list[str] = []
+    for domain in pending_confirmation:
+        res = pipeline.run_domain(domain)
+        if res.decision != "block":
+            continue
+        store.record(
+            domain,
+            score=res.score,
+            decision=res.decision,
+            features=res.features,
+            evidence=[res.reasons] if isinstance(res.reasons, dict) else list(res.reasons),
+            night=night,
+        )
+        reconfirmed.append(domain)
+
     # --- P8: 失効スイープ ---
     expired: list[str] = []
     health_probed: list[str] = []
@@ -258,13 +288,19 @@ def run_night(
     # --- P9b: cloaking-hold 専用リスト (cloaking_detected/uBlacklist.txt) ---
     cloaking_holds = store.cloaking_holds()
     cloaking_would: list[str] = []
+    cloaking_added: list[str] = []
     if cloaking_list_path is not None:
         from cloaking_publish import write_cloaking_list
+        from publish import existing_entries
 
+        path = Path(cloaking_list_path)
+        before = existing_entries(path.read_text(encoding="utf-8")) if path.exists() else []
         if dry_run:
             cloaking_would = build_entries(cloaking_holds)
+            cloaking_added = [e for e in cloaking_would if e not in before]
         else:
-            write_cloaking_list(cloaking_list_path, cloaking_holds)
+            text = write_cloaking_list(path, cloaking_holds)
+            cloaking_added = [e for e in existing_entries(text) if e not in before]
 
     return {
         "night": night,
@@ -284,7 +320,9 @@ def run_night(
         "published_entries": len(published),
         "published": published,
         "would_publish": would_publish,
+        "reconfirmed": reconfirmed,
         "cloaking_holds": cloaking_holds,
         "would_cloaking_holds": cloaking_would,
+        "cloaking_added": cloaking_added,
         "dry_run": bool(dry_run),
     }

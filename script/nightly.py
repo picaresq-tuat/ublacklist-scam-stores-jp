@@ -74,7 +74,8 @@ def format_log_block(report: dict, *, now: datetime) -> str:
         f"  uBlacklist.txt: published={len(report.get('published') or [])} "
         f"would_publish={len(report.get('would_publish') or [])} "
         f"expired={len(report.get('expired') or [])} "
-        f"cloaking_holds={len(report.get('cloaking_holds') or [])}",
+        f"cloaking_holds={len(report.get('cloaking_holds') or [])} "
+        f"cloaking_added={len(report.get('cloaking_added') or [])}",
     ]
     return "\n".join(lines) + "\n"
 
@@ -292,15 +293,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"nightly failed: {exc}", file=sys.stderr)
         return 1
     rep = res["report"]
+    added_cloak = len(rep.get("cloaking_added") or [])
     if res["pr"]:
         print(
             f"night={night} changes=yes published={len(rep.get('published') or [])} "
             f"expired={len(rep.get('expired') or [])} "
+            f"cloaking_added={added_cloak} "
             f"PR #{res['pr']['number']}: {res['pr']['url']}"
         )
     else:
         print(
-            f"night={night} changes=no published=0 expired=0 "
+            f"night={night} changes=no published=0 expired=0 cloaking_added={added_cloak} "
             f"(uBlacklist.txt に変化なし。push / PR は行いません)"
         )
     return 0
