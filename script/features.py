@@ -315,11 +315,17 @@ def extract_features(
         rate_limited = f.status in RATE_LIMIT_STATUSES
         f.bot_only_body = bool(bot_usable and browser_denied and not rate_limited)
         title_differs = _title(bot) != f.title and bool(_title(bot) or f.title)
+        # 通常取得が HTTP 200 で応答していること。非 200 のエラーページ (例:
+        # facebook.com の status=400/title="Error") は「内容を出し分けた」証拠にならない
+        # (実バグ回帰)。200 で添付/空ボディを返した場合は従来どおり強い証拠として扱う。
+        browser_ok = f.status == 200
         if rate_limited:
             # ブラウザ側が 429 = 「我々が throttled された」だけ。クローキングではない。
             f.cloaking = False
         else:
-            f.cloaking = bool(bot_usable and title_differs and f.len_ratio_gap >= 0.3) or bool(
-                browser_denied and bot_usable
+            f.cloaking = bool(
+                browser_ok
+                and bot_usable
+                and ((title_differs and f.len_ratio_gap >= 0.3) or browser_denied)
             )
     return f
