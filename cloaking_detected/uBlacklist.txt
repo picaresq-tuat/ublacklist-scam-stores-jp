@@ -11,9 +11,7 @@
 ## Hermes nightly
 *://*.20bet.id/*
 *://*.aardschok.net/*
-*://*.accessoires-asus.com/*
 *://*.auszeit-theresablank.de/*
-*://*.bandai-hobby.net/*
 *://*.bingobongolearning.com/*
 *://*.blackairclari.net/*
 *://*.bless-n-wish.com/*
@@ -22,10 +20,8 @@
 *://*.diagakbari.com/*
 *://*.dienlanhminhdang.com/*
 *://*.digitalpolicylaw.com/*
-*://*.dmm.co.jp/*
 *://*.donanimhaber.com/*
 *://*.energowatch.hu/*
-*://*.facebook.com/*
 *://*.flamingobeach.holiday/*
 *://*.gloucesterbikeproject.co.uk/*
 *://*.gsss-gh.com/*
