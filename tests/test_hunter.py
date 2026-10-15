@@ -920,3 +920,22 @@ def test_reconfirmed_block_domain_becomes_eligible(empty_store, tmp_path):
         max_queries=1,
     )
     assert empty_store.eligible_domains() == ["repeat.example"]
+
+
+# --- RED: 実測で cloaking でないと確認した 2 サイトは probe に到達しない (2026-10-12) ---
+
+
+def test_measured_non_cloaking_sites_never_reach_probe(empty_store, tmp_path):
+    sx = FakeSearx([["bandai-hobby.net", "www.dmm.co.jp", "scam-shop.example"]])
+    pipe = FakePipeline({"scam-shop.example": (74.0, {"zencart": 4}, "block")})
+    rep = hunter.run_night(
+        night="2026-10-12",
+        searx=sx,
+        pipeline=pipe,
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=5,
+    )
+    assert "bandai-hobby.net" in rep["whitelisted"]
+    assert "dmm.co.jp" in rep["whitelisted"]
+    assert pipe.probed == ["scam-shop.example"]

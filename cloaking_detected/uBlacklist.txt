@@ -14,7 +14,6 @@
 *://*.accessoires-asus.com/*
 *://*.ajscatfishstation.com/*
 *://*.auszeit-theresablank.de/*
-*://*.bandai-hobby.net/*
 *://*.betterhomesal.com/*
 *://*.bingobongolearning.com/*
 *://*.blackairclari.net/*
@@ -24,12 +23,10 @@
 *://*.diagakbari.com/*
 *://*.dienlanhminhdang.com/*
 *://*.digitalpolicylaw.com/*
-*://*.dmm.co.jp/*
 *://*.donanimhaber.com/*
 *://*.ecofaune.org/*
 *://*.energowatch.hu/*
 *://*.eurasiantactical.de/*
-*://*.facebook.com/*
 *://*.femsajtolo.hu/*
 *://*.flamingobeach.holiday/*
 *://*.gloucesterbikeproject.co.uk/*
