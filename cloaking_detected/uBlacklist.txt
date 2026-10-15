@@ -21,6 +21,7 @@
 *://*.dienlanhminhdang.com/*
 *://*.digitalpolicylaw.com/*
 *://*.donanimhaber.com/*
+*://*.ecofaune.org/*
 *://*.energowatch.hu/*
 *://*.flamingobeach.holiday/*
 *://*.gloucesterbikeproject.co.uk/*
@@ -34,8 +35,10 @@
 *://*.kidstalentawards.ao/*
 *://*.kortekbilisim.com/*
 *://*.kundalishastra.com/*
+*://*.lets-play-2.com/*
 *://*.madelineguide.net/*
 *://*.maghoulacademy.ir/*
+*://*.mimoza.bg/*
 *://*.mobilemrcs.org/*
 *://*.mobiletta.li/*
 *://*.montrans.si/*
@@ -46,6 +49,7 @@
 *://*.optimizaralojamiento.com/*
 *://*.orelcbt.com/*
 *://*.pb909.com/*
+*://*.pi.tn/*
 *://*.rozwojownia.com/*
 *://*.sammatthewman.com/*
 *://*.seafoodbysykes.com/*
