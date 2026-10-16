@@ -11,7 +11,10 @@
 ## Hermes nightly
 *://*.20bet.id/*
 *://*.aardschok.net/*
+*://*.accessoires-asus.com/*
+*://*.ajscatfishstation.com/*
 *://*.auszeit-theresablank.de/*
+*://*.betterhomesal.com/*
 *://*.bingobongolearning.com/*
 *://*.blackairclari.net/*
 *://*.bless-n-wish.com/*
@@ -23,6 +26,8 @@
 *://*.donanimhaber.com/*
 *://*.ecofaune.org/*
 *://*.energowatch.hu/*
+*://*.eurasiantactical.de/*
+*://*.femsajtolo.hu/*
 *://*.flamingobeach.holiday/*
 *://*.gloucesterbikeproject.co.uk/*
 *://*.gsss-gh.com/*
@@ -38,6 +43,7 @@
 *://*.lets-play-2.com/*
 *://*.madelineguide.net/*
 *://*.maghoulacademy.ir/*
+*://*.mavenbrain.com/*
 *://*.mimoza.bg/*
 *://*.mobilemrcs.org/*
 *://*.mobiletta.li/*
@@ -48,12 +54,14 @@
 *://*.ophmn.com/*
 *://*.optimizaralojamiento.com/*
 *://*.orelcbt.com/*
+*://*.parkandfieldchicago.com/*
 *://*.pb909.com/*
 *://*.pi.tn/*
 *://*.rozwojownia.com/*
 *://*.sammatthewman.com/*
 *://*.seafoodbysykes.com/*
 *://*.shahaliagro.com/*
+*://*.storyorium.com/*
 *://*.sunmold.com/*
 *://*.tecai.site/*
 *://*.torahtent.com/*
