@@ -1,0 +1,4499 @@
+{
+ "scam": [
+  {
+   "domain": "lybabg.amtlkg.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 797,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/amtlkg.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/amtlkg.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/amtlkg.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_d21c2e7e67d8f0756763abd7a8cd2057-INAMING",
+    "ldhName": "amtlkg.click",
+    "unicodeName": "amtlkg.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "79fcae202cb74b58a3f8a3d9f5116406-DONUTS",
+      "ldhName": "micah.ns.cloudflare.com",
+      "unicodeName": "micah.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:42.629Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "96d7e5c21149447caff75bae93a1a622-DONUTS",
+      "ldhName": "kallie.ns.cloudflare.com",
+      "unicodeName": "kallie.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:42.629Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:42:42.629Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:42.629Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/amtlkg.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/amtlkg.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/amtlkg.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/amtlkg.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-09-23T03:14:12.831Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-09-23T03:14:12.831Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-28T03:14:39.488Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:42:42.629Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "epx.qwexlqrv.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1135
+  },
+  {
+   "domain": "sopjpq.oeqfeg.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 784,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/oeqfeg.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/oeqfeg.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/oeqfeg.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_05f7cff623a2f314e083eb0e5105941c-INAMING",
+    "ldhName": "oeqfeg.click",
+    "unicodeName": "oeqfeg.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "79fcae202cb74b58a3f8a3d9f5116406-DONUTS",
+      "ldhName": "micah.ns.cloudflare.com",
+      "unicodeName": "micah.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:46.779Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "96d7e5c21149447caff75bae93a1a622-DONUTS",
+      "ldhName": "kallie.ns.cloudflare.com",
+      "unicodeName": "kallie.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:46.779Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:42:46.779Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:46.779Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/oeqfeg.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/oeqfeg.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/oeqfeg.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/oeqfeg.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-09-23T03:14:06.820Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-09-23T03:14:06.820Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-28T03:14:39.182Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:42:46.779Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "opentax.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1210
+  },
+  {
+   "domain": "oktap.katachi.casa",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 790
+  },
+  {
+   "domain": "diary.nomura.sale",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 400: Bad Request",
+   "elapsed_ms": 622
+  },
+  {
+   "domain": "okrack.katachi.casa",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 848
+  },
+  {
+   "domain": "datapause.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1199
+  },
+  {
+   "domain": "okcrux.fuji-ne.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 811,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/fuji-ne.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/fuji-ne.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/fuji-ne.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_46c9edd1a7e80720b5080f64d9e3af63-UR",
+    "ldhName": "fuji-ne.click",
+    "unicodeName": "fuji-ne.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "4abd247060bc4617982d9cfa3b3960d6-DONUTS",
+      "ldhName": "ethan.ns.cloudflare.com",
+      "unicodeName": "ethan.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:58.895Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_d33c88fd42fab329c6aa3a17deb43026-INAMING",
+      "ldhName": "peaches.ns.cloudflare.com",
+      "unicodeName": "peaches.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:58.895Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:42:58.895Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:42:58.895Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "active"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/fuji-ne.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/fuji-ne.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/fuji-ne.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/fuji-ne.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-04-28T06:46:09.938Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-04-28T06:46:09.938Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-05-03T06:46:40.309Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:42:58.895Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "fixed.hxgknsxb.fashion",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 856
+  },
+  {
+   "domain": "okpast.katachi.casa",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 768
+  },
+  {
+   "domain": "snacktap.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1168
+  },
+  {
+   "domain": "shiptap.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1122
+  },
+  {
+   "domain": "scanvideo.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1193
+  },
+  {
+   "domain": "mensize.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1207
+  },
+  {
+   "domain": "huntread.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1148
+  },
+  {
+   "domain": "hubplan.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1178
+  },
+  {
+   "domain": "happypass.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1164
+  },
+  {
+   "domain": "halllab.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1225
+  },
+  {
+   "domain": "reboxche.bond",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 1200,
+   "rdap": {
+    "rdapConformance": [
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "rdap_level_0"
+    ],
+    "lang": "en",
+    "objectClassName": "domain",
+    "handle": "D644458098-CNIC",
+    "ldhName": "reboxche.bond",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "ldhName": "bailey.ns.cloudflare.com",
+      "handle": "H22827481-CNIC",
+      "links": [
+       {
+        "title": "Authoritative URL for this resource",
+        "rel": "self",
+        "type": "application/rdap+json",
+        "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+        "href": "https://rdap.centralnic.com/bond/nameserver/bailey.ns.cloudflare.com"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "ldhName": "sonny.ns.cloudflare.com",
+      "handle": "H22833136-CNIC",
+      "links": [
+       {
+        "title": "Authoritative URL for this resource",
+        "rel": "self",
+        "type": "application/rdap+json",
+        "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+        "href": "https://rdap.centralnic.com/bond/nameserver/sonny.ns.cloudflare.com"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "3862",
+      "roles": [
+       "registrar"
+      ],
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Spaceship, Inc."
+        ]
+       ]
+      ],
+      "links": [
+       {
+        "title": "Authoritative URL for this resource",
+        "rel": "self",
+        "type": "application/rdap+json",
+        "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+        "href": "https://rdap.centralnic.com/bond/entity/3862"
+       },
+       {
+        "title": "Registrar's Website",
+        "rel": "about",
+        "value": "https://rdap.spaceship.com/",
+        "href": "https://www.spaceship.com/"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "not applicable",
+        "roles": [
+         "abuse"
+        ],
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Abuse Contact"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Spaceship, Inc."
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse@spaceship.com"
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:+1.9854014545"
+          ]
+         ]
+        ]
+       }
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "3862"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "server transfer prohibited",
+     "client transfer prohibited"
+    ],
+    "port43": "whois.nic.bond",
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventDate": "2026-09-18T03:23:52.0Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-09-18T23:59:59.0Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:23.0Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-10-07T10:15:33.0Z"
+     }
+    ],
+    "notices": [
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "title": "More information on domain status codes",
+        "rel": "glossary",
+        "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+        "href": "https://icann.org/epp"
+       }
+      ]
+     },
+     {
+      "title": "Terms of Use",
+      "description": [
+       "For more information on Whois status codes, please visit https://icann.org/epp",
+       "",
+       "The registration data available in this service is limited. Additional",
+       "data may be available at https://lookup.icann.org",
+       "",
+       "The Whois and RDAP services are provided by CentralNic, and contain",
+       "information pertaining to Internet domain names registered by our",
+       "our customers. By using this service you are agreeing (1) not to use any",
+       "information presented here for any purpose other than determining",
+       "ownership of domain names, (2) not to store or reproduce this data in",
+       "any way, (3) not to use any high-volume, automated, electronic processes",
+       "to obtain data from this service. Abuse of this service is monitored and",
+       "actions in contravention of these terms will result in being permanently",
+       "blacklisted. All data is (c) CentralNic Ltd (https://www.centralnicregistry.com)",
+       "",
+       "Access to the Whois and RDAP services is rate limited. For more",
+       "information, visit https://centralnicregistry.com/policies/whois-guidance."
+      ],
+      "links": [
+       {
+        "title": "Terms of Use",
+        "rel": "terms-of-service",
+        "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+        "href": "https://www.centralnicregistry.com/"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "title": "ICANN RDDS Inaccuracy Complaint Form",
+        "rel": "help",
+        "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+        "href": "https://icann.org/wicf"
+       }
+      ]
+     }
+    ],
+    "links": [
+     {
+      "title": "Authoritative URL for this resource",
+      "rel": "self",
+      "type": "application/rdap+json",
+      "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+      "href": "https://rdap.centralnic.com/bond/domain/reboxche.bond"
+     },
+     {
+      "title": "RDAP Service Help",
+      "rel": "help",
+      "type": "text/html",
+      "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+      "href": "https://whois.nic.bond/rdap"
+     },
+     {
+      "title": "URL of Sponsoring Registrar's RDAP Record",
+      "rel": "related",
+      "type": "application/rdap+json",
+      "value": "https://rdap.centralnic.com/bond/domain/reboxche.bond",
+      "href": "https://rdap.spaceship.com/domain/reboxche.bond"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "admin.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1177
+  },
+  {
+   "domain": "payto.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 826,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_6035ee3caacb3f3e3a1746a46f9bb5bb-INAMING",
+    "ldhName": "lovedealyiy.click",
+    "unicodeName": "lovedealyiy.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_dc8d8d8f348176f985199746791c89df-INAMING",
+      "ldhName": "gabriella.ns.cloudflare.com",
+      "unicodeName": "gabriella.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:27.574Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_02cac8ef3cf072f5b4e29a49c33b5351-INAMING",
+      "ldhName": "ruben.ns.cloudflare.com",
+      "unicodeName": "ruben.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:27.574Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:43:27.574Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:27.574Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-05T01:27:51.836Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:27.574Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "pay.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 851,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_6035ee3caacb3f3e3a1746a46f9bb5bb-INAMING",
+    "ldhName": "lovedealyiy.click",
+    "unicodeName": "lovedealyiy.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_dc8d8d8f348176f985199746791c89df-INAMING",
+      "ldhName": "gabriella.ns.cloudflare.com",
+      "unicodeName": "gabriella.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:29.540Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_02cac8ef3cf072f5b4e29a49c33b5351-INAMING",
+      "ldhName": "ruben.ns.cloudflare.com",
+      "unicodeName": "ruben.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:29.540Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:43:29.540Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:29.540Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-05T01:27:51.836Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:29.540Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 781,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_6035ee3caacb3f3e3a1746a46f9bb5bb-INAMING",
+    "ldhName": "lovedealyiy.click",
+    "unicodeName": "lovedealyiy.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_dc8d8d8f348176f985199746791c89df-INAMING",
+      "ldhName": "gabriella.ns.cloudflare.com",
+      "unicodeName": "gabriella.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:31.430Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_02cac8ef3cf072f5b4e29a49c33b5351-INAMING",
+      "ldhName": "ruben.ns.cloudflare.com",
+      "unicodeName": "ruben.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:31.430Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:43:31.430Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:31.430Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-05T01:27:51.836Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:31.430Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "one.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 770,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_6035ee3caacb3f3e3a1746a46f9bb5bb-INAMING",
+    "ldhName": "lovedealyiy.click",
+    "unicodeName": "lovedealyiy.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_dc8d8d8f348176f985199746791c89df-INAMING",
+      "ldhName": "gabriella.ns.cloudflare.com",
+      "unicodeName": "gabriella.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:33.294Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_02cac8ef3cf072f5b4e29a49c33b5351-INAMING",
+      "ldhName": "ruben.ns.cloudflare.com",
+      "unicodeName": "ruben.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:33.294Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:43:33.294Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:33.294Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-05T01:27:51.836Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:33.294Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "frxzmysf.yoga",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 808,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "objectClassName": "domain",
+    "ldhName": "frxzmysf.yoga",
+    "unicodeName": "frxzmysf.yoga",
+    "status": [
+     "server transfer prohibited"
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventDate": "2026-09-17T09:14:41Z",
+      "eventActor": "West263 International Limited"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-09-17T09:14:41Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-22T09:14:44Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:35Z"
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         ""
+        ],
+        [
+         "adr",
+         {
+          "cc": "CN"
+         },
+         "text",
+         [
+          "",
+          "",
+          "",
+          "",
+          "Jiang Xi",
+          "",
+          ""
+         ]
+        ]
+       ]
+      ],
+      "roles": [
+       "registrant"
+      ]
+     },
+     {
+      "objectClassName": "entity",
+      "handle": "1915",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "West263 International Limited"
+        ],
+        [
+         "adr",
+         {
+          "cc": "HK"
+         },
+         "text",
+         [
+          "",
+          "",
+          [
+           "137-139",
+           "Connaught Road Central",
+           ""
+          ],
+          "Hong Kong",
+          "",
+          "999077",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+852.3597907"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+86.2886262244"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "lillian@hkdns.hk"
+        ]
+       ]
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "West263 International Limited"
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:+852.30697963"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse@hkdns.hk"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ]
+       }
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "identifier": "1915",
+        "type": "IANA Registrar ID"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "registration",
+        "eventDate": "2016-11-07T08:16:02Z",
+        "eventActor": "REGISTRY"
+       },
+       {
+        "eventAction": "last changed",
+        "eventDate": "2024-05-31T07:47:19Z",
+        "eventActor": "REGISTRY"
+       }
+      ],
+      "links": [
+       {
+        "title": "Authoritative Registry object record",
+        "rel": "self",
+        "value": "https://rdap.nic.yoga/entity/1915",
+        "href": "https://rdap.nic.yoga/entity/1915",
+        "type": "application/rdap+json"
+       },
+       {
+        "title": "Registrar Details object record",
+        "rel": "about",
+        "value": "https://rdap.hkdns.hk/rdap/",
+        "href": "http://www.hkdns.hk/",
+        "type": "application/rdap+json"
+       }
+      ]
+     }
+    ],
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "H0DBB79F48D674BE0A4BF74B5D1F67CD6-NSR",
+      "ldhName": "armando.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "registration",
+        "eventDate": "2019-11-27T02:27:11Z",
+        "eventActor": "Porkbun"
+       }
+      ],
+      "links": [
+       {
+        "title": "Authoritative Registry object record",
+        "rel": "self",
+        "value": "https://rdap.nic.yoga/nameserver/armando.ns.cloudflare.com",
+        "href": "https://rdap.nic.yoga/nameserver/armando.ns.cloudflare.com",
+        "type": "application/rdap+json"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "H8F0D3804791949739EF83FF07ABA8FEA-NSR",
+      "ldhName": "margaret.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "registration",
+        "eventDate": "2019-12-02T01:42:29Z",
+        "eventActor": "CCI REG S.A."
+       }
+      ],
+      "links": [
+       {
+        "title": "Authoritative Registry object record",
+        "rel": "self",
+        "value": "https://rdap.nic.yoga/nameserver/margaret.ns.cloudflare.com",
+        "href": "https://rdap.nic.yoga/nameserver/margaret.ns.cloudflare.com",
+        "type": "application/rdap+json"
+       }
+      ]
+     }
+    ],
+    "notices": [
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "rel": "glossary",
+        "value": "https://rdap.nic.yoga/domain/frxzmysf.yoga",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "rel": "help",
+        "value": "https://rdap.nic.yoga/domain/frxzmysf.yoga",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDAP Terms of Service",
+      "description": [
+       "The RDAP service (the Service) offered by Registry Services LLC, or our designated representatives (GoDaddy Registry), is provided for informational purposes only and is designed to assist a user (you) to look up certain information related to the registration records of existing domain names.",
+       "The information provided by the Service is ‘as is’ and we make no guarantee of its accuracy. Registry Services LLC cannot, under any circumstances, be held liable in such instances where the stored information would prove to be wrong, incomplete, or not accurate in any sense.",
+       "By submitting a query, you agree that you will not use this data",
+       "(i)            to allow, enable or otherwise support in any way the transmission of unsolicited, commercial advertising or other solicitations whether via direct mail, email, telephone or otherwise;",
+       "(ii)           to enable high volume, automated, electronic processes that apply to the Service or associated systems;",
+       "(iii)          for targeted advertising in any possible way;",
+       "(iv)         to cause nuisance in any possible way to individuals by sending (whether by automated, electronic processes capable of enabling high volumes or other possible means) messages to them;",
+       "(v)          in a way that is inconsistent with any applicable laws rule, regulation or statute or any policy issued by Registry Services LLC; and/or",
+       "(vi)         in contravention of any applicable data and privacy protection acts.",
+       "Without prejudice to the above, the copying, compilation, repackaging, dissemination or other use of the information provided by the Service is explicitly forbidden without prior and explicit permission by Registry Services LLC.",
+       "By your use of the Service you agree to abide by these Terms of Service and accept that Registry Services LLC can take measures to limit the use of the Service in order to protect the privacy of registrants or the integrity of the Service. Registry Services LLC may restrict, suspend or terminate your access to the Service at any time. Registry Services LLC reserve the right to make changes to the Service and these Terms of Service at any time without prior notice to you. It is your responsibility to review these Terms of Service each time you access or use the Service to keep apprised of any changes. If you do not agree to the changes implemented by Registry Services LLC, your sole and exclusive remedy is to terminate your use of the Service.",
+       "By executing a query, in any manner whatsoever, you agree to abide by these Terms of Service."
+      ],
+      "links": [
+       {
+        "rel": "terms-of-service",
+        "value": "https://rdap.nic.yoga/domain/frxzmysf.yoga",
+        "href": "https://www.registry.godaddy/rdap",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "links": [
+     {
+      "title": "Registrar RDAP server object record",
+      "rel": "related",
+      "value": "https://rdap.nic.yoga/domain/frxzmysf.yoga",
+      "href": "https://rdap.hkdns.hk/rdap/domain/frxzmysf.yoga",
+      "type": "application/rdap+json"
+     },
+     {
+      "title": "Authoritative Registry object record",
+      "rel": "self",
+      "value": "https://rdap.nic.yoga/domain/frxzmysf.yoga",
+      "href": "https://rdap.nic.yoga/domain/frxzmysf.yoga",
+      "type": "application/rdap+json"
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registry Domain ID"
+      },
+      "prePath": "$.handle",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registry Registrant ID"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].handle",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Name"
+      },
+      "postPath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[0]=='fn')][3]",
+      "pathLang": "jsonpath",
+      "method": "emptyValue",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Organization"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[0]=='org')]",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Street"
+      },
+      "postPath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[0]=='adr')][3][2]",
+      "pathLang": "jsonpath",
+      "method": "emptyValue",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant City"
+      },
+      "postPath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[0]=='adr')][3][3]",
+      "pathLang": "jsonpath",
+      "method": "emptyValue",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Postal Code"
+      },
+      "postPath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[0]=='adr')][3][5]",
+      "pathLang": "jsonpath",
+      "method": "emptyValue",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Email"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[0]=='email')]",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Phone"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[1].type=='voice')]",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Phone Ext"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[1].type=='voice')]",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Fax"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[1].type=='fax')]",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     },
+     {
+      "name": {
+       "type": "Registrant Fax Ext"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')].vcardArray[1][?(@[1].type=='fax')]",
+      "pathLang": "jsonpath",
+      "method": "removal",
+      "reason": {
+       "description": "Server policy"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "domain": "buzz.frxzmysf.yoga",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 841
+  },
+  {
+   "domain": "hot.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 801,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_6035ee3caacb3f3e3a1746a46f9bb5bb-INAMING",
+    "ldhName": "lovedealyiy.click",
+    "unicodeName": "lovedealyiy.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_dc8d8d8f348176f985199746791c89df-INAMING",
+      "ldhName": "gabriella.ns.cloudflare.com",
+      "unicodeName": "gabriella.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:39.058Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_02cac8ef3cf072f5b4e29a49c33b5351-INAMING",
+      "ldhName": "ruben.ns.cloudflare.com",
+      "unicodeName": "ruben.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:39.058Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "609",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "Sav.com, LLC"
+        ],
+        [
+         "adr",
+         {
+          "cc": "US"
+         },
+         "text",
+         [
+          "",
+          "",
+          "2229 S Michigan Ave Suite 303",
+          "Chicago",
+          "Illinois",
+          "60616",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+1.7086348760"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+1.8018071353"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "operations@sav.com"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "609"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "handle": "CO_706d86c0fdce22c06fbb5fe7fa1bb197-INAMING",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           "Alex Smith"
+          ],
+          [
+           "org",
+           {},
+           "text",
+           "Sav.com, LLC"
+          ],
+          [
+           "adr",
+           {
+            "cc": "US"
+           },
+           "text",
+           [
+            "",
+            "",
+            [
+             "",
+             "",
+             ""
+            ],
+            "Bridgeview",
+            "Illinois",
+            "60455",
+            ""
+           ]
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse-contact@sav.com"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:43:39.058Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.virtualcloudmanager.com/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/609",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:39.058Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "related",
+      "href": "https://rdap.virtualcloudmanager.com/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/lovedealyiy.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "savcom",
+      "eventDate": "2026-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-08-31T01:26:59.183Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-05T01:27:51.836Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:39.058Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "reupzsin.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 873,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_c6f9e2379725ca1bd0855f55ab1f243e-UR",
+    "ldhName": "reupzsin.click",
+    "unicodeName": "reupzsin.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_f8fe4c7a02cefa9325f15b539a683e9f-INAMING",
+      "ldhName": "armando.ns.cloudflare.com",
+      "unicodeName": "armando.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:41.037Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "636ed49c75634520b3ea8c25ec7477ee-DONUTS",
+      "ldhName": "margaret.ns.cloudflare.com",
+      "unicodeName": "margaret.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:41.037Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "1915",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "West263 International Limited"
+        ],
+        [
+         "adr",
+         {
+          "cc": "CN"
+         },
+         "text",
+         [
+          "",
+          "",
+          "UNIT 2 7/F TRANS ASIA CENTRE 18 KIN HONG STREET KWAI CHUNG N.T",
+          "Hong Kong",
+          "Hong Kong",
+          "0855",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+86.18080135005"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+86.18080135005"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "domains@hkdns.hk"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "1915"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           ""
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:+86.18080135005"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "domains@hkdns.hk"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:43:41.037Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.hkdns.hk/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/1915",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:41.037Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "active"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+      "rel": "related",
+      "href": "https://rdap.hkdns.hk/rdap/domain/reupzsin.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "263international",
+      "eventDate": "2026-01-12T06:55:33.219Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-01-12T06:55:33.219Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-01-17T06:55:45.791Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:41.037Z"
+     }
+    ]
+   }
+  },
+  {
+   "domain": "yead.reupzsin.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 786,
+   "rdap": {
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_response_profile_1",
+     "icann_rdap_technical_implementation_guide_1",
+     "redacted"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "The WHOIS information provided in this page has been redacted",
+       "in compliance with ICANN's Temporary Specification for gTLD",
+       "Registration Data.",
+       "",
+       "The data in this record is provided by Tucows Registry for informational",
+       "purposes only, and it does not guarantee its accuracy. Tucows Registry is",
+       "authoritative for whois information in top-level domains it operates",
+       "under contract with the Internet Corporation for Assigned Names and",
+       "Numbers. Whois information from other top-level domains is provided by",
+       "a third-party under license to Tucows Registry.",
+       "",
+       "This service is intended only for query-based access. By using this",
+       "service, you agree that you will use any data presented only for lawful",
+       "purposes and that, under no circumstances will you use (a) data",
+       "acquired for the purpose of allowing, enabling, or otherwise supporting",
+       "the transmission by e-mail, telephone, facsimile or other",
+       "communications mechanism of mass  unsolicited, commercial advertising",
+       "or solicitations to entities other than your existing  customers; or",
+       "(b) this service to enable high volume, automated, electronic processes",
+       "that send queries or data to the systems of any Registrar or any",
+       "Registry except as reasonably necessary to register domain names or",
+       "modify existing domain name registrations.",
+       "",
+       "Tucows Registry reserves the right to modify these terms at any time. By",
+       "submitting this query, you agree to abide by this policy. All rights",
+       "reserved."
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+        "rel": "terms-of-service",
+        "href": "https://rdap.registry.click/",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+        "rel": "glossary",
+        "href": "https://icann.org/epp",
+        "type": "text/html"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+        "rel": "help",
+        "href": "https://icann.org/wicf",
+        "type": "text/html"
+       }
+      ]
+     }
+    ],
+    "redacted": [
+     {
+      "name": {
+       "type": "Registrant Contact"
+      },
+      "prePath": "$.entities[?(@.roles[0]=='registrant')]",
+      "pathLang": "jsonpath",
+      "method": "removal"
+     }
+    ],
+    "objectClassName": "domain",
+    "handle": "DO_c6f9e2379725ca1bd0855f55ab1f243e-UR",
+    "ldhName": "reupzsin.click",
+    "unicodeName": "reupzsin.click",
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "handle": "HO_f8fe4c7a02cefa9325f15b539a683e9f-INAMING",
+      "ldhName": "armando.ns.cloudflare.com",
+      "unicodeName": "armando.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:42.910Z"
+       }
+      ]
+     },
+     {
+      "objectClassName": "nameserver",
+      "handle": "636ed49c75634520b3ea8c25ec7477ee-DONUTS",
+      "ldhName": "margaret.ns.cloudflare.com",
+      "unicodeName": "margaret.ns.cloudflare.com",
+      "status": [
+       "associated"
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:42.910Z"
+       }
+      ]
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "1915",
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "West263 International Limited"
+        ],
+        [
+         "adr",
+         {
+          "cc": "CN"
+         },
+         "text",
+         [
+          "",
+          "",
+          "UNIT 2 7/F TRANS ASIA CENTRE 18 KIN HONG STREET KWAI CHUNG N.T",
+          "Hong Kong",
+          "Hong Kong",
+          "0855",
+          ""
+         ]
+        ],
+        [
+         "tel",
+         {
+          "type": "voice"
+         },
+         "uri",
+         "tel:+86.18080135005"
+        ],
+        [
+         "tel",
+         {
+          "type": "fax"
+         },
+         "uri",
+         "tel:+86.18080135005"
+        ],
+        [
+         "email",
+         {},
+         "text",
+         "domains@hkdns.hk"
+        ]
+       ]
+      ],
+      "roles": [
+       "registrar"
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "1915"
+       }
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           ""
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:+86.18080135005"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "domains@hkdns.hk"
+          ]
+         ]
+        ],
+        "roles": [
+         "abuse"
+        ],
+        "events": [
+         {
+          "eventAction": "last update of RDAP database",
+          "eventDate": "2026-10-17T11:43:42.910Z"
+         }
+        ]
+       }
+      ],
+      "links": [
+       {
+        "value": "https://rdap.hkdns.hk/rdap/",
+        "rel": "about",
+        "href": "https://rdap.registry.click/rdap/entity/1915",
+        "type": "application/rdap+json"
+       }
+      ],
+      "events": [
+       {
+        "eventAction": "last update of RDAP database",
+        "eventDate": "2026-10-17T11:43:42.910Z"
+       }
+      ]
+     }
+    ],
+    "status": [
+     "active"
+    ],
+    "links": [
+     {
+      "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+      "rel": "related",
+      "href": "https://rdap.hkdns.hk/rdap/domain/reupzsin.click",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+      "rel": "self",
+      "href": "https://rdap.registry.click/rdap/domain/reupzsin.click",
+      "type": "application/rdap+json"
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventActor": "263international",
+      "eventDate": "2026-01-12T06:55:33.219Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-01-12T06:55:33.219Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-01-17T06:55:45.791Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:43:42.910Z"
+     }
+    ]
+   }
+  }
+ ],
+ "legit": [
+  {
+   "domain": "dynabook.com",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 1772,
+   "rdap": {
+    "objectClassName": "domain",
+    "handle": "2573128_DOMAIN_COM-VRSN",
+    "ldhName": "DYNABOOK.COM",
+    "links": [
+     {
+      "value": "https://rdap.verisign.com/com/v1/domain/dynabook.com",
+      "rel": "self",
+      "href": "https://rdap.verisign.com/com/v1/domain/dynabook.com",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.verisign.com/com/v1/domain/dynabook.com",
+      "rel": "related",
+      "href": "https://rdap.1api.net/domain/DYNABOOK.COM",
+      "type": "application/rdap+json"
+     }
+    ],
+    "status": [
+     "client transfer prohibited"
+    ],
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "1387",
+      "roles": [
+       "registrar"
+      ],
+      "links": [
+       {
+        "href": "http://www.1api.net",
+        "type": "text/html",
+        "value": "https://rdap.1api.net/",
+        "rel": "about"
+       }
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "1387"
+       }
+      ],
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "1API GmbH"
+        ]
+       ]
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "roles": [
+         "abuse"
+        ],
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           ""
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:+49.68949396850"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse@1api.net"
+          ]
+         ]
+        ]
+       }
+      ]
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventDate": "1998-11-30T05:00:00Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-11-29T05:00:00Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2026-09-25T10:01:12Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:41:56Z"
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "ldhName": "NS1.SHARP.CO.JP"
+     },
+     {
+      "objectClassName": "nameserver",
+      "ldhName": "TG1.SHARP.CO.JP"
+     }
+    ],
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_technical_implementation_guide_1",
+     "icann_rdap_response_profile_1"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "Service subject to Terms of Use."
+      ],
+      "links": [
+       {
+        "href": "https://www.verisign.com/domain-names/registration-data-access-protocol/terms-service/index.xhtml",
+        "type": "text/html",
+        "value": "https://rdap.verisign.com/com/v1/domain/dynabook.com",
+        "rel": "terms-of-service"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "href": "https://icann.org/epp",
+        "type": "text/html",
+        "value": "https://rdap.verisign.com/com/v1/domain/dynabook.com",
+        "rel": "glossary"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "href": "https://icann.org/wicf",
+        "type": "text/html",
+        "value": "https://rdap.verisign.com/com/v1/domain/dynabook.com",
+        "rel": "help"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "domain": "www.askul.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 280
+  },
+  {
+   "domain": "www.suruga-ya.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 270
+  },
+  {
+   "domain": "used.sofmap.com",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 693
+  },
+  {
+   "domain": "pc-master.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 313
+  },
+  {
+   "domain": "hyperlab.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 248
+  },
+  {
+   "domain": "www.janpara.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 307
+  },
+  {
+   "domain": "www.iosys.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 267
+  },
+  {
+   "domain": "www.pc-koubou.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 279
+  },
+  {
+   "domain": "www2.elecom.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 254
+  },
+  {
+   "domain": "shop.kakaku.com",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 698
+  },
+  {
+   "domain": "store.shopping.yahoo.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 143
+  },
+  {
+   "domain": "www.sansindo.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 285
+  },
+  {
+   "domain": "www.pcexpress.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 281
+  },
+  {
+   "domain": "socalshop.com",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 645,
+   "rdap": {
+    "objectClassName": "domain",
+    "handle": "2249545179_DOMAIN_COM-VRSN",
+    "ldhName": "SOCALSHOP.COM",
+    "links": [
+     {
+      "value": "https://rdap.verisign.com/com/v1/domain/socalshop.com",
+      "rel": "self",
+      "href": "https://rdap.verisign.com/com/v1/domain/socalshop.com",
+      "type": "application/rdap+json"
+     },
+     {
+      "value": "https://rdap.verisign.com/com/v1/domain/socalshop.com",
+      "rel": "related",
+      "href": "https://rdap.godaddy.com/v1/domain/SOCALSHOP.COM",
+      "type": "application/rdap+json"
+     }
+    ],
+    "status": [
+     "client delete prohibited",
+     "client renew prohibited",
+     "client transfer prohibited",
+     "client update prohibited"
+    ],
+    "entities": [
+     {
+      "objectClassName": "entity",
+      "handle": "146",
+      "roles": [
+       "registrar"
+      ],
+      "links": [
+       {
+        "href": "http://www.godaddy.com",
+        "type": "text/html",
+        "value": "https://rdap.godaddy.com/v1/",
+        "rel": "about"
+       }
+      ],
+      "publicIds": [
+       {
+        "type": "IANA Registrar ID",
+        "identifier": "146"
+       }
+      ],
+      "vcardArray": [
+       "vcard",
+       [
+        [
+         "version",
+         {},
+         "text",
+         "4.0"
+        ],
+        [
+         "fn",
+         {},
+         "text",
+         "GoDaddy.com, LLC"
+        ]
+       ]
+      ],
+      "entities": [
+       {
+        "objectClassName": "entity",
+        "roles": [
+         "abuse"
+        ],
+        "vcardArray": [
+         "vcard",
+         [
+          [
+           "version",
+           {},
+           "text",
+           "4.0"
+          ],
+          [
+           "fn",
+           {},
+           "text",
+           ""
+          ],
+          [
+           "tel",
+           {
+            "type": "voice"
+           },
+           "uri",
+           "tel:480-624-2505"
+          ],
+          [
+           "email",
+           {},
+           "text",
+           "abuse@godaddy.com"
+          ]
+         ]
+        ]
+       }
+      ]
+     }
+    ],
+    "events": [
+     {
+      "eventAction": "registration",
+      "eventDate": "2018-04-08T18:23:58Z"
+     },
+     {
+      "eventAction": "expiration",
+      "eventDate": "2027-04-08T18:23:58Z"
+     },
+     {
+      "eventAction": "last changed",
+      "eventDate": "2025-05-30T23:50:39Z"
+     },
+     {
+      "eventAction": "last update of RDAP database",
+      "eventDate": "2026-10-17T11:42:26Z"
+     }
+    ],
+    "secureDNS": {
+     "delegationSigned": false
+    },
+    "nameservers": [
+     {
+      "objectClassName": "nameserver",
+      "ldhName": "NS1.AFTERNIC.COM"
+     },
+     {
+      "objectClassName": "nameserver",
+      "ldhName": "NS2.AFTERNIC.COM"
+     }
+    ],
+    "rdapConformance": [
+     "rdap_level_0",
+     "icann_rdap_technical_implementation_guide_1",
+     "icann_rdap_response_profile_1"
+    ],
+    "notices": [
+     {
+      "title": "Terms of Service",
+      "description": [
+       "Service subject to Terms of Use."
+      ],
+      "links": [
+       {
+        "href": "https://www.verisign.com/domain-names/registration-data-access-protocol/terms-service/index.xhtml",
+        "type": "text/html",
+        "value": "https://rdap.verisign.com/com/v1/domain/socalshop.com",
+        "rel": "terms-of-service"
+       }
+      ]
+     },
+     {
+      "title": "Status Codes",
+      "description": [
+       "For more information on domain status codes, please visit https://icann.org/epp"
+      ],
+      "links": [
+       {
+        "href": "https://icann.org/epp",
+        "type": "text/html",
+        "value": "https://rdap.verisign.com/com/v1/domain/socalshop.com",
+        "rel": "glossary"
+       }
+      ]
+     },
+     {
+      "title": "RDDS Inaccuracy Complaint Form",
+      "description": [
+       "URL of the ICANN RDDS Inaccuracy Complaint Form: https://icann.org/wicf"
+      ],
+      "links": [
+       {
+        "href": "https://icann.org/wicf",
+        "type": "text/html",
+        "value": "https://rdap.verisign.com/com/v1/domain/socalshop.com",
+        "rel": "help"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "domain": "www.buy-it.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 306
+  },
+  {
+   "domain": "www.zencart-jp.com",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 561
+  },
+  {
+   "domain": "store.navyweb.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 273
+  }
+ ]
+}

@@ -18,7 +18,25 @@ weights:
   offsite_redirect: 10
   deep_product_path: 2
   young_index: 5
+  # --- T3: RDAP / whois 特徴量 (S5 実測 2026-10) ---
+  # 実測コーパス: legit 18 件 (.jp は rdap.org 非対応で RDAP 0 件) / scam 30 件。
+  #   RDAP 取得成功: legit 2/18, scam 12/30
+  #   registrar URL TLD != com/jp: legit 1/2 (dynabook.com) → maker 例外で除外後 0/2,
+  #                                 scam 11/12 = 91.7% (0/18 の全 legit で 0%)
+  #   abuse 電話 cc != 81:         legit 1/2 (dynabook +49) → 例外後 0/2, scam 4/12 = 33.3%
+  #   rdap_slow (>3s):             legit 0/2, scam 0/12 → 判別力なし。weight 0 (計測のみ)。
+  # 単独では hold(12) 未満に抑え、既存シグナルの補強のみ (precision 優先)。
+  # 正規店 RDAP 発火率 0/18、scam 加算は 11/30 件 (中央値 +6)。
+  # 注意: scam の registrar URL 11 件中 10 件は `rdap.registry.click` (レジストリの
+  # RDAP エンドポイント) を指す。よって本シグナルが測るのは「レジストラの国籍」ではなく
+  # 「registrar entity のリンク先ホストの TLD」= 安価な新規 TLD レジストリ基盤の検出に近い。
+  # 将来 .uk/.de の RDAP を指す正規ブランドが出た場合は allow-list (KNOWN_FOREIGN_MAKERS)
+  # を URL TLD ではなくドメイン/レジストラ名で判定する必要がある。
+  rdap_slow: 0                # 3 秒超。実測で両クラス 0 件のため計測用 (重み 0)
+  registrar_url_tld_foreign: 6  # 実測 scam 91.7% / 正規店 0%。hold 未満の補助シグナル
+  abuse_phone_foreign: 4      # 実測 scam 33.3% / 正規店 0%。欠損は加算しない
 thresholds:
+  rdap_slow_ms: 3000          # RDAP 取得時間の「遅い」閾値 (features は生 ms のみ保持)
   auto_block: 30              # 実測: recall 19/20, FP 0/20
   hold: 12                    # 2 段構えの保留域
   fast_track: 60              # 連続 2 夜を待たずに登録
