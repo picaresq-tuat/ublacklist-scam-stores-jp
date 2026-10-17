@@ -13,7 +13,7 @@ def feat(**kw):
 def test_default_config_exists_and_loads():
     w = load_weights(DEFAULT_CONFIG)
     assert w["weights"]["redirect_to_google"] == 35
-    assert w["thresholds"]["auto_block"] == 30
+    assert w["thresholds"]["auto_block"] == 20
     assert w["thresholds"]["hold"] == 12
     assert w["pivot"]["max_queries"] >= 3
 
@@ -113,12 +113,27 @@ def test_deep_product_path_and_shared_2ld_and_young_index():
 
 
 def test_verdict_exact_thresholds():
-    """hold=12 / auto_block=30。allow <12 <= hold <30 <= auto_block。"""
+    """hold=12 / auto_block=20。allow <12 <= hold <20 <= auto_block。"""
     s = Scorer()
     assert s.score(feat(cloaking=True)).verdict == "hold"  # 12 == hold 下限
-    assert s.score(feat(stolen_image=True)).verdict == "hold"  # 15
     assert s.score(feat(zencart_hits=2)).verdict == "allow"  # 10 (補助シグナル: hold 未満)
-    assert s.score(feat(favicon_collision=True)).verdict == "auto_block"  # 30 == auto 下限
+    assert s.score(feat(stolen_image=True)).verdict == "allow"  # 8 (T4: 15->8)
+    # stolen 8 + risky_tld 8 + deep 2 = 18 < 20 (T4: stolen 10 では 20 ちょうどで
+    # legit の zencart 店が誤爆し得たため 8 に下げた)
+    assert s.score(feat(stolen_image=True, risky_tld=True, deep_product_path=True)).total == 18.0
+    assert (
+        s.score(feat(stolen_image=True, risky_tld=True, deep_product_path=True)).verdict == "hold"
+    )
+    # 20 == auto_block 下限: 実測 scam の主クラスタ (risky 8 + dark 6 + shared 6)
+    assert s.score(feat(risky_tld=True, dark_hits=2, shared_2ld=True)).total == 20.0
+    assert s.score(feat(risky_tld=True, dark_hits=2, shared_2ld=True)).verdict == "auto_block"
+    # T4 で塞いだ FP 経路: 正規 ZenCart 店 + stolen は 18 で auto_block 未満
+    assert s.score(feat(zencart_hits=2, stolen_image=True)).total == 18.0
+    assert s.score(feat(zencart_hits=2, stolen_image=True)).verdict == "hold"
+    # dark 9 + stolen 8 + deep 2 = 19 も auto_block 未満
+    assert s.score(feat(dark_hits=3, stolen_image=True, deep_product_path=True)).total == 19.0
+    assert s.score(feat(dark_hits=3, stolen_image=True, deep_product_path=True)).verdict == "hold"
+    assert s.score(feat(favicon_collision=True)).verdict == "auto_block"  # 30
     assert s.score(feat(redirect_to_google=True)).verdict == "auto_block"  # 35
 
 
@@ -131,6 +146,7 @@ def test_verdict_allow_below_hold():
     assert s.score(feat(risky_tld=True)).verdict == "allow"  # 8
     assert s.score(feat(dark_hits=3)).verdict == "allow"  # 9 (上限)
     assert s.score(feat(offsite_redirect=True)).verdict == "allow"  # 10
+    assert s.score(feat(stolen_image=True)).verdict == "allow"  # 8 (T4: CDN 誤検知対策)
 
 
 def test_fast_track_flag():

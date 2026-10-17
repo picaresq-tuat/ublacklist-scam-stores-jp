@@ -95,7 +95,7 @@ def test_measured_quervia_detected_without_naive_cloaking(scored):
     assert r.verdict == "auto_block", r.reasons
     assert "cloaking" not in r.reasons, "WAF チャレンジを cloaking と誤認している"
     assert r.reasons["zencart"] == 10
-    assert r.reasons["stolen_image"] == 15
+    assert r.reasons["stolen_image"] == 8
     assert r.reasons["risky_tld"] == 8
 
 

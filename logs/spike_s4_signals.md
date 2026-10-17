@@ -1,5 +1,9 @@
 # Spike S4: stolen_image / dark_pattern / affiliate 実測 (2026-10-17)
 
+> 注: 本文中の重み・閾値は S4 時点の値。T4 (S5 再校正) で
+> `stolen_image: 15 -> 8`、`auto_block: 30 -> 20`、`hold: 12` 据え置きに改訂済み
+> (`script/scoring.yaml` と `logs/calib_s5_sweep.tsv` が現在の正)。
+
 ## 方法
 - scam コーパス: sagidame.com 直近検知 (`/?page=1..5`) から 100 ドメイン収集、96 件実測
   (`scripts/spike_s4_signals.py` / 生データ `logs/spike_s4_signals.json`)。
