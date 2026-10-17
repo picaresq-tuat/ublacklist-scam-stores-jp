@@ -56,7 +56,10 @@ def _build_searx(*, engine: str, base_url: str, sleep_sec: float | None = None) 
 
 
 def _build_pipeline(*, db_dir: Path, config=None) -> Pipeline:
-    return Pipeline(db_dir=db_dir, config=config)
+    from whois_rdap import fetch_rdap
+
+    # RDAP は公開 API・1 req/sec。rdap_supported() が .jp 等の 404 既知 TLD を除外する。
+    return Pipeline(db_dir=db_dir, config=config, rdap_fn=fetch_rdap)
 
 
 def build_parser() -> argparse.ArgumentParser:

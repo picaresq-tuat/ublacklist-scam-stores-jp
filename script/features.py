@@ -13,6 +13,7 @@ from dataclasses import asdict, dataclass, field
 from urllib.parse import urlsplit
 
 from fetch import FetchResult
+from whois_rdap import RdapInfo
 
 ZENCART_MARKERS: tuple[str, ...] = (
     "main_page=",
@@ -228,6 +229,17 @@ class PageFeatures:
     deep_product_path: bool = False
     cloaking: bool = False
     bot_only_body: bool = False
+    # T3: RDAP (whois 相当) 特徴量。生値は監査用に保持し、フラグは maker 例外適用後の値。
+    # 取得失敗/欠損時は ok=False でフラグなし (= 加算しない)。時間閾値 (rdap_slow_ms) は
+    # scoring.yaml thresholds で管理し、判定は scorer 側で行う。
+    rdap_ok: bool = False
+    rdap_elapsed_ms: int = 0
+    rdap_registrar_name: str = ""
+    rdap_registrar_url: str = ""
+    rdap_abuse_phone: str = ""
+    rdap_registrar_tld_foreign: bool = False
+    rdap_phone_foreign: bool = False
+    rdap_exception: bool = False
     # (A)/(B) ガード: 差分が「出し分け」以外で説明できるときの記録 (監査用)
     bot_error_page: bool = False
     age_gate: bool = False
@@ -359,6 +371,7 @@ def extract_features(
     known_favicons: dict[str, int] | None = None,
     favicon_origin_map: dict[str, str] | None = None,
     domain_2ld_counts: dict[str, int] | None = None,
+    rdap: RdapInfo | None = None,
 ) -> PageFeatures:
     dom = (domain or "").strip().lower()
     reg = registrable_domain(dom)
@@ -421,6 +434,19 @@ def extract_features(
         ):
             f.offsite_redirect = True
             f.redirect_to_google = any(h in final_host for h in SEARCH_ENGINE_HOSTS)
+
+    # T3: RDAP (whois 相当) 特徴量。rdap が None / ok=False の場合は特徴量 0 (= 加算しない)。
+    if rdap is not None:
+        f.rdap_ok = bool(rdap.ok)
+        f.rdap_elapsed_ms = int(rdap.elapsed_ms)
+        f.rdap_registrar_name = rdap.registrar_name
+        f.rdap_registrar_url = rdap.registrar_url
+        f.rdap_abuse_phone = rdap.abuse_phone
+        if rdap.ok:
+            tld_foreign, phone_foreign, is_maker = rdap.flags(dom)
+            f.rdap_registrar_tld_foreign = tld_foreign
+            f.rdap_phone_foreign = phone_foreign
+            f.rdap_exception = is_maker
 
     # UA クローキング: title 差 かつ 本文長比 ≥0.3 を基本条件に、
     # ブラウザ拒否 (4xx) に対して bot に本文を返す場合は昇格して cloaking とする。
