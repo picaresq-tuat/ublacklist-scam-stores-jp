@@ -18,7 +18,7 @@ _FALLBACK = {
         "redirect_to_google": 35,
         "favicon_collision": 30,
         "favicon_cross_origin": 5,
-        "zencart": 25,
+        "zencart": 10,
         "bot_only_body": 20,
         "cloaking": 12,
         "cloaking_promoted": 20,

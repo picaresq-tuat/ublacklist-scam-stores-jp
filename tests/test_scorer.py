@@ -52,7 +52,15 @@ def test_doorway_plus_favicon_plus_tld_matches_measured_combo():
 def test_zencart_requires_min_hits():
     s = Scorer()
     assert s.score(feat(zencart_hits=1)).total == 0.0
-    assert s.score(feat(zencart_hits=2)).total == 25.0
+    assert s.score(feat(zencart_hits=2)).total == 10.0
+
+
+def test_zencart_alone_cannot_hold_or_block():
+    """S3 スパイク: 正規 ZenCart 店が 2-3 ヒットするため単独では allow に留める。"""
+    s = Scorer()
+    r = s.score(feat(zencart_hits=3))
+    assert r.verdict == "allow", r.reasons
+    assert r.total == 10.0
 
 
 def test_zencart_min_hits_is_configurable(tmp_path):
@@ -109,7 +117,7 @@ def test_verdict_exact_thresholds():
     s = Scorer()
     assert s.score(feat(cloaking=True)).verdict == "hold"  # 12 == hold 下限
     assert s.score(feat(stolen_image=True)).verdict == "hold"  # 15
-    assert s.score(feat(zencart_hits=2)).verdict == "hold"  # 25
+    assert s.score(feat(zencart_hits=2)).verdict == "allow"  # 10 (補助シグナル: hold 未満)
     assert s.score(feat(favicon_collision=True)).verdict == "auto_block"  # 30 == auto 下限
     assert s.score(feat(redirect_to_google=True)).verdict == "auto_block"  # 35
 
