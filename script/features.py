@@ -37,20 +37,32 @@ GENERIC_FAVICON_MD5S: frozenset[str] = frozenset(
     }
 )
 
+# S4 スパイク (logs/spike_s4_signals.md) で実測し棚卸し済み。
+# 除去: 在庫限り/在庫処分 (scam 0/96)、訳あり (scam 1% vs legit 12%)、
+#       今すぐ (scam 2% vs legit 8%)、破格 (scam 1%, 非生産的)。
 DARK_PATTERN_TERMS: tuple[str, ...] = (
     "タイムセール",
-    "在庫限り",
-    "在庫処分",
     "激安",
     "%OFF",
     "％OFF",
-    "今すぐ",
     "送料無料",
     "限定販売",
     "数量限定",
-    "訳あり",
     "大幅値下げ",
-    "破格",
+)
+
+# S4-③: affiliate 広告ネットワークのホスト/ドメイン (リンク先として出現したら計上)。
+# 正規 EC も affiliate を張るため、重み設定は実測 (spike S4) の前にしない。
+AFFILIATE_HOST_MARKERS: tuple[str, ...] = (
+    "a8.net",
+    "afl.rakuten.co.jp",
+    "linksynergy.com",
+    "valuecommerce.com",
+    "amazon-adsystem.com",
+    "rentracks.jp",
+    "trafficgate.net",
+    "adsistant.net",
+    "affiliate",
 )
 
 STORE_ASSET_HOSTS: tuple[str, ...] = (
@@ -182,6 +194,7 @@ CHALLENGE_MARKERS: tuple[str, ...] = (
 _PRODUCT_PATH = re.compile(r"/(product|products|item|items|goods|shop|detail|dp)/", re.I)
 _TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.I | re.S)
 _IMG_RE = re.compile(r"<img[^>]+src=[\"']([^\"']+)", re.I)
+_A_HREF_RE = re.compile(r"<a[^>]+href=[\"']([^\"']+)", re.I)
 _ICON_RE = re.compile(r"<link[^>]*rel=[\"']?[^\"'>]*icon[^>]*>", re.I)
 _ICON_HREF_RE = re.compile(r"href=[\"']([^\"']+)", re.I)
 
@@ -203,6 +216,8 @@ class PageFeatures:
     dark_hits: int = 0
     n_img: int = 0
     stolen_image: bool = False
+    stolen_image_hits: int = 0
+    affiliate_hits: int = 0
     favicon_md5: str | None = None
     favicon_collision: bool = False
     favicon_cross_origin: bool = False
@@ -253,15 +268,34 @@ def _is_foreign_store_asset(src: str, own_registrable: str) -> bool:
     """画像 src が「他社ドメインのストア資産」か。
 
     自ドメイン (cdn.askul.co.jp 等) の画像は盗用ではない。相対 URL も対象外。
+    S4: 照合は substring でなくホスト境界一致 (host == h or host.endswith("." + h))。
+    「evilrakuten.co.jp.attacker.example」のような偽装ホストを拾わない。
     """
+    asset_reg = _store_asset_host(src)
+    return bool(asset_reg) and asset_reg != (own_registrable or "")
+
+
+def _store_asset_host(src: str) -> str:
+    """画像 src のホストが STORE_ASSET_HOSTS に境界一致した場合のみその registrable を返す。"""
     if not src or any(c in src for c in ("\n", " ", "\t")):
-        return False
+        return ""
     host = urlsplit(src).netloc.lower().split(":")[0]
     if not host:
+        return ""
+    for h in STORE_ASSET_HOSTS:
+        if host == h or host.endswith("." + h):
+            return registrable_domain(h)
+    return ""
+
+
+def _affiliate_link_matches(href: str) -> bool:
+    """リンク先が affiliate 広告ネットワークか (S4-③ 計測用)。"""
+    if not href or any(c in href for c in ("\n", " ", "\t")):
         return False
-    if not any(h in host for h in STORE_ASSET_HOSTS):
+    host = urlsplit(href).netloc.lower().split(":")[0]
+    if not host:
         return False
-    return registrable_domain(host) != (own_registrable or "")
+    return any(m in host for m in AFFILIATE_HOST_MARKERS)
 
 
 def _body_len(result: FetchResult | None) -> int:
@@ -351,7 +385,11 @@ def extract_features(
 
     srcs = _IMG_RE.findall(text)
     f.n_img = len(srcs)
-    f.stolen_image = any(_is_foreign_store_asset(s, reg) for s in srcs)
+    stolen_srcs = [s for s in srcs if _is_foreign_store_asset(s, reg)]
+    f.stolen_image_hits = len(stolen_srcs)
+    f.stolen_image = bool(stolen_srcs)
+    hrefs = _A_HREF_RE.findall(text)
+    f.affiliate_hits = sum(1 for h in hrefs if _affiliate_link_matches(h))
     f.deep_product_path = bool(_PRODUCT_PATH.search(text))
 
     if favicon_bytes:
