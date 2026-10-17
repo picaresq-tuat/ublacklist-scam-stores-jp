@@ -14,6 +14,7 @@
 *://*.accessoires-asus.com/*
 *://*.admin.ph/*
 *://*.ajscatfishstation.com/*
+*://*.albsaer.com/*
 *://*.auszeit-theresablank.de/*
 *://*.beignet-tokyo.jp/*
 *://*.betterhomesal.com/*
@@ -40,6 +41,7 @@
 *://*.innergie.com/*
 *://*.iziappx.com/*
 *://*.journalhi.com/*
+*://*.jsmjapan.com/*
 *://*.k-tai-iosys.com/*
 *://*.kdvirtualsupport.co.uk/*
 *://*.kidstalentawards.ao/*
