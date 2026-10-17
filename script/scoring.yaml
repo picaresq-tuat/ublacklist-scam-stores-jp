@@ -4,7 +4,9 @@ weights:
   redirect_to_google: 35      # 検索エンジンへのドアウェイ転送 (実測: *.hika-jp.casa 17 件)
   favicon_collision: 30       # 既知詐欺コーパスと favicon md5 一致 (実測: 17 件が同一)
   favicon_cross_origin: 5     # クロスオリジン favicon 一致 (低重み; サブドメイン/汎用は除く)
-  zencart: 25                 # ZenCart 構造マーカー >= threshold (実測: quervia.biz で 4 個)
+  zencart: 10                 # ZenCart 構造マーカー >= zencart_min_hits (補助シグナルのみ。S3 スパイクで
+                              # 正規 ZenCart 店 (cms-server.ne.jp=2, shop.obitastar.co.jp=3) が
+                              # 2-3 ヒットするため単独 auto_block 不可: 10 < hold 12)
   bot_only_body: 20           # Googlebot にのみ本文を返す
   cloaking: 12                # title 差 かつ 本文長比 >= 0.3 (status 差を伴う場合は promoted)
   cloaking_promoted: 20
@@ -20,7 +22,7 @@ thresholds:
   auto_block: 30              # 実測: recall 19/20, FP 0/20
   hold: 12                    # 2 段構えの保留域
   fast_track: 60              # 連続 2 夜を待たずに登録
-  zencart_min_hits: 2
+  zencart_min_hits: 2         # 補助重みのため min_hits=2 でも単独では hold 未満 (precision 優先)
   nights_required: 2
 pivot:
   max_queries: 4
