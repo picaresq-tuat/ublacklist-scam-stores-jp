@@ -22,7 +22,7 @@ _FALLBACK = {
         "bot_only_body": 20,
         "cloaking": 12,
         "cloaking_promoted": 20,
-        "stolen_image": 15,
+        "stolen_image": 8,
         "dark_pattern_per_hit": 3,
         "dark_pattern_cap": 9,
         "risky_tld": 8,
@@ -36,7 +36,7 @@ _FALLBACK = {
         "abuse_phone_foreign": 4,
     },
     "thresholds": {
-        "auto_block": 30,
+        "auto_block": 20,
         "hold": 12,
         "fast_track": 60,
         "zencart_min_hits": 2,
