@@ -17,8 +17,6 @@
 *://*.albsaer.com/*
 *://*.amnt5888.com/*
 *://*.auszeit-theresablank.de/*
-*://*.av01.media/*
-*://*.bandai-hobby.net/*
 *://*.beignet-tokyo.jp/*
 *://*.betterhomesal.com/*
 *://*.bingobongolearning.com/*
@@ -32,13 +30,11 @@
 *://*.diagakbari.com/*
 *://*.dienlanhminhdang.com/*
 *://*.digitalpolicylaw.com/*
-*://*.dmm.co.jp/*
 *://*.donanimhaber.com/*
 *://*.ds-cab-ivanoff.com/*
 *://*.ecofaune.org/*
 *://*.energowatch.hu/*
 *://*.eurasiantactical.de/*
-*://*.facebook.com/*
 *://*.femsajtolo.hu/*
 *://*.flamingobeach.holiday/*
 *://*.gloucesterbikeproject.co.uk/*
