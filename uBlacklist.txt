@@ -8,3 +8,10 @@
 /https?:\/\/(?:[a-z0-9-]+\.)*xn--[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,8}\/.*/
 
 ## Hermes nightly
+*://*.achievia.com/*
+*://*.aprotec.pro/*
+*://*.av01.tv/*
+*://*.dydell.com/*
+*://*.my-esthetic.com/*
+*://*.namratasnacks.in/*
+*://*.softest.jp/*
