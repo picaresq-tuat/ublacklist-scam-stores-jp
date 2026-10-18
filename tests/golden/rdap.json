@@ -1,0 +1,336 @@
+{
+ "scam": [
+  {
+   "domain": "lybabg.amtlkg.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 797,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "epx.qwexlqrv.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1135
+  },
+  {
+   "domain": "sopjpq.oeqfeg.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 784,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "opentax.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1210
+  },
+  {
+   "domain": "oktap.katachi.casa",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 790
+  },
+  {
+   "domain": "diary.nomura.sale",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 400: Bad Request",
+   "elapsed_ms": 622
+  },
+  {
+   "domain": "okrack.katachi.casa",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 848
+  },
+  {
+   "domain": "datapause.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1199
+  },
+  {
+   "domain": "okcrux.fuji-ne.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 811,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "fixed.hxgknsxb.fashion",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 856
+  },
+  {
+   "domain": "okpast.katachi.casa",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 768
+  },
+  {
+   "domain": "snacktap.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1168
+  },
+  {
+   "domain": "shiptap.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1122
+  },
+  {
+   "domain": "scanvideo.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1193
+  },
+  {
+   "domain": "mensize.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1207
+  },
+  {
+   "domain": "huntread.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1148
+  },
+  {
+   "domain": "hubplan.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1178
+  },
+  {
+   "domain": "happypass.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1164
+  },
+  {
+   "domain": "halllab.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1225
+  },
+  {
+   "domain": "reboxche.bond",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 1200,
+   "registrar_name": "Spaceship, Inc.",
+   "registrar_url": "https://www.spaceship.com/",
+   "abuse_phone": "tel:+1.9854014545"
+  },
+  {
+   "domain": "admin.reboxche.bond",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 1177
+  },
+  {
+   "domain": "payto.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 826,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "pay.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 851,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 781,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "one.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 770,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "frxzmysf.yoga",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 808,
+   "registrar_name": "West263 International Limited",
+   "registrar_url": "http://www.hkdns.hk/",
+   "abuse_phone": "tel:+852.30697963"
+  },
+  {
+   "domain": "buzz.frxzmysf.yoga",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: ",
+   "elapsed_ms": 841
+  },
+  {
+   "domain": "hot.lovedealyiy.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 801,
+   "registrar_name": "Sav.com, LLC",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/609",
+   "abuse_phone": "tel:"
+  },
+  {
+   "domain": "reupzsin.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 873,
+   "registrar_name": "West263 International Limited",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/1915",
+   "abuse_phone": "tel:+86.18080135005"
+  },
+  {
+   "domain": "yead.reupzsin.click",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 786,
+   "registrar_name": "West263 International Limited",
+   "registrar_url": "https://rdap.registry.click/rdap/entity/1915",
+   "abuse_phone": "tel:+86.18080135005"
+  }
+ ],
+ "legit": [
+  {
+   "domain": "dynabook.com",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 1772,
+   "registrar_name": "1API GmbH",
+   "registrar_url": "http://www.1api.net",
+   "abuse_phone": "tel:+49.68949396850"
+  },
+  {
+   "domain": "www.askul.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 280
+  },
+  {
+   "domain": "www.suruga-ya.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 270
+  },
+  {
+   "domain": "used.sofmap.com",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 693
+  },
+  {
+   "domain": "pc-master.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 313
+  },
+  {
+   "domain": "hyperlab.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 248
+  },
+  {
+   "domain": "www.janpara.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 307
+  },
+  {
+   "domain": "www.iosys.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 267
+  },
+  {
+   "domain": "www.pc-koubou.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 279
+  },
+  {
+   "domain": "www2.elecom.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 254
+  },
+  {
+   "domain": "shop.kakaku.com",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 698
+  },
+  {
+   "domain": "store.shopping.yahoo.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 143
+  },
+  {
+   "domain": "www.sansindo.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 285
+  },
+  {
+   "domain": "www.pcexpress.co.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 281
+  },
+  {
+   "domain": "socalshop.com",
+   "ok": true,
+   "error": "",
+   "elapsed_ms": 645,
+   "registrar_name": "GoDaddy.com, LLC",
+   "registrar_url": "http://www.godaddy.com",
+   "abuse_phone": "tel:480-624-2505"
+  },
+  {
+   "domain": "www.buy-it.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 306
+  },
+  {
+   "domain": "www.zencart-jp.com",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 561
+  },
+  {
+   "domain": "store.navyweb.jp",
+   "ok": false,
+   "error": "HTTPError: HTTP Error 404: Not Found",
+   "elapsed_ms": 273
+  }
+ ]
+}

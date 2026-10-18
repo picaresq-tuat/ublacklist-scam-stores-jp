@@ -15,12 +15,14 @@
 *://*.admin.ph/*
 *://*.ajscatfishstation.com/*
 *://*.albsaer.com/*
+*://*.amnt5888.com/*
 *://*.auszeit-theresablank.de/*
 *://*.beignet-tokyo.jp/*
 *://*.betterhomesal.com/*
 *://*.bingobongolearning.com/*
 *://*.blackairclari.net/*
 *://*.bless-n-wish.com/*
+*://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
 *://*.buurtpreventiewernhoutsburg.nl/*
 *://*.championsofthefuture.uk/*
@@ -37,6 +39,7 @@
 *://*.flamingobeach.holiday/*
 *://*.gloucesterbikeproject.co.uk/*
 *://*.gsss-gh.com/*
+*://*.helgaly.com/*
 *://*.iifscindia.com/*
 *://*.innergie.com/*
 *://*.iziappx.com/*
@@ -47,9 +50,13 @@
 *://*.kidstalentawards.ao/*
 *://*.kortekbilisim.com/*
 *://*.kundalishastra.com/*
+*://*.lechantdesamandes.fr/*
 *://*.lets-play-2.com/*
+*://*.libdo-immo.com/*
 *://*.madelineguide.net/*
 *://*.maghoulacademy.ir/*
+*://*.mahgoub-academy.com/*
+*://*.mangaloasis.com/*
 *://*.mavenbrain.com/*
 *://*.mimoza.bg/*
 *://*.missav.run/*
