@@ -111,3 +111,31 @@ def test_matching_is_case_and_port_insensitive(tmp_path):
     db.load_seed()
     assert db.match("WWW.JANPARA.CO.JP:443") == "used_store"
     assert db.match("https://www.janpara.co.jp/item/1") == "used_store"
+
+
+# --- RED: 実測で「明らかに cloaking でない」と確認した 2 サイト (2026-10-12) ---
+
+
+def test_measured_non_cloaking_sites_are_in_seed():
+    """bandai-hobby.net / dmm.co.jp は SEED (hunter が triage で使う実体) に載っていること。"""
+    from whitelist import SEED
+
+    assert "bandai-hobby.net" in SEED
+    assert "dmm.co.jp" in SEED
+
+
+def test_measured_non_cloaking_sites_match_with_and_without_subdomain():
+    from whitelist import SEED, Whitelist
+
+    wl_guard = Whitelist(SEED)
+    assert wl_guard.match("bandai-hobby.net") == "bandai-hobby.net"
+    assert wl_guard.match("dmm.co.jp") == "dmm.co.jp"
+    assert wl_guard.match("www.dmm.co.jp") == "dmm.co.jp"
+    assert wl_guard.match("bandai-hobby.net.evil.example") is None
+
+
+def test_measured_non_cloaking_site_categories(tmp_path):
+    db = wl(tmp_path)
+    db.load_seed()
+    assert db.match("bandai-hobby.net") == "official_store"
+    assert db.match("www.dmm.co.jp") == "aggregator"
