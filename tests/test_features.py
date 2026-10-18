@@ -79,7 +79,10 @@ def test_zencart_markers_counted_from_constants():
 
 def test_dark_pattern_terms_and_hits():
     f = extract_features("shop.example", res())
-    assert {"タイムセール", "在庫限り", "%OFF"} <= set(DARK_PATTERN_TERMS)
+    assert {"タイムセール", "%OFF", "送料無料"} <= set(DARK_PATTERN_TERMS)
+    # S4 スパイクで非生産的 (scam 0-1%) / legit 優勢の語は除去済み
+    for gone in ("在庫限り", "在庫処分", "訳あり", "今すぐ", "破格"):
+        assert gone not in DARK_PATTERN_TERMS
     assert f.dark_hits >= 3
 
 
@@ -88,6 +91,61 @@ def test_stolen_image_detected_from_store_hosts():
     assert any("rakuten" in h for h in STORE_ASSET_HOSTS)
     assert f.stolen_image is True
     assert f.n_img == 1
+
+
+def test_stolen_image_host_match_is_suffix_boundary_not_substring():
+    # S4: 「rakuten.co.jp」を含むだけで発火する substring 照合は FP 源
+    # (例: evilrakuten.co.jp.attacker.example)。ホスト境界一致に寄せる。
+    fake = res(
+        body='<html><body><img src="https://img.evilrakuten.co.jp.attacker.example/x.jpg"></body></html>'
+    )
+    f = extract_features("shop.example", fake)
+    assert f.stolen_image is False
+    assert f.stolen_image_hits == 0
+    # 自ドメイン CDN (shop.example 配下) は盗用でない
+    own = res(body='<html><body><img src="https://cdn.shop.example/x.jpg"></body></html>')
+    f2 = extract_features("shop.example", own)
+    assert f2.stolen_image is False
+    # サブドメインは境界一致で拾う (image.rakuten.co.jp)
+    ok = res(body='<html><body><img src="https://image.rakuten.co.jp/shop/x.jpg"></body></html>')
+    f3 = extract_features("shop.example", ok)
+    assert f3.stolen_image is True
+    assert f3.stolen_image_hits == 1
+
+
+def test_stolen_image_hits_counted_per_foreign_host():
+    body = (
+        "<html><body>"
+        '<img src="https://image.rakuten.co.jp/a.jpg">'
+        '<img src="https://cdn.r10s.jp/b.jpg">'
+        '<img src="https://media-amazon.com/c.jpg">'
+        '<img src="/local.jpg">'
+        "</body></html>"
+    )
+    f = extract_features("shop.example", res(body=body))
+    assert f.stolen_image is True
+    assert f.stolen_image_hits == 3
+
+
+def test_affiliate_links_counted():
+    # S4-③: affiliate 広告リンクの抽出 (計測用特徴量)。正規 EC も affiliate を張るため
+    # 重み設定の前必須計測。
+    body = (
+        "<html><body>"
+        '<a href="https://px.a8.net/svt/eotp?a=1">a8</a>'
+        '<a href="https://hb.afl.rakuten.co.jp/hgb/123/">rakuten</a>'
+        '<a href="https://click.linksynergy.com/link?id=x">ls</a>'
+        '<a href="/shop/item/1">自サイト</a>'
+        '<a href="https://shop.example/shop/item/2">自サイト絶対</a>'
+        "</body></html>"
+    )
+    f = extract_features("shop.example", res(body=body))
+    assert f.affiliate_hits == 3
+
+
+def test_affiliate_links_none_for_clean_page():
+    f = extract_features("shop.example", res(body='<html><body><a href="/x">x</a></body></html>'))
+    assert f.affiliate_hits == 0
 
 
 def test_no_stolen_image_for_relative_src():

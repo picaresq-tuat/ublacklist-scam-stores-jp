@@ -4,11 +4,20 @@ weights:
   redirect_to_google: 35      # 検索エンジンへのドアウェイ転送 (実測: *.hika-jp.casa 17 件)
   favicon_collision: 30       # 既知詐欺コーパスと favicon md5 一致 (実測: 17 件が同一)
   favicon_cross_origin: 5     # クロスオリジン favicon 一致 (低重み; サブドメイン/汎用は除く)
-  zencart: 25                 # ZenCart 構造マーカー >= threshold (実測: quervia.biz で 4 個)
+  zencart: 10                 # ZenCart 構造マーカー >= zencart_min_hits (補助シグナルのみ。S3 スパイクで
+                              # 正規 ZenCart 店 (cms-server.ne.jp=2, shop.obitastar.co.jp=3) が
+                              # 2-3 ヒットするため単独 auto_block 不可: 10 < hold 12)
   bot_only_body: 20           # Googlebot にのみ本文を返す
   cloaking: 12                # title 差 かつ 本文長比 >= 0.3 (status 差を伴う場合は promoted)
   cloaking_promoted: 20
-  stolen_image: 15            # 商品画像 src が WH ストアのホスト
+  stolen_image: 8             # 商品画像 src が他社ストア資産ホスト (境界一致)。
+                              # T4 で 15->8: legit 25 件中 3 件 (楽天 r10s.jp / Yahoo shopping
+                              # yimg.jp / impress media-amazon.com) が自社 CDN を他社資産と判定され、
+                              # 15 なら 15/18/15 点で hold 帯 FP、10 でも 20 ちょうどに達する経路
+                              # (zencart 10 + stolen 10、dark 9 + stolen 10 + deep 2) が残る。
+                              # 8 なら zencart 10 + 8 = 18、dark 9 + 8 + deep 2 = 19 で
+                              # auto_block(20) 未満。代償は auto_block recall 52->45/96
+                              # (失った 7 件はすべて hold 帯に残留 = review 圏内)。
   dark_pattern_per_hit: 3
   dark_pattern_cap: 9
   risky_tld: 8
@@ -16,11 +25,42 @@ weights:
   offsite_redirect: 10
   deep_product_path: 2
   young_index: 5
+  # --- T3: RDAP / whois 特徴量 (S5 実測 2026-10) ---
+  # 実測コーパス: legit 18 件 (.jp は rdap.org 非対応で RDAP 0 件) / scam 30 件。
+  #   RDAP 取得成功: legit 2/18, scam 12/30
+  #   registrar URL TLD != com/jp: legit 1/2 (dynabook.com) → maker 例外で除外後 0/2,
+  #                                 scam 11/12 = 91.7% (0/18 の全 legit で 0%)
+  #   abuse 電話 cc != 81:         legit 1/2 (dynabook +49) → 例外後 0/2, scam 4/12 = 33.3%
+  #   rdap_slow (>3s):             legit 0/2, scam 0/12 → 判別力なし。weight 0 (計測のみ)。
+  # 単独では hold(12) 未満に抑え、既存シグナルの補強のみ (precision 優先)。
+  # 正規店 RDAP 発火率 0/18、scam 加算は 11/30 件 (中央値 +6)。
+  # 注意: scam の registrar URL 11 件中 10 件は `rdap.registry.click` (レジストリの
+  # RDAP エンドポイント) を指す。よって本シグナルが測るのは「レジストラの国籍」ではなく
+  # 「registrar entity のリンク先ホストの TLD」= 安価な新規 TLD レジストリ基盤の検出に近い。
+  # 将来 .uk/.de の RDAP を指す正規ブランドが出た場合は allow-list (KNOWN_FOREIGN_MAKERS)
+  # を URL TLD ではなくドメイン/レジストラ名で判定する必要がある。
+  rdap_slow: 0                # 3 秒超。実測で両クラス 0 件のため計測用 (重み 0)
+  registrar_url_tld_foreign: 6  # 実測 scam 91.7% / 正規店 0%。hold 未満の補助シグナル
+  abuse_phone_foreign: 4      # 実測 scam 33.3% / 正規店 0%。欠損は加算しない
 thresholds:
-  auto_block: 30              # 実測: recall 19/20, FP 0/20
-  hold: 12                    # 2 段構えの保留域
+  rdap_slow_ms: 3000          # RDAP 取得時間の「遅い」閾値 (features は生 ms のみ保持)
+  # T4 (S5 再校正, 2026-10, logs/calib_s5_sweep.tsv)。重み stolen_image=8 適用後:
+  #   auto_block=20 : golden scam recall 18/20, legit FP 0/17 (legit 最大 11)
+  #                   scam 96 件コーパス (部分特徴量) recall 45/96, legit FP 0/25 (legit 最大 11)
+  #                   hold 帯 FP: golden 0/17, 部分コーパス 0/25 (stolen 10 では 1/25 だった)
+  #                   余白 auto_block - legit_max = 9 (両コーパスとも)。
+  #                   旧構成 (auto_block=30, stolen_image=15) は同コーパス 23/96 だった (FP 0)。
+  #                   分布は離散。auto_block=20 ちょうどの 16 件の内訳は
+  #                   dark_pattern(6)+risky_tld(8)+shared_2ld(6) が 13 件、
+  #                   rdap(6)+risky_tld(8)+shared_2ld(6) が 3 件 (rdap が主因ではない)。
+  #                   auto_block=19 なら recall は上がるが余白が 8 に縮む。以下の理由で 20 を採る:
+  #                   部分コーパスは zencart/favicon/cloaking/offsite を未計測のため、
+  #                   **FP 0/25 は下限**であり真の FP 率ではない。余白を優先する。
+  auto_block: 20
+  hold: 12                    # 据え置き (実測: hold 域の legit は stolen 8 で 0/25。
+                              # 14 に上げると scam 19 件が review 圏外に落ちる)
   fast_track: 60              # 連続 2 夜を待たずに登録
-  zencart_min_hits: 2
+  zencart_min_hits: 2         # 補助重みのため min_hits=2 でも単独では hold 未満 (precision 優先)
   nights_required: 2
 pivot:
   max_queries: 4

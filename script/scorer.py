@@ -18,11 +18,11 @@ _FALLBACK = {
         "redirect_to_google": 35,
         "favicon_collision": 30,
         "favicon_cross_origin": 5,
-        "zencart": 25,
+        "zencart": 10,
         "bot_only_body": 20,
         "cloaking": 12,
         "cloaking_promoted": 20,
-        "stolen_image": 15,
+        "stolen_image": 8,
         "dark_pattern_per_hit": 3,
         "dark_pattern_cap": 9,
         "risky_tld": 8,
@@ -30,12 +30,17 @@ _FALLBACK = {
         "offsite_redirect": 10,
         "deep_product_path": 2,
         "young_index": 5,
+        # T3: RDAP / whois (S5 実測。詳細は scoring.yaml のコメント)
+        "rdap_slow": 0,
+        "registrar_url_tld_foreign": 6,
+        "abuse_phone_foreign": 4,
     },
     "thresholds": {
-        "auto_block": 30,
+        "auto_block": 20,
         "hold": 12,
         "fast_track": 60,
         "zencart_min_hits": 2,
+        "rdap_slow_ms": 3000,
         "nights_required": 2,
     },
     "pivot": {"max_queries": 4, "hold_trigger": 12},
@@ -148,6 +153,15 @@ class Scorer:
             add("redirect_to_google", w["redirect_to_google"])
         elif f.offsite_redirect:
             add("offsite_redirect", w["offsite_redirect"])
+
+        # T3: RDAP / whois。取得失敗 (rdap_ok=False) は一切加算しない。
+        if f.rdap_ok:
+            if f.rdap_elapsed_ms > t.get("rdap_slow_ms", 3000):
+                add("rdap_slow", w.get("rdap_slow", 0), "rdap")
+            if f.rdap_registrar_tld_foreign:
+                add("registrar_url_tld_foreign", w.get("registrar_url_tld_foreign", 0), "rdap")
+            if f.rdap_phone_foreign:
+                add("abuse_phone_foreign", w.get("abuse_phone_foreign", 0), "rdap")
 
         if f.favicon_collision:
             add("favicon_collision", w["favicon_collision"])

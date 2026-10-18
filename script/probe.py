@@ -13,6 +13,7 @@ from pathlib import Path
 from features import extract_features
 from fetch import BlockedURL, FetchError, fetch
 from scorer import Scorer
+from whois_rdap import rdap_supported
 
 PIVOT_QUERY_CAP = 4
 
@@ -30,11 +31,18 @@ class Pipeline:
     """ページ取得 → 特徴量 → スコア を 1 ドメイン単位で実行する。"""
 
     def __init__(
-        self, *, db_dir: Path | str = ".", scorer=None, config=None, timeout: float = 12.0
+        self,
+        *,
+        db_dir: Path | str = ".",
+        scorer=None,
+        config=None,
+        timeout: float = 12.0,
+        rdap_fn=None,
     ):
         self.db_dir = Path(db_dir)
         self.scorer = scorer or Scorer(config) if config else (scorer or Scorer())
         self.timeout = timeout
+        self.rdap_fn = rdap_fn
         self._hits: dict[str, list[str]] = {}
         self._favicon_counts: dict[str, int] = {}
 
@@ -90,6 +98,13 @@ class Pipeline:
                 favicon_bytes = (fav.body or "").encode("utf-8", "replace")[:64] or b"fav"
                 break
 
+        rdap = None
+        if self.rdap_fn is not None and rdap_supported(dom):
+            try:
+                rdap = self.rdap_fn(dom)
+            except Exception:  # RDAP の失敗で probe 全体を落とさない (特徴量 0)
+                rdap = None
+
         feats = extract_features(
             dom,
             browser,
@@ -97,6 +112,7 @@ class Pipeline:
             favicon_bytes=favicon_bytes,
             known_favicons=self._favicon_counts,
             domain_2ld_counts=None,
+            rdap=rdap,
         )
         score = self.scorer.score(feats)
         decision = {"auto_block": "block", "hold": "hold", "allow": "dismissed"}[score.verdict]
