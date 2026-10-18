@@ -85,7 +85,9 @@
 *://*.sunmold.com/*
 *://*.tecai.site/*
 *://*.torahtent.com/*
+*://*.umeedinternationalschool.com/*
 *://*.universellpos.com/*
+*://*.ventagringa.com/*
 *://*.volgamed34.ru/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
