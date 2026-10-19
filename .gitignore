@@ -3,6 +3,9 @@ db/*.db
 db/*.db-journal
 db/*.db-wal
 db/*.db-shm
+# 手動収集した容疑ドメイン (未検証・誤検知を含むため公開しない)
+db/manual_candidates.txt
+db/manual_candidates*.txt
 
 # 未編集の生ログ (編集済みログのみ logs/nightly_scan.log* として追跡する)
 logs/*.raw.log
