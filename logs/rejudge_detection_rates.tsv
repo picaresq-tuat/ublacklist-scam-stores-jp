@@ -1,0 +1,10 @@
+# P10 監査 (cloaking 82 + 手動 202 = 202 実ドメイン) のシグナル検知率
+# scam_confirmed=15 (実地検証済) / legit_active=116 / hold=56 / block_down=7 / dead=90
+signal	scam_confirmed_n=15	block_down_n=7	hold_n=56	legit_active_n=116	dead_n=90
+abuse_phone_foreign	7/15	4/7	33/56	70/116	13/90
+bot_only_body	0/15	6/7	0/56	0/116	0/90
+cloaking	15/15	1/7	46/56	0/116	0/90
+dark_pattern	0/15	0/7	0/56	1/116	0/90
+deep_product_path	2/15	0/7	17/56	35/116	0/90
+offsite_redirect	0/15	0/7	3/56	2/116	0/90
+registrar_url_tld_foreign	7/15	2/7	8/56	13/116	5/90
