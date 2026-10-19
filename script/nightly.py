@@ -23,6 +23,7 @@ from datetime import datetime, timedelta, timezone, tzinfo
 from pathlib import Path
 
 import gitops
+import watchlist
 from gitops import GitError
 
 HEADER = (
@@ -76,6 +77,8 @@ def format_log_block(report: dict, *, now: datetime) -> str:
         f"expired={len(report.get('expired') or [])} "
         f"cloaking_holds={len(report.get('cloaking_holds') or [])} "
         f"cloaking_added={len(report.get('cloaking_added') or [])}",
+        f"  manual_candidates: checked={_safe_int(report.get('candidate_checked'))} "
+        f"promoted={len(report.get('candidate_promoted') or [])}",
     ]
     return "\n".join(lines) + "\n"
 
@@ -130,7 +133,12 @@ def append_log(path: Path | str, report: dict, *, now: datetime | None = None) -
 
 def has_changes(report: dict) -> bool:
     """uBlacklist.txt / cloaking リストに実変化があったか。"""
-    return bool(report.get("published") or report.get("expired") or report.get("cloaking_holds"))
+    return bool(
+        report.get("published")
+        or report.get("expired")
+        or report.get("cloaking_holds")
+        or report.get("candidate_promoted")
+    )
 
 
 def _default_stage(
@@ -195,6 +203,7 @@ def run(
     max_queries: int | None = None,
     now: datetime | None = None,
     api=None,
+    candidate_probe=None,
 ) -> dict:
     """1 夜分の実行 → ログ追記 → (変化があれば) push & PR。"""
     now = now or _now()
@@ -205,6 +214,13 @@ def run(
         repo_dir=repo_dir, night=night, dry_run=dry_run, db_dir=db_dir, max_queries=max_queries
     )
     report.setdefault("dry_run", dry_run)
+
+    # P10: 手動収集リストの継続監視。probe はテストで差し替え可能。
+    cand = watchlist.monitor(
+        repo_dir, probe=candidate_probe or watchlist.probe_domains, dry_run=dry_run
+    )
+    report["candidate_checked"] = cand.get("candidates", 0)
+    report["candidate_promoted"] = list(cand.get("promoted") or [])
 
     log_path = repo_dir / "logs" / LOG_NAME
     rotated = append_log(log_path, report, now=now)
