@@ -74,3 +74,10 @@
   domains_found=197 new_domains=83 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=7 would_publish=0 expired=0 cloaking_holds=91 cloaking_added=2
+
+[2026-10-20T04:30+09:00] night=2026-10-20 mode=publish
+  queries=1 empty_queries=7 engine_failures=0
+  domains_found=235 new_domains=102 aborted=False
+  blocked=0 hold=0 dismissed=0 whitelisted=0
+  uBlacklist.txt: published=9 would_publish=0 expired=0 cloaking_holds=100 cloaking_added=23
+  manual_candidates: checked=202 promoted=1
