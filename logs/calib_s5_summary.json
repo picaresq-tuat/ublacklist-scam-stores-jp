@@ -26,8 +26,8 @@
   "deep_product_path": 2,
   "young_index": 5,
   "rdap_slow": 0,
-  "registrar_url_tld_foreign": 6,
-  "abuse_phone_foreign": 4
+  "registrar_url_tld_foreign": 4,
+  "abuse_phone_foreign": 0
  },
  "corpora": {
   "golden": {
@@ -53,7 +53,7 @@
   },
   "spike_s4": {
    "scam_n": 96,
-   "recall": 45,
+   "recall": 42,
    "legit_n": 25,
    "fp": 0,
    "hold_fp": 0

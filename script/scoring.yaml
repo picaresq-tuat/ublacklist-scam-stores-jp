@@ -40,8 +40,15 @@ weights:
   # 将来 .uk/.de の RDAP を指す正規ブランドが出た場合は allow-list (KNOWN_FOREIGN_MAKERS)
   # を URL TLD ではなくドメイン/レジストラ名で判定する必要がある。
   rdap_slow: 0                # 3 秒超。実測で両クラス 0 件のため計測用 (重み 0)
-  registrar_url_tld_foreign: 6  # 実測 scam 91.7% / 正規店 0%。hold 未満の補助シグナル
-  abuse_phone_foreign: 4      # 実測 scam 33.3% / 正規店 0%。欠損は加算しない
+  # P10 実測 (2026-10, logs/rejudge_detection_rates.tsv: 実サイト 202 件の監査):
+  #   registrar_url_tld_foreign: scam 7/15 (47%) / 正規 13/116 (11%) → lift 4.2x。6 -> 4。
+  #   abuse_phone_foreign:       scam 7/15 (47%) / 正規 70/116 (60%) → 判別力なし (逆転)。
+  #     原因: phone_foreign は「国番号 != 81」だけを見るため、非 JP の正規サイトは
+  #     レジストラの abuse 電話が自国番号である時点で必ず発火する (構造的欠陥)。
+  #     golden 0/20・s4 1/96 と scam 側の再現率もゼロなので重み 0 (計測のみ) に落とす。
+  #     ccTLD ごとの国コード比較に直すのは別チケット (特徴量の再仕様)。
+  registrar_url_tld_foreign: 4
+  abuse_phone_foreign: 0      # 判別力なし (正規 60% / scam 47%)。計測のみ
 thresholds:
   rdap_slow_ms: 3000          # RDAP 取得時間の「遅い」閾値 (features は生 ms のみ保持)
   # T4 (S5 再校正, 2026-10, logs/calib_s5_sweep.tsv)。重み stolen_image=8 適用後:

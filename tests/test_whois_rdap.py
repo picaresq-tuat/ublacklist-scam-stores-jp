@@ -236,7 +236,10 @@ def test_scorer_adds_rdap_reasons():
     s = Scorer()
     sc = s.score(f)
     assert sc.reasons.get("registrar_url_tld_foreign") == s.weights["registrar_url_tld_foreign"]
-    assert sc.reasons.get("abuse_phone_foreign") == s.weights["abuse_phone_foreign"]
+    # P10: abuse_phone_foreign は実サイト監査で判別力なし (正規 60% / scam 47%) → 重み 0。
+    # 0 重みは「計測のみ」で、スコアには一切加算しない。
+    assert s.weights["abuse_phone_foreign"] == 0
+    assert "abuse_phone_foreign" not in sc.reasons
 
 
 def test_scorer_no_addition_on_rdap_failure():

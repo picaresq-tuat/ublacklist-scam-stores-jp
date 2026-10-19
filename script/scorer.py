@@ -32,8 +32,8 @@ _FALLBACK = {
         "young_index": 5,
         # T3: RDAP / whois (S5 実測。詳細は scoring.yaml のコメント)
         "rdap_slow": 0,
-        "registrar_url_tld_foreign": 6,
-        "abuse_phone_foreign": 4,
+        "registrar_url_tld_foreign": 4,
+        "abuse_phone_foreign": 0,
     },
     "thresholds": {
         "auto_block": 20,
