@@ -18,13 +18,12 @@ import argparse
 import json
 import re
 import sys
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "script"))
 
 import publish
-from probe import Pipeline
+import watchlist
 from rejudge import Outcome, select_cloaking_removals, select_promotions, summarise
 from whitelist import WhitelistDB
 
@@ -52,28 +51,8 @@ def domains_in(text: str) -> list[str]:
 
 
 def probe_all(domains: list[str], workers: int) -> list[Outcome]:
-    pipe = Pipeline(rdap_fn=None)
-    from whois_rdap import fetch_rdap
-
-    pipe.rdap_fn = fetch_rdap
-
-    def one(dom: str) -> Outcome:
-        r = pipe.run_domain(dom)
-        f = r.features or {}
-        status = f.get("status")
-        return Outcome(
-            domain=dom,
-            decision=r.decision,
-            score=float(r.score or 0.0),
-            status=status if isinstance(status, int) else None,
-            cloaking=bool(f.get("cloaking")),
-            reasons=dict(r.reasons or {}),
-        )
-
-    if workers <= 1:
-        return [one(d) for d in domains]
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        return list(pool.map(one, domains))
+    """本番パイプラインで判定 (実装は watchlist 側に一本化)。"""
+    return watchlist.probe_domains(domains, workers=workers)
 
 
 def _write_lists(scam_path: Path, cloak_path: Path, promote: list[str], remove: list[str]) -> None:
