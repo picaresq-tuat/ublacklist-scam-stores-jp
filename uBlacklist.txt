@@ -13,8 +13,10 @@
 *://*.aprotec.pro/*
 *://*.auszeit-theresablank.de/*
 *://*.av01.tv/*
+*://*.best-com.site/*
 *://*.buurtpreventiewernhoutsburg.nl/*
 *://*.championsofthefuture.uk/*
+*://*.dreamcity.tr/*
 *://*.dydell.com/*
 *://*.iidamizuhiki.com/*
 *://*.irrigo.no/*
@@ -26,6 +28,7 @@
 *://*.rozwojownia.com/*
 *://*.rt23.be/*
 *://*.softest.jp/*
+*://*.stavebniny-elckner.cz/*
 *://*.top-dienst.ch/*
 *://*.universellpos.com/*
 *://*.websitemaringa.com/*
