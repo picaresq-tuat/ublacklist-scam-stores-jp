@@ -1,0 +1,2800 @@
+{
+ "generated_at": "2026-10-19T03:09:36+00:00",
+ "summary": {
+  "cloaking": {
+   "n": 82,
+   "active": 59,
+   "active_rate": 0.7195,
+   "by_decision": {
+    "block": 14,
+    "dismissed": 35,
+    "hold": 33
+   }
+  },
+  "manual": {
+   "n": 202,
+   "active": 129,
+   "active_rate": 0.6386,
+   "by_decision": {
+    "block": 8,
+    "dismissed": 171,
+    "hold": 23
+   }
+  }
+ },
+ "promote": [
+  "afriquedeslibertes.org",
+  "auszeit-theresablank.de",
+  "buurtpreventiewernhoutsburg.nl",
+  "championsofthefuture.uk",
+  "iidamizuhiki.com",
+  "irrigo.no",
+  "lets-play-2.com",
+  "mavenbrain.com",
+  "pb909.com",
+  "rozwojownia.com",
+  "rt23.be",
+  "top-dienst.ch",
+  "universellpos.com",
+  "websitemaringa.com",
+  "windsormobiletyrefitting.co.uk"
+ ],
+ "cloaking_removals": [
+  "auszeit-theresablank.de",
+  "buurtpreventiewernhoutsburg.nl",
+  "championsofthefuture.uk",
+  "energowatch.hu",
+  "lets-play-2.com",
+  "mavenbrain.com",
+  "optimizaralojamiento.com",
+  "pb909.com",
+  "rozwojownia.com",
+  "seafoodbysykes.com",
+  "universellpos.com",
+  "volgamed34.ru",
+  "websitemaringa.com",
+  "windsormobiletyrefitting.co.uk"
+ ],
+ "outcomes": [
+  {
+   "domain": "rozwojownia.com",
+   "decision": "block",
+   "score": 30.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "seafoodbysykes.com",
+   "decision": "block",
+   "score": 30.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "bot_only_body": 20
+   }
+  },
+  {
+   "domain": "championsofthefuture.uk",
+   "decision": "block",
+   "score": 26.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "windsormobiletyrefitting.co.uk",
+   "decision": "block",
+   "score": 26.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "afriquedeslibertes.org",
+   "decision": "block",
+   "score": 24.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "lets-play-2.com",
+   "decision": "block",
+   "score": 24.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "mavenbrain.com",
+   "decision": "block",
+   "score": 24.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "northwestwheelpolishing.com",
+   "decision": "block",
+   "score": 24.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "bot_only_body": 20
+   }
+  },
+  {
+   "domain": "optimizaralojamiento.com",
+   "decision": "block",
+   "score": 24.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "bot_only_body": 20
+   }
+  },
+  {
+   "domain": "websitemaringa.com",
+   "decision": "block",
+   "score": 24.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "dydell.com",
+   "decision": "block",
+   "score": 22.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "irrigo.no",
+   "decision": "block",
+   "score": 22.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "pb909.com",
+   "decision": "block",
+   "score": 22.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "auszeit-theresablank.de",
+   "decision": "block",
+   "score": 20.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "buurtpreventiewernhoutsburg.nl",
+   "decision": "block",
+   "score": 20.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "eigenstroomopslaan.nl",
+   "decision": "block",
+   "score": 20.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "bot_only_body": 20
+   }
+  },
+  {
+   "domain": "energowatch.hu",
+   "decision": "block",
+   "score": 20.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "bot_only_body": 20
+   }
+  },
+  {
+   "domain": "iidamizuhiki.com",
+   "decision": "block",
+   "score": 20.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "rt23.be",
+   "decision": "block",
+   "score": 20.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "top-dienst.ch",
+   "decision": "block",
+   "score": 20.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "universellpos.com",
+   "decision": "block",
+   "score": 20.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 20
+   }
+  },
+  {
+   "domain": "volgamed34.ru",
+   "decision": "block",
+   "score": 20.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "bot_only_body": 20
+   }
+  },
+  {
+   "domain": "albsaer.com",
+   "decision": "hold",
+   "score": 18.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "diagakbari.com",
+   "decision": "hold",
+   "score": 18.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "gmcs.sg",
+   "decision": "hold",
+   "score": 18.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "ajscatfishstation.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "amnt5888.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "av01.media",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "betterhomesal.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "blackairclari.net",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "bless-n-wish.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "bmhmerchants.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "capitolcitycommunitycog.org",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "corporatelearninguk.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "ecofaune.org",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "helgaly.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "libdo-immo.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "missav.run",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "muke.ai",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "ommultispecialityanddental.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "optimeyes.ai",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "offsite_redirect": 10,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "sammatthewman.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "szolyvaipark.org",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "tienda-springfloreria.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "torahtent.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "transfigos.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "umeedinternationalschool.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "ventagringa.com",
+   "decision": "hold",
+   "score": 16.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "bobbysfashions.com",
+   "decision": "hold",
+   "score": 14.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "cadbattaglino.com",
+   "decision": "hold",
+   "score": 14.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "offsite_redirect": 10,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "mimoza.bg",
+   "decision": "hold",
+   "score": 14.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "orelcbt.com",
+   "decision": "hold",
+   "score": 14.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "pi.tn",
+   "decision": "hold",
+   "score": 14.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "ridersforriders.com",
+   "decision": "hold",
+   "score": 14.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "storyorium.com",
+   "decision": "hold",
+   "score": 14.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "20bet.id",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "admin.ph",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "beignet-tokyo.jp",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "bingobongolearning.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "bpi.edu.ng",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "cedenor.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "copike.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "estesmadine.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "eurasiantactical.de",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "finnskogen.no",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "innergie.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "koszalin.pl",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "mangaloasis.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "mihaliccik.bel.tr",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "minneapolisssl.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "offsite_redirect": 10,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "mobiletta.li",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "oldenburger-schuetzenbund.de",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "ophmn.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "poumonquebec.ca",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "regaltrading.ae",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "santoamaro.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "setiacitymall.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": true,
+   "reasons": {
+    "cloaking": 12
+   }
+  },
+  {
+   "domain": "shirshop.com",
+   "decision": "hold",
+   "score": 12.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "cartechworkshop.com",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "casasunvalley.com",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "cisv.no",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 401,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "daucy-international.com",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "dienlanhminhdang.com",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "donanimhaber.com",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "fonrid.com",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "offsite_redirect": 10
+   }
+  },
+  {
+   "domain": "fptb.edu.ng",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "gabinetskorka.pl",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "kalamasz-ksiegowosc.pl",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "lemon8-app.com",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "maxim-agencja.pl",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "ravalnet.org",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "rawicz.pl",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "scanman.in",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "ssp2.pl",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "udgvirtual.udg.mx",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "offsite_redirect": 10
+   }
+  },
+  {
+   "domain": "wisebuy.tech",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "wnpsuski.pl",
+   "decision": "dismissed",
+   "score": 10.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "bandai-hobby.net",
+   "decision": "dismissed",
+   "score": 8.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "registrar_url_tld_foreign": 6,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "a3space.org",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "biomart.ca",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "evan.travel",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "herahub.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "hitaltech.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "jbimbi.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "kemendikdasmen.go.id",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "learningvibes.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "matanti.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "megafinance.co.id",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "mygolfway.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "obalovydesign.cz",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "pasadenaheritage.ca",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "royalelektronic.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "schrodinger-band.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "snowlimits.nl",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "tessutidelarte.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "tvsnepal.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "urreaingenieria.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "vijverwinkel.com",
+   "decision": "dismissed",
+   "score": 6.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "sunmold.com",
+   "decision": "dismissed",
+   "score": 5.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "dark_pattern": 3,
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "2weddingphotographers.co.uk",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "aardschok.net",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 521,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "accessoires-asus.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "advancecommunity.org",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "amanhospitals.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "ariyagroup.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "beerblogin.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 409,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "bonaventurelab.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "broekcare.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "caramel.co.th",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "carterandcivitello.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 520,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "ceramicacoboce.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "cliniqueaeroport.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "clubdesmanagers.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "datapdf.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "ds-cab-ivanoff.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "dsv-mhpss.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "elaristocrata.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "facebook.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 400,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "flamingobeach.holiday",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "homeopathyaajtak.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "igymrimini.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "iifscindia.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "illinoisbarfoundation.org",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "imax-global.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "ironsidestech.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "klinika-yorica.cz",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "lisbonprivatetours.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "manomithra.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "medyratech.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "minibikers.co.uk",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "misoap.org",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "mobilemrcs.org",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "montrans.si",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "nextstepky.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "nomadaseducacionambiental.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "paolocodeluppi.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "pmcpools.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "sectionvtrack.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "shahaliagro.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 404,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "takoussane.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "transportescalderon.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "ultra-medica.org",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "valorcapitalgroup.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "wcaeducationfoundation.org",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "wikima4.com",
+   "decision": "dismissed",
+   "score": 4.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "abuse_phone_foreign": 4
+   }
+  },
+  {
+   "domain": "briannejenner.com",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "computer-repair-man.ie",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "diekitzretter.de",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "gailing-druck.de",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "geminos.ai",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "kameraversicherung.ch",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "luxcoatings.com",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "martinvermaak.co.za",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "pcbmicrocircuitos.com",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "recom-tech.com",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "royalperfumehouse.uk",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "seprinto.com",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "utk.edu",
+   "decision": "dismissed",
+   "score": 2.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {
+    "deep_product_path": 2
+   }
+  },
+  {
+   "domain": "abz-dienstleistungen.de",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "adipap.eu",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "akcesedukacja.pl",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "algazzettino.it",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "amh.kz",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "apexdocs.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "arawakexp.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "azbuckazdorowya.ru",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "bantam-tech.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "bantrybayworks.ie",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "bespokefundingprogram.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "biohealingeurope.eu",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "cadenhamproperties.co.uk",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "cantinhodotareco.org",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "capicuaturismo.tur.ar",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "cera-gmbh.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "clubdeportestolima.com.co",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "cofinatogo.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "cpitech.co.za",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "crownoilmaker.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "csarite.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "cuognitiva.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "digitalpolicylaw.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "discoverclearlake.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "disruptivo.tv",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "dmm.co.jp",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "dnc.global",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "eidelmanlawfirm.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 520,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "elektrotekcai.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "elibom.net",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "elitetaxation.pk",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "enea.it",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "familytimefitness.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "fbfame.co",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "femsajtolo.hu",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "floridasupplychainsummit.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "gerabnationalenterprises.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "gloucesterbikeproject.co.uk",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "goaltime.co.il",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "gsss-gh.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 503,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "home.pl",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "hominummx.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "hozain.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "hydropowerengineers.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "iibimsolutions.ir",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "indexholding.kr",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "intandemly.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "iziappx.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "jamartistsgroup.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "journalhi.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "jsmjapan.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "k-tai-iosys.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "kajal.pl",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "kdvirtualsupport.co.uk",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "kidstalentawards.ao",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "konferencjabrd.pl",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "kortekbilisim.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "kundalishastra.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "kurav.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "lechantdesamandes.fr",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "lerenjumpen.nl",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "lslangler.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "m2propertygroup.net",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "madelineguide.net",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "maghoulacademy.ir",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "mahgoub-academy.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "mcast.edu.mt",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "mcsportables.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "mcttt.gov.fj",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "monitor.kantar.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "nathanzola.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "ocasa.mx",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "oriental-hobbies.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "paresisauction.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "parkandfieldchicago.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "pileparken.dk",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "polykap.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "pozega.hr",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "projet-horizons.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "quantumbridgetech.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "radlerbikefestival.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "rieju.at",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "rosecokontrol.ru",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "ryrycompact.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "sahtc.org",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "salixpsychotherapy.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "samokraska.ru",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "sarasaviya.lk",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 403,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "securegroup.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "ssciindia.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "stavebniny-elckner.cz",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "tecai.site",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "telnet.ge",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "theveritasdesigngroup.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "tiapani.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "time-gadget.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "toontools.net",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "topshelfexperts.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 500,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "tulla-grundschule.de",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "uc.edu.kh",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": 200,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "us.es",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "vhkeys.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "vshouston.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "wvgs.de",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "yatouland.ch",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  },
+  {
+   "domain": "yorissociety.com",
+   "decision": "dismissed",
+   "score": 0.0,
+   "status": null,
+   "cloaking": false,
+   "reasons": {}
+  }
+ ]
+}

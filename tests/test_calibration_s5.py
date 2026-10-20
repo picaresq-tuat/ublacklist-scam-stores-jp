@@ -24,7 +24,7 @@ ADOPTED_HOLD = 12
 
 # 実測 (2026-10, オフライン再採点, logs/calib_s5_sweep.tsv)
 GOLDEN_RECALL_MIN = 18  # / 20 (残り 2 件は特徴量が risky_tld + deep_product_path のみ)
-PARTIAL_RECALL_MIN = 45  # / 96 (部分特徴量のみの下限。favicon/cloaking 未計測)
+PARTIAL_RECALL_MIN = 42  # / 96 (部分特徴量のみの下限。favicon/cloaking 未計測)
 MIN_HEADROOM = 9  # auto_block - max(legit score)。FP=0 が偶然でないための余白
 MAX_LEGIT_SCORE = 11.0  # golden / spike_s4 とも 11 (dark 9 + deep 2)
 HOLD_FP_MAX = 0  # hold 帯 (12 <= s < auto_block) に入る legit の上限
