@@ -186,7 +186,7 @@ class Scorer:
             add("shared_2ld", w["shared_2ld"])
         if f.deep_product_path:
             add("deep_product_path", w["deep_product_path"])
-        if (f.extra or {}).get("young_index"):
+        if f.young_index or (f.extra or {}).get("young_index"):
             add("young_index", w["young_index"])
 
         total = round(float(sum(reasons.values())), 1)

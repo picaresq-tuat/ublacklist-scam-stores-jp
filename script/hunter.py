@@ -19,6 +19,7 @@ from urllib.parse import urlsplit
 from publish import build_entries, merge_list
 from scamstore import ScamStore
 from searchlog import PageRangeExhausted, pick_pageno
+from twold_corpus import count_2ld
 
 MAX_ROUNDS = 3
 MONITOR_AGE_DAYS = 30
@@ -57,7 +58,7 @@ def _host_of(url: str) -> str:
     if "//" not in u:
         return ""
     try:
-        return urlsplit(u).netloc.split(":")[0].lower()
+        return (urlsplit(u).hostname or "").lower()
     except ValueError:
         return ""
 
@@ -103,6 +104,11 @@ def run_night(
     round_no = 0
     new_domains: int = 0
     seen_domains: set[str] = set()
+    # shared_2ld 用: 同じ夜の検索結果に現れた *生のホスト名* を 1 本のリストに
+    # 集める。下のループはこの後 registrable domain に畳んで重複排除するため、
+    # 畳む前 (= ここ) で拾わないとサブドメインの本数が失われる。正規化 (大文字・
+    # ポート・末尾ドット) とプラットフォーム除外は count_2ld 側で行う。
+    observed_hosts: list[str] = []
     blocked: list[str] = []
     held: list[str] = []
     dismissed: list[str] = []
@@ -196,7 +202,14 @@ def run_night(
                 if not host:
                     continue
                 dom = registrable_domain(host)
-                if not dom or dom in seen_domains:
+                if not dom:
+                    continue
+                # 重複排除より前に数える: 2 件目以降のサブドメインも shared_2ld の
+                # 本数には寄与する。ホワイトリストは数えない (公式サイトの
+                # www/shop/support が 3 本あるだけで加点しないため)。
+                if not wl.match(dom):
+                    observed_hosts.append(host)
+                if dom in seen_domains:
                     continue
                 seen_domains.add(dom)
                 if wl.match(dom):
@@ -206,6 +219,12 @@ def run_night(
                     already_known.append(dom)
                     continue
                 found_this_round.append(dom)
+
+        # 同じ夜に観測した 2LD 別ホスト数を probe に渡す (>=3 で shared_2ld)。
+        # 空の夜でも必ず差し替える: 前夜の counts が残ると古いホスト数で加点してしまう。
+        setter = getattr(pipeline, "set_2ld_counts", None)
+        if callable(setter):
+            setter(count_2ld(observed_hosts))
 
         if not found_this_round:
             if round_no < MAX_ROUNDS and not aborted:

@@ -87,9 +87,9 @@ cloakingリストと手動候補を並列に取得し、`block`かつ2xxのド�
 | `stolen_image` | 商品画像が他社ストアの資産ホスト | 8 | 自社CDNを誤検知するため15から引き下げた |
 | `risky_tld` | 安価な新規TLD | 8 | goldenのscam 20/20、正規0 |
 | `dark_pattern` | 文言パターン1個につき3、上限9 | 3 / 9 | 90% 前後のscamで発火、正規も約40% |
-| `shared_2ld` | 同一2LDの使い回し | 6 | 供給が未接続 (下記) |
+| `shared_2ld` | 同一2LDの使い回し (同一夜の検索結果に3ホスト以上) | 6 | 件数は夜間ランナーが供給する (下記) |
 | `favicon_cross_origin` | 他ドメインと同一favicon (同一registrable domainは除外) | 5 | `db/scam.db`から毎回corpusを構築 |
-| `young_index` | 公開直後のインデックス | 5 | 供給が未接続 (下記) |
+| `young_index` | RDAP登録日から90日以内 (公開直後の目安) | 5 | 登録日を用いる代理指標。判定は秒単位で、ちょうど90日は含む。RDAP非対応の.jpでは発火しない |
 | `registrar_url_tld_foreign` | レジストラのリンク先TLDがcom/jp以外 | 4 | scam 7/15、正規13/116 |
 | `deep_product_path` | 商品ページらしい深いパス | 2 | scam 2/15、正規35/116で判別力なし |
 | `abuse_phone_foreign` | abuse電話の国番号が81以外 | 0 | scam 47%、正規60%。計測のみ |
@@ -104,7 +104,9 @@ python3 script/favicon_backfill.py --db db/scam.db --dry-run --limit 20   # 確�
 python3 script/favicon_backfill.py --db db/scam.db                        # 反映
 ```
 
-`shared_2ld`と`young_index`は定義と重みがあるが、実走査では値が供給されない。現状の判定に寄与するのは表の残りの項目である。
+`young_index`はRDAPのregistration eventにある登録日から算出する代理指標で、登録後ちょうど90日 (秒単位) まで発火する (重み5)。RDAPを提供しない.jpでは発火しない。
+
+`shared_2ld`は、同じ夜の検索結果に現れた生のホスト名をregistrable domain単位で数え、3ホスト以上あれば真になる (重み6)。同じホスト名が何度出ても1本と数え、サブドメインが違えば別に数える。ホスト名は小文字化し、`:数字`のポートと末尾のドットを落とし、`user@`のuserinfoを除き、UnicodeのIDNはpunycode (`xn--`) に揃えて同一視する。ブログやホスティングの共用基盤 (`fc2.com`、`hatenablog.com`、`blogspot.com`、`wordpress.com`、`ameblo.jp`、`livedoor.blog`、`github.io`、`note.com`) は、無関係な利用者が同じ2LDを共有するため数えない。ホワイトリストのドメインも数えない。この件数は1回の夜間実行のあいだだけ保持し、DBには保存しない。したがって検索結果を持たない経路 (`rejudge`、`watchlist`、単発の`probe`) では常に偽になる。
 
 スコアは重みの単純合計である。`redirect_to_google`と`offsite_redirect`、`cloaking`と`bot_only_body`はそれぞれ排他で、片方だけを加算する。`dark_pattern`はヒット数に3を掛け、9で頭打ちにする。RDAP系は取得に成功した場合だけ加算する。
 

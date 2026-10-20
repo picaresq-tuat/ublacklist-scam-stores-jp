@@ -25,6 +25,7 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
+from datetime import datetime
 from urllib.parse import urlsplit
 
 RDAP_BASE = "https://rdap.org/domain/"
@@ -132,6 +133,7 @@ class RdapInfo:
     registrar_name: str = ""
     registrar_url: str = ""
     abuse_phone: str = ""
+    registration_date: str = ""
     error: str = ""
     meta_keys: tuple = field(default=())
 
@@ -154,6 +156,17 @@ class RdapInfo:
                 error=f"rdap_error_{data.get('errorCode')}",
             )
         info = cls(domain=domain, ok=True, elapsed_ms=elapsed_ms, meta_keys=cls.raw_keys_of(data))
+        for event in data.get("events") or []:
+            if isinstance(event, dict) and event.get("eventAction") == "registration":
+                event_date = event.get("eventDate")
+                if isinstance(event_date, str):
+                    try:
+                        datetime.fromisoformat(event_date.replace("Z", "+00:00"))
+                    except ValueError:
+                        pass
+                    else:
+                        info.registration_date = event_date
+                break  # Only the first registration event is authoritative.
         for ent in data.get("entities") or []:
             if not isinstance(ent, dict) or "registrar" not in (ent.get("roles") or []):
                 continue
