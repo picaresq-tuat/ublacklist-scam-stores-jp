@@ -407,17 +407,14 @@ def extract_features(
 
     if favicon_bytes:
         f.favicon_md5 = hashlib.md5(favicon_bytes).hexdigest()
-    if f.favicon_md5 and known_favicons:
-        f.favicon_collision = known_favicons.get(f.favicon_md5, 0) > 1
-        # クロスオリジン favicon: 同一 registrable domain のサブドメインは除外、
-        # WordPress 等の汎用 favicon も除外。origin map は「他人の単独ドメイン」を指す。
+    if f.favicon_md5 and f.favicon_md5 not in GENERIC_FAVICON_MD5S:
+        # 同一 favicon を使い回す別ドメインの存在 (corpus) と、その代表オリジン。
+        # corpus 件数が無くても origin map だけで cross-origin を判定できる。
+        f.favicon_collision = (known_favicons or {}).get(f.favicon_md5, 0) > 1
+        # 同一 registrable domain のサブドメインは除外、汎用 favicon も除外。
         origin = (favicon_origin_map or {}).get(f.favicon_md5, "")
         f.favicon_cross_origin_of = origin
-        if (
-            origin
-            and f.favicon_md5 not in GENERIC_FAVICON_MD5S
-            and registrable_domain(origin) != reg
-        ):
+        if origin and registrable_domain(origin) != reg:
             f.favicon_cross_origin = True
     if domain_2ld_counts:
         f.shared_2ld = domain_2ld_counts.get(reg, 0) >= 3

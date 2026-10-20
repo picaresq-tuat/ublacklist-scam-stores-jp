@@ -79,6 +79,82 @@ def test_probe_fetches_favicon(fake_fetch, tmp_path):
     assert any("favicon" in u for u, _ in fake_fetch)
 
 
+def test_probe_fetches_favicon_with_allow_binary(fake_fetch, tmp_path):
+    """favicon は画像 MIME なので allow_binary=True で取得する (discard させない)."""
+    p = probe.Pipeline(db_dir=tmp_path)
+    p.run_domain("scam-shop.example")
+    fav = [(u, kw) for u, kw in fake_fetch if "favicon" in u]
+    assert fav, "favicon 取得が必要"
+    assert fav[0][1].get("allow_binary") is True
+
+
+ICO = b"\x00\x00\x01\x00\x01\x00" + bytes(range(16, 80))
+
+
+def _favicon_fetch(ico=ICO):
+    """ページは HTML、/favicon.ico だけ生のアイコンバイトを返す fetch スタブ。"""
+
+    def _fetch(url, **kw):
+        if url.endswith("/favicon.ico"):
+            from fetch import FetchResult
+
+            return FetchResult(
+                url=url,
+                status=200,
+                final_url=url,
+                headers={"content-type": "image/x-icon"},
+                raw=ico,
+                raw_bytes=len(ico),
+            )
+        return FakeFetchResult(url)
+
+    return _fetch
+
+
+def test_probe_favicon_md5_is_hash_of_raw_icon_bytes(monkeypatch, tmp_path):
+    import hashlib
+
+    monkeypatch.setattr(probe, "fetch", _favicon_fetch(), raising=False)
+    res = probe.Pipeline(db_dir=tmp_path).run_domain("scam-shop.example")
+    assert res.features["favicon_md5"] == hashlib.md5(ICO).hexdigest()
+
+
+def test_probe_favicon_md5_none_when_favicon_discarded(monkeypatch, tmp_path):
+    from fetch import FetchResult
+
+    def _fetch(url, **kw):
+        if url.endswith("/favicon.ico"):
+            return FetchResult(
+                url=url,
+                status=200,
+                final_url=url,
+                discarded=True,
+                discard_reason="content-type:image/png",
+            )
+        return FakeFetchResult(url)
+
+    monkeypatch.setattr(probe, "fetch", _fetch, raising=False)
+    res = probe.Pipeline(db_dir=tmp_path).run_domain("scam-shop.example")
+    assert res.features["favicon_md5"] is None
+
+
+def test_probe_injects_favicon_corpus(monkeypatch, tmp_path):
+    """favicon_counts / favicon_origins を注入すると collision / cross_origin が立つ."""
+    import hashlib
+
+    md5 = hashlib.md5(ICO).hexdigest()
+    monkeypatch.setattr(probe, "fetch", _favicon_fetch(), raising=False)
+    p = probe.Pipeline(
+        db_dir=tmp_path,
+        favicon_counts={md5: 3},
+        favicon_origins={md5: "legit-shop.example"},
+    )
+    res = p.run_domain("scam-shop.example")
+    assert res.features["favicon_collision"] is True
+    assert res.features["favicon_cross_origin"] is True
+    assert res.features["favicon_cross_origin_of"] == "legit-shop.example"
+
+
 def test_probe_never_raises_on_fetch_failure(monkeypatch, tmp_path):
     from fetch import FetchError
 
