@@ -38,13 +38,17 @@ class Pipeline:
         config=None,
         timeout: float = 12.0,
         rdap_fn=None,
+        favicon_counts: dict[str, int] | None = None,
+        favicon_origins: dict[str, str] | None = None,
     ):
         self.db_dir = Path(db_dir)
         self.scorer = scorer or Scorer(config) if config else (scorer or Scorer())
         self.timeout = timeout
         self.rdap_fn = rdap_fn
         self._hits: dict[str, list[str]] = {}
-        self._favicon_counts: dict[str, int] = {}
+        # favicon corpus (md5 -> 観測ドメイン数 / md5 -> 代表オリジン)。
+        self._favicon_counts: dict[str, int] = dict(favicon_counts or {})
+        self._favicon_origins: dict[str, str] = dict(favicon_origins or {})
 
     # --- pivot (R: 保留ドメインを site: で再検索) ---
     def note_hit(self, model: str, url: str) -> None:
@@ -89,14 +93,20 @@ class Pipeline:
                 break
 
         favicon_bytes = None
-        for path in ("/favicon.ico",):
-            try:
-                fav = fetch(f"https://{dom}{path}", ua="browser", timeout=self.timeout)
-            except (BlockedURL, FetchError, OSError):
-                continue
-            if fav.raw_bytes and not fav.discarded:
-                favicon_bytes = (fav.body or "").encode("utf-8", "replace")[:64] or b"fav"
-                break
+        try:
+            # 画像 MIME は通常 discard されるため allow_binary で生バイトを受け取る。
+            fav = fetch(
+                f"https://{dom}/favicon.ico",
+                ua="browser",
+                timeout=self.timeout,
+                allow_binary=True,
+            )
+        except (BlockedURL, FetchError, OSError):
+            fav = None
+        if fav is not None and not fav.discarded:
+            raw = getattr(fav, "raw", b"") or b""
+            if raw:
+                favicon_bytes = raw
 
         rdap = None
         if self.rdap_fn is not None and rdap_supported(dom):
@@ -111,6 +121,7 @@ class Pipeline:
             bot,
             favicon_bytes=favicon_bytes,
             known_favicons=self._favicon_counts,
+            favicon_origin_map=self._favicon_origins,
             domain_2ld_counts=None,
             rdap=rdap,
         )

@@ -87,6 +87,56 @@ def test_generic_favicon_wordpress_is_excluded():
     assert f.favicon_cross_origin is False
 
 
+def test_cross_origin_detected_from_origin_map_alone():
+    """known_favicons (corpus 件数) が空でも origin_map だけで cross_origin を判定する."""
+    import hashlib
+
+    md5 = hashlib.md5(b"ONLY-ORIGIN-MAP").hexdigest()
+    f = extract_features(
+        "scam.example",
+        res(),
+        favicon_bytes=b"ONLY-ORIGIN-MAP",
+        favicon_origin_map={md5: "legit-shop.example"},
+    )
+    assert f.favicon_cross_origin is True
+    assert f.favicon_cross_origin_of == "legit-shop.example"
+    assert f.favicon_collision is False
+
+
+def test_generic_favicon_is_excluded_even_with_origin_map(monkeypatch):
+    """GENERIC_FAVICON_MD5S の md5 は collision / cross_origin とも False."""
+    import hashlib
+
+    import features as features_mod
+
+    md5 = hashlib.md5(b"WP-GENERIC-REAL").hexdigest()
+    monkeypatch.setattr(features_mod, "GENERIC_FAVICON_MD5S", frozenset({md5}))
+    f = extract_features(
+        "scam.example",
+        res(),
+        favicon_bytes=b"WP-GENERIC-REAL",
+        known_favicons={md5: 5},
+        favicon_origin_map={md5: "legit-shop.example"},
+    )
+    assert f.favicon_md5 == md5
+    assert f.favicon_cross_origin is False
+    assert f.favicon_collision is False
+
+
+def test_subdomain_of_same_registrable_is_not_cross_origin_without_corpus():
+    """origin_map 単独でも同一 registrable domain のサブドメインは False."""
+    import hashlib
+
+    md5 = hashlib.md5(b"SELF-SUB-FAVICON").hexdigest()
+    f = extract_features(
+        "shop.example",
+        res(),
+        favicon_bytes=b"SELF-SUB-FAVICON",
+        favicon_origin_map={md5: "blog.shop.example"},
+    )
+    assert f.favicon_cross_origin is False
+
+
 def test_generic_favicon_set_contains_common_hashes():
     """WordPress 既定テーマの favicon は generic セットに含まれる (i20/wp-content 等)."""
     assert len(GENERIC_FAVICON_MD5S) > 0

@@ -38,6 +38,17 @@ ALLOWED_CONTENT_TYPES = frozenset(
         "application/xml",
     }
 )
+# allow_binary=True のときだけ通す画像 MIME (favicon 取得用)。
+BINARY_CONTENT_TYPES = frozenset(
+    {
+        "image/x-icon",
+        "image/vnd.microsoft.icon",
+        "image/png",
+        "image/gif",
+        "image/jpeg",
+        "image/svg+xml",
+    }
+)
 BLOCKED_PORTS = frozenset({22, 23, 25, 110, 143, 3306, 5432, 6379, 8080, 8443, 9200, 11211})
 ALLOWED_SCHEMES = frozenset({"http", "https"})
 ALLOWED_PORTS = frozenset({80, 443})
@@ -86,6 +97,7 @@ class FetchResult:
     discard_reason: str = ""
     truncated: bool = False
     raw_bytes: int = 0
+    raw: bytes = b""
     error: str = ""
 
 
@@ -225,6 +237,7 @@ def fetch(
     max_bytes: int = DEFAULT_MAX_BYTES,
     max_redirects: int = DEFAULT_MAX_REDIRECTS,
     allow_private: bool = False,
+    allow_binary: bool = False,
 ) -> FetchResult:
     if ua not in USER_AGENTS:
         raise ValueError(f"unknown ua key: {ua!r} (choose from {sorted(USER_AGENTS)})")
@@ -282,7 +295,13 @@ def fetch(
             result.discard_reason = "content-disposition:attachment"
             return result
         ctype = hdr.get("content-type", "").split(";")[0].strip().lower()
-        if ctype and ctype not in ALLOWED_CONTENT_TYPES:
+        # favicon 等: allow_binary=True なら明示的に許可した画像 MIME のみ通す
+        # (content-disposition:attachment と content-length 超過の判定は維持)。
+        if (
+            ctype
+            and ctype not in ALLOWED_CONTENT_TYPES
+            and not (allow_binary and ctype in BINARY_CONTENT_TYPES)
+        ):
             result.discarded = True
             result.discard_reason = f"content-type:{ctype}"
             return result
@@ -301,6 +320,7 @@ def fetch(
         if len(raw) > max_bytes:
             result.truncated = True
             raw = raw[:max_bytes]
+        result.raw = raw
         try:
             text = raw.decode(result.charset, errors="replace")
         except LookupError:
