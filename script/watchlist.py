@@ -51,14 +51,24 @@ def promote(scam_text: str, outcomes: Iterable[Outcome]) -> tuple[str, list[str]
     return new_text, promoted
 
 
-def probe_domains(domains: list[str], workers: int = 6) -> list[Outcome]:
+def probe_domains(
+    domains: list[str], workers: int = 6, db_path: Path | str | None = None
+) -> list[Outcome]:
     """本番パイプラインでドメインを再判定する (実 I/O。テストからは使わない)。"""
     from concurrent.futures import ThreadPoolExecutor
 
+    from favicon_corpus import build_corpus
     from probe import Pipeline
+    from scamstore import DEFAULT_DB
     from whois_rdap import fetch_rdap
 
-    pipe = Pipeline(rdap_fn=fetch_rdap)
+    # favicon corpus は判定履歴から組む。呼び出し側が DB を指定できる。
+    favicon_counts, favicon_origins = build_corpus(db_path or DEFAULT_DB)
+    pipe = Pipeline(
+        rdap_fn=fetch_rdap,
+        favicon_counts=favicon_counts,
+        favicon_origins=favicon_origins,
+    )
 
     def one(dom: str) -> Outcome:
         r = pipe.run_domain(dom)

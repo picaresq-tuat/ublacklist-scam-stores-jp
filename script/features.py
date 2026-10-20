@@ -220,6 +220,8 @@ class PageFeatures:
     stolen_image_hits: int = 0
     affiliate_hits: int = 0
     favicon_md5: str | None = None
+    favicon_source: str = ""
+    favicon_bytes_len: int = 0
     favicon_collision: bool = False
     favicon_cross_origin: bool = False
     favicon_cross_origin_of: str = ""
@@ -266,6 +268,40 @@ def registrable_domain(host: str) -> str:
     if last_two in MULTI_LABEL_SUFFIXES and len(labels) >= 3:
         return ".".join(labels[-3:])
     return last_two
+
+
+def _favicon_count(known_favicons, md5: str) -> int:
+    """corpus の観測ドメイン数を安全に int 化する (型違いで落とさない)。"""
+    if not isinstance(known_favicons, dict):
+        return 0
+    value = known_favicons.get(md5, 0)
+    if isinstance(value, bool):
+        return 0
+    try:
+        return max(0, int(value))
+    except (TypeError, ValueError):
+        return 0
+
+
+def _favicon_origin(favicon_origin_map, md5: str) -> str:
+    """corpus のオリジンをホスト名へ正規化する。
+
+    "https://A.example/path" のような URL でも、ホストだけを取り出して
+    registrable domain を比較できるようにする。型違いは空文字に落とす。
+    """
+    if not isinstance(favicon_origin_map, dict):
+        return ""
+    value = favicon_origin_map.get(md5)
+    if not isinstance(value, str):
+        return ""
+    text = value.strip().lower()
+    if not text:
+        return ""
+    host = (urlsplit(text).hostname or "") if "://" in text else text.split("/")[0]
+    host = host.split(":")[0].strip().strip(".")
+    if host.startswith("www."):
+        host = host[4:]
+    return host
 
 
 def _is_challenge(result: FetchResult | None) -> bool:
@@ -407,12 +443,15 @@ def extract_features(
 
     if favicon_bytes:
         f.favicon_md5 = hashlib.md5(favicon_bytes).hexdigest()
+        # 生バイト由来であることを記録する。corpus 構築はこの印がある行だけを使い、
+        # 旧実装 (本文テキスト先頭 64 文字を MD5 化) の汚染データを混ぜない。
+        f.favicon_source = "raw"
+        f.favicon_bytes_len = len(favicon_bytes)
     if f.favicon_md5 and f.favicon_md5 not in GENERIC_FAVICON_MD5S:
-        # 同一 favicon を使い回す別ドメインの存在 (corpus) と、その代表オリジン。
-        # corpus 件数が無くても origin map だけで cross-origin を判定できる。
-        f.favicon_collision = (known_favicons or {}).get(f.favicon_md5, 0) > 1
+        # corpus は外部データなので型を信用しない (None/int/空文字で落とさない)。
+        f.favicon_collision = _favicon_count(known_favicons, f.favicon_md5) > 1
         # 同一 registrable domain のサブドメインは除外、汎用 favicon も除外。
-        origin = (favicon_origin_map or {}).get(f.favicon_md5, "")
+        origin = _favicon_origin(favicon_origin_map, f.favicon_md5)
         f.favicon_cross_origin_of = origin
         if origin and registrable_domain(origin) != reg:
             f.favicon_cross_origin = True

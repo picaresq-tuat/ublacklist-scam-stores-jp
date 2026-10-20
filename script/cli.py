@@ -56,10 +56,19 @@ def _build_searx(*, engine: str, base_url: str, sleep_sec: float | None = None) 
 
 
 def _build_pipeline(*, db_dir: Path, config=None) -> Pipeline:
+    from favicon_corpus import build_corpus
     from whois_rdap import fetch_rdap
 
     # RDAP は公開 API・1 req/sec。rdap_supported() が .jp 等の 404 既知 TLD を除外する。
-    return Pipeline(db_dir=db_dir, config=config, rdap_fn=fetch_rdap)
+    # favicon corpus は判定履歴 (db/scam.db) から毎回組み立てる (ネットワーク不使用)。
+    favicon_counts, favicon_origins = build_corpus(Path(db_dir) / "scam.db")
+    return Pipeline(
+        db_dir=db_dir,
+        config=config,
+        rdap_fn=fetch_rdap,
+        favicon_counts=favicon_counts,
+        favicon_origins=favicon_origins,
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
