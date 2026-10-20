@@ -25,7 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "script"))
 
-from features import RISKY_TLDS, PageFeatures, registrable_domain  # noqa: E402
+from features import RISKY_TLDS, PageFeatures, registrable_domain, young_domain  # noqa: E402
 from scorer import Scorer  # noqa: E402
 from whois_rdap import RdapInfo  # noqa: E402
 
@@ -74,12 +74,13 @@ def load_rdap() -> dict[str, RdapInfo]:
             registrar_name=rec.get("registrar_name", ""),
             registrar_url=rec.get("registrar_url", ""),
             abuse_phone=rec.get("abuse_phone", ""),
+            registration_date=rec.get("registration_date", ""),
             error=rec.get("error", ""),
         )
     return out
 
 
-def attach_rdap(f: PageFeatures, info: RdapInfo | None) -> None:
+def attach_rdap(f: PageFeatures, info: RdapInfo | None, now=None) -> None:
     """features.extract_features の RDAP 取り込みと同じ規則で注入する。"""
     if info is None:
         return
@@ -89,6 +90,7 @@ def attach_rdap(f: PageFeatures, info: RdapInfo | None) -> None:
     f.rdap_registrar_url = info.registrar_url
     f.rdap_abuse_phone = info.abuse_phone
     if info.ok:
+        f.young_index = young_domain(info, now)
         tld_f, phone_f, exc = info.flags(f.domain)
         f.rdap_registrar_tld_foreign = tld_f
         f.rdap_phone_foreign = phone_f

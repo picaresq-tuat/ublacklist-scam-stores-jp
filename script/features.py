@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import re
 from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
 from urllib.parse import urlsplit
 
 from fetch import FetchResult
@@ -136,6 +137,10 @@ MULTI_LABEL_SUFFIXES: tuple[str, ...] = (
 
 SEARCH_ENGINE_HOSTS: tuple[str, ...] = ("google.", "bing.com", "yahoo.co.jp", "search.")
 
+# Measured domain ages: scam (n=24), <=30d: 16 and <=90d: 21;
+# legitimate RDAP ages: 3114d and 10183d (n=2). Use 90 days as the cutoff.
+YOUNG_DOMAIN_DAYS = 90
+
 # 429 は「レート制限をかけられた」だけであり、クローキングの証拠ではない (実測: hatenablog)。
 RATE_LIMIT_STATUSES: frozenset[int] = frozenset({429})
 
@@ -214,6 +219,7 @@ class PageFeatures:
     tld: str = ""
     risky_tld: bool = False
     shared_2ld: bool = False
+    young_index: bool = False
     status: int = 0
     bot_status: int = 0
     title: str = ""
@@ -434,6 +440,27 @@ def _is_age_gate(result: FetchResult | None) -> bool:
     return _matches_markers(result, AGE_GATE_MARKERS)
 
 
+def young_domain(rdap: RdapInfo | None, now: datetime | None = None) -> bool:
+    """RDAP 登録日が 90 日以内か (両端含む・秒単位)。判定不能は False。
+
+    `extract_features` と校正スクリプトの `attach_rdap` で同じ規則を使うため
+    公開ヘルパにしている。日付の切り捨て (`.days`) ではなく経過秒で比較する。
+    """
+    if rdap is None or not rdap.ok:
+        return False
+    try:
+        registered = datetime.fromisoformat((rdap.registration_date or "").replace("Z", "+00:00"))
+        current = now if now is not None else datetime.now(UTC)
+        if registered.tzinfo is None:
+            registered = registered.replace(tzinfo=UTC)
+        if current.tzinfo is None:
+            current = current.replace(tzinfo=UTC)
+        elapsed = (current.astimezone(UTC) - registered.astimezone(UTC)).total_seconds()
+        return 0 <= elapsed <= YOUNG_DOMAIN_DAYS * 86400
+    except Exception:
+        return False
+
+
 def extract_features(
     domain: str,
     browser: FetchResult,
@@ -444,6 +471,7 @@ def extract_features(
     favicon_origin_map: dict[str, object] | None = None,
     domain_2ld_counts: dict[str, int] | None = None,
     rdap: RdapInfo | None = None,
+    now: datetime | None = None,
 ) -> PageFeatures:
     dom = (domain or "").strip().lower()
     reg = registrable_domain(dom)
@@ -521,6 +549,7 @@ def extract_features(
         f.rdap_registrar_url = rdap.registrar_url
         f.rdap_abuse_phone = rdap.abuse_phone
         if rdap.ok:
+            f.young_index = young_domain(rdap, now)
             tld_foreign, phone_foreign, is_maker = rdap.flags(dom)
             f.rdap_registrar_tld_foreign = tld_foreign
             f.rdap_phone_foreign = phone_foreign

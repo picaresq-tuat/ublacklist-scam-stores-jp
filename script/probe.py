@@ -42,6 +42,7 @@ class Pipeline:
         rdap_fn=None,
         favicon_counts: dict[str, int] | None = None,
         favicon_origins: dict[str, str] | None = None,
+        domain_2ld_counts: dict[str, int] | None = None,
     ):
         self.db_dir = Path(db_dir)
         self.scorer = scorer or Scorer(config) if config else (scorer or Scorer())
@@ -51,6 +52,13 @@ class Pipeline:
         # favicon corpus (md5 -> 観測ドメイン数 / md5 -> 代表オリジン)。
         self._favicon_counts: dict[str, int] = dict(favicon_counts or {})
         self._favicon_origins: dict[str, str] = dict(favicon_origins or {})
+        # 同一 registrable domain の観測ホスト数 (shared_2ld の供給)。
+        # hunter が同じ夜の検索結果ホスト名から組み立てて注入する。
+        self._2ld_counts: dict[str, int] = dict(domain_2ld_counts or {})
+
+    def set_2ld_counts(self, counts: dict[str, int] | None) -> None:
+        """同一夜の検索結果から数えた 2LD 別ホスト数を差し替える (None で無効化)。"""
+        self._2ld_counts = dict(counts or {})
 
     # --- pivot (R: 保留ドメインを site: で再検索) ---
     def note_hit(self, model: str, url: str) -> None:
@@ -132,7 +140,7 @@ class Pipeline:
             favicon_bytes=favicon_bytes,
             known_favicons=self._favicon_counts,
             favicon_origin_map=self._favicon_origins,
-            domain_2ld_counts=None,
+            domain_2ld_counts=self._2ld_counts,
             rdap=rdap,
         )
         score = self.scorer.score(feats)

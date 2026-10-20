@@ -144,6 +144,64 @@ def test_scoring_yaml_matches_adopted_values():
     assert s.thresholds["hold"] == ADOPTED_HOLD
 
 
+def test_attach_rdap_sets_young_index():
+    """校正経路でも young_index が立つ (今までは registration_date 未転送で常に false)。"""
+    from datetime import UTC, datetime, timedelta
+
+    from features import PageFeatures
+    from whois_rdap import RdapInfo
+
+    calib = _calib()
+    now = datetime(2026, 10, 20, tzinfo=UTC)
+    fresh = RdapInfo(
+        domain="fresh.example",
+        ok=True,
+        registration_date=(now - timedelta(days=3)).isoformat(),
+    )
+    f = PageFeatures(domain="fresh.example")
+    calib.attach_rdap(f, fresh, now=now)
+    assert f.young_index is True
+
+    old = RdapInfo(
+        domain="old.example",
+        ok=True,
+        registration_date=(now - timedelta(days=400)).isoformat(),
+    )
+    f_old = PageFeatures(domain="old.example")
+    calib.attach_rdap(f_old, old, now=now)
+    assert f_old.young_index is False
+
+    # 登録日が無い (現行 fixture と同じ) 場合は false のまま
+    f_none = PageFeatures(domain="nodate.example")
+    calib.attach_rdap(f_none, RdapInfo(domain="nodate.example", ok=True), now=now)
+    assert f_none.young_index is False
+
+
+def test_load_rdap_forwards_registration_date(tmp_path, monkeypatch):
+    """rdap.json に registration_date が入っていれば RdapInfo に載せる (前方互換)。"""
+    import json
+
+    calib = _calib()
+    monkeypatch.setattr(calib, "GOLDEN", tmp_path)
+    (tmp_path / "rdap.json").write_text(
+        json.dumps(
+            {
+                "scam": [
+                    {
+                        "domain": "fresh.example",
+                        "ok": True,
+                        "registration_date": "2026-10-01T00:00:00Z",
+                    }
+                ],
+                "legit": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    info = calib.load_rdap()["fresh.example"]
+    assert info.registration_date == "2026-10-01T00:00:00Z"
+
+
 def test_fallback_matches_yaml_entirely():
     """scorer._FALLBACK が yaml と完全同値であること (二重管理のドリフト防止)。
 
