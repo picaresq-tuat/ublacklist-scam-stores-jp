@@ -55,7 +55,7 @@ python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (120件) �
 
 クエリ生成では、`db/models.db`の型番240件と用語を組み合わせて1晩のクエリを作る。ページ番号は履歴 (`db/searches.db`) を見て未消化の範囲から選ぶ。検索はSearXNG (`--searx-url`) 経由で行い、既定エンジンはGoogle CSEである。429が続く夜は指数バックオフし、失敗が上限に達したらその夜は中止する。1巡目で新規ドメインが取れなければ、クエリとページ番号を変えて最大3巡する。
 
-トリアージでは、whitelist (120ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を取ってMD5を計算し、RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
+トリアージでは、whitelist (120ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を画像バイトのまま取り、先頭バイトがICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVGのいずれかで8バイト以上あるものだけをMD5化する (404のHTML等は捨てる)。RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
 
 特徴量は下の表の各項目を1ページから計算する。取れなかった項目は0として扱う。スコアは重みの合計で、`auto_block`以上なら`block`、`hold`以上なら`hold`、未満なら`dismissed`とする。
 
@@ -76,7 +76,7 @@ cloakingリストと手動候補を並列に取得し、`block`かつ2xxのド�
 | シグナル | 何を見るか | 重み | 実測メモ |
 | --- | --- | ---: | --- |
 | `redirect_to_google` | 検索エンジンへのドアウェイ転送 | 35 | 単独で`auto_block`に届く |
-| `favicon_collision` | 既知scamと同じfavicon MD5 | 30 | 供給が未接続 (下記) |
+| `favicon_collision` | 判定履歴にある同じfavicon MD5 (2ドメイン以上) | 30 | `db/scam.db`から毎回corpusを構築 |
 | `bot_only_body` | Googlebotにだけ本文を返す | 20 | 単独で`auto_block`に届く |
 | `cloaking_promoted` | cloakingかつbot専用本文またはstatus差 | 20 | `cloaking`の昇格版 |
 | `cloaking` | titleが異なり本文長比が0.3以上 | 12 | 実測15/15が乗っ取り型。正規0/116 |
@@ -86,14 +86,16 @@ cloakingリストと手動候補を並列に取得し、`block`かつ2xxのド�
 | `risky_tld` | 安価な新規TLD | 8 | goldenのscam 20/20、正規0 |
 | `dark_pattern` | 文言パターン1個につき3、上限9 | 3 / 9 | 90% 前後のscamで発火、正規も約40% |
 | `shared_2ld` | 同一2LDの使い回し | 6 | 供給が未接続 (下記) |
-| `favicon_cross_origin` | 他ドメインと同一favicon | 5 | 供給が未接続 (下記) |
+| `favicon_cross_origin` | 他ドメインと同一favicon (同一registrable domainは除外) | 5 | `db/scam.db`から毎回corpusを構築 |
 | `young_index` | 公開直後のインデックス | 5 | 供給が未接続 (下記) |
 | `registrar_url_tld_foreign` | レジストラのリンク先TLDがcom/jp以外 | 4 | scam 7/15、正規13/116 |
 | `deep_product_path` | 商品ページらしい深いパス | 2 | scam 2/15、正規35/116で判別力なし |
 | `abuse_phone_foreign` | abuse電話の国番号が81以外 | 0 | scam 47%、正規60%。計測のみ |
 | `rdap_slow` | RDAP応答が3秒超 | 0 | 両クラスで0件。計測のみ |
 
-`favicon_collision`、`shared_2ld`、`favicon_cross_origin`、`young_index`は定義と重みがあるが、実走査では値が供給されない。現状の判定に寄与するのは表の残りの項目である。
+`favicon_collision`と`favicon_cross_origin`は、`script/favicon_corpus.py`が`db/scam.db`の判定履歴から`md5 -> distinctドメイン数`と代表ホストを組み立て、CLI・夜間ランナー・候補監視の各パイプラインに渡す。ネットワークは使わない。corpusに載るのは`favicon_source`が`raw`の行 (生の画像バイトからMD5を作った行) だけで、旧実装が本文テキスト先頭64文字から作った値は混ぜない。汎用favicon (`GENERIC_FAVICON_MD5S`) は両シグナルから除外する。
+
+`shared_2ld`と`young_index`は定義と重みがあるが、実走査では値が供給されない。現状の判定に寄与するのは表の残りの項目である。
 
 スコアは重みの単純合計である。`redirect_to_google`と`offsite_redirect`、`cloaking`と`bot_only_body`はそれぞれ排他で、片方だけを加算する。`dark_pattern`はヒット数に3を掛け、9で頭打ちにする。RDAP系は取得に成功した場合だけ加算する。
 

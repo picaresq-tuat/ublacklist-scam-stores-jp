@@ -11,11 +11,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from features import extract_features
-from fetch import BlockedURL, FetchError, fetch
+from fetch import BlockedURL, FetchError, fetch, looks_like_image_bytes
 from scorer import Scorer
 from whois_rdap import rdap_supported
 
 PIVOT_QUERY_CAP = 4
+# 実 favicon の最小サイズ。これ未満はヘッダ片/エラーページとみなす。
+MIN_FAVICON_BYTES = 8
 
 
 @dataclass
@@ -103,9 +105,12 @@ class Pipeline:
             )
         except (BlockedURL, FetchError, OSError):
             fav = None
-        if fav is not None and not fav.discarded:
+        if fav is not None and not fav.discarded and fav.status < 400:
+            # soft-404 (404 の HTML 等) を favicon として採用しない。
+            # HTML の定型エラーページを MD5 化すると、corpus を汚染して
+            # favicon_collision の偽陽性を量産するため magic で弾く。
             raw = getattr(fav, "raw", b"") or b""
-            if raw:
+            if len(raw) >= MIN_FAVICON_BYTES and looks_like_image_bytes(raw):
                 favicon_bytes = raw
 
         rdap = None

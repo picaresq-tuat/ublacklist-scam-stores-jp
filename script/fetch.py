@@ -44,11 +44,52 @@ BINARY_CONTENT_TYPES = frozenset(
         "image/x-icon",
         "image/vnd.microsoft.icon",
         "image/png",
+        "image/apng",
         "image/gif",
         "image/jpeg",
+        "image/webp",
+        "image/avif",
+        "image/bmp",
+        "image/x-ms-bmp",
         "image/svg+xml",
     }
 )
+# MIME が octet-stream でも、先頭バイトが画像の magic と一致すれば画像として扱う
+# (favicon を octet-stream で返すサーバー対策)。HTML は magic を持たないので弾かれる。
+_IMAGE_MAGIC = (
+    b"\x00\x00\x01\x00",  # ICO
+    b"\x89PNG\r\n\x1a\n",
+    b"GIF87a",
+    b"GIF89a",
+    b"\xff\xd8\xff",  # JPEG
+    b"BM",  # BMP
+    b"RIFF",  # WEBP (RIFF ヘッダ)
+)
+
+
+def looks_like_image_bytes(raw: bytes) -> bool:
+    """先頭バイトから画像 (ICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVG) かを判定する。
+
+    favicon として HTML エラーページ等を採用しないための最低限の sniff。
+    """
+    if not raw:
+        return False
+    head = bytes(raw[:512])
+    if head[:4] == b"\x00\x00\x01\x00":
+        return True
+    if any(head.startswith(m) for m in _IMAGE_MAGIC if m not in (b"\x00\x00\x01\x00", b"RIFF")):
+        return True
+    if head.startswith(b"RIFF") and head[8:12] == b"WEBP":
+        return True
+    if head[4:8] == b"ftyp" and head[8:12] in (b"avif", b"avis"):
+        return True
+    stripped = head.lstrip()
+    if stripped[:1] == b"<":
+        low = stripped.lower()
+        return low.startswith((b"<?xml", b"<svg")) or b"<svg" in low[:256]
+    return False
+
+
 BLOCKED_PORTS = frozenset({22, 23, 25, 110, 143, 3306, 5432, 6379, 8080, 8443, 9200, 11211})
 ALLOWED_SCHEMES = frozenset({"http", "https"})
 ALLOWED_PORTS = frozenset({80, 443})
@@ -297,10 +338,14 @@ def fetch(
         ctype = hdr.get("content-type", "").split(";")[0].strip().lower()
         # favicon 等: allow_binary=True なら明示的に許可した画像 MIME のみ通す
         # (content-disposition:attachment と content-length 超過の判定は維持)。
+        # octet-stream は magic が画像と一致するときだけ通す (HTML は通さない)。
+        binary_ctype = ctype in BINARY_CONTENT_TYPES
+        octet_stream = ctype == "application/octet-stream"
+        magic_ok = octet_stream and looks_like_image_bytes(raw)
         if (
             ctype
             and ctype not in ALLOWED_CONTENT_TYPES
-            and not (allow_binary and ctype in BINARY_CONTENT_TYPES)
+            and not (allow_binary and (binary_ctype or magic_ok))
         ):
             result.discarded = True
             result.discard_reason = f"content-type:{ctype}"
@@ -310,6 +355,16 @@ def fetch(
             result.discarded = True
             result.discard_reason = "content-length"
             result.body = None
+            return result
+
+        if allow_binary and (binary_ctype or magic_ok):
+            # 画像は HTML として decoding / sanitize しない (巨大画像の str 化を避ける)。
+            if len(raw) > max_bytes:
+                result.truncated = True
+                raw = raw[:max_bytes]
+            result.raw = raw
+            result.body = None
+            result.html_sanitized = ""
             return result
 
         declared_charset = re.search(r"charset=([\w\-]+)", hdr.get("content-type", ""), re.I)
