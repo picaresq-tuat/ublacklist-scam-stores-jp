@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import os
 import sys
 from pathlib import Path
@@ -39,6 +40,8 @@ from publish import PERMANENT_RULES
 from scamstore import ScamStore
 from searxng import DEFAULT_NIGHT_SLEEP_SEC, SearxClient
 
+logger = logging.getLogger(__name__)
+
 
 def _build_searx(*, engine: str, base_url: str, sleep_sec: float | None = None) -> SearxClient:
     """engine に応じてクライアントを作る。
@@ -55,13 +58,21 @@ def _build_searx(*, engine: str, base_url: str, sleep_sec: float | None = None) 
     return SearxClient(base_url=base_url, **kw)
 
 
-def _build_pipeline(*, db_dir: Path, config=None) -> Pipeline:
+def _build_pipeline(*, db_dir: Path, config=None, scam_db: str | None = None) -> Pipeline:
     from favicon_corpus import build_corpus
     from whois_rdap import fetch_rdap
 
     # RDAP は公開 API・1 req/sec。rdap_supported() が .jp 等の 404 既知 TLD を除外する。
-    # favicon corpus は判定履歴 (db/scam.db) から毎回組み立てる (ネットワーク不使用)。
-    favicon_counts, favicon_origins = build_corpus(Path(db_dir) / "scam.db")
+    # favicon corpus は判定履歴 (--scam-db か db/scam.db) から毎回組み立てる。
+    # 判定に使う DB と corpus の DB を一致させる (別 DB を読むと信号が無言でズレる)。
+    corpus_db = Path(scam_db) if scam_db else Path(db_dir) / "scam.db"
+    favicon_counts, favicon_origins = build_corpus(corpus_db)
+    if not favicon_counts:
+        # 旧行は favicon_source を持たないため初回は空になる。黙って無効化しない。
+        logger.warning(
+            "favicon corpus is empty (%s): script/favicon_backfill.py で既存行を補完できます",
+            corpus_db,
+        )
     return Pipeline(
         db_dir=db_dir,
         config=config,
@@ -143,7 +154,7 @@ def main(argv: list[str] | None = None) -> int:
     db_dir.mkdir(parents=True, exist_ok=True)
     store = ScamStore(args.scam_db or (db_dir / "scam.db"))
     searx = _build_searx(engine=args.engine, base_url=args.searx_url, sleep_sec=args.sleep_sec)
-    pipe = _build_pipeline(db_dir=db_dir)
+    pipe = _build_pipeline(db_dir=db_dir, scam_db=args.scam_db or None)
     health = HealthChecker()
 
     report = run_night(

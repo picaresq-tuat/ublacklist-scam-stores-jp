@@ -77,7 +77,12 @@ def looks_like_image_bytes(raw: bytes) -> bool:
     head = bytes(raw[:512])
     if head[:4] == b"\x00\x00\x01\x00":
         return True
-    if any(head.startswith(m) for m in _IMAGE_MAGIC if m not in (b"\x00\x00\x01\x00", b"RIFF")):
+    if any(
+        head.startswith(m) for m in _IMAGE_MAGIC if m not in (b"\x00\x00\x01\x00", b"RIFF", b"BM")
+    ):
+        return True
+    # BMP は "BM" だけだと本文 (BMW 等) を誤認するため、予約領域 0 も見る。
+    if head.startswith(b"BM") and len(head) >= 14 and head[6:10] == b"\x00\x00\x00\x00":
         return True
     if head.startswith(b"RIFF") and head[8:12] == b"WEBP":
         return True
@@ -86,8 +91,12 @@ def looks_like_image_bytes(raw: bytes) -> bool:
     stripped = head.lstrip()
     if stripped[:1] == b"<":
         low = stripped.lower()
-        # HTML エラーページは <html/<!DOCTYPE で始まる。<svg を含む本文と区別する。
-        return low.startswith((b"<?xml", b"<svg"))
+        # HTML エラーページは <html/<!DOCTYPE で始まる。XML は <svg を含むときだけ画像。
+        if low.startswith(b"<svg"):
+            return True
+        if low.startswith(b"<?xml"):
+            return b"<svg" in low
+        return False
     return False
 
 
@@ -337,16 +346,21 @@ def fetch(
             result.discard_reason = "content-disposition:attachment"
             return result
         ctype = hdr.get("content-type", "").split(";")[0].strip().lower()
-        # favicon 等: allow_binary=True なら明示的に許可した画像 MIME のみ通す
+        # favicon 等: allow_binary=True なら画像 MIME を通す
         # (content-disposition:attachment と content-length 超過の判定は維持)。
-        # octet-stream は magic が画像と一致するときだけ通す (HTML は通さない)。
+        # MIME が text/plain / octet-stream / 無指定でも、magic が画像と一致するときだけ通す。
+        # application/zip 等の明示的な非画像 MIME は magic では救済しない。
         binary_ctype = ctype in BINARY_CONTENT_TYPES
-        octet_stream = ctype == "application/octet-stream"
-        magic_ok = octet_stream and looks_like_image_bytes(raw)
+        magic_ok = (
+            allow_binary
+            and ctype in ("", "text/plain", "application/octet-stream")
+            and looks_like_image_bytes(raw)
+        )
         if (
             ctype
             and ctype not in ALLOWED_CONTENT_TYPES
-            and not (allow_binary and (binary_ctype or magic_ok))
+            and not (allow_binary and binary_ctype)
+            and not magic_ok
         ):
             result.discarded = True
             result.discard_reason = f"content-type:{ctype}"

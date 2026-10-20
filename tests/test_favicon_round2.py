@@ -222,19 +222,19 @@ def test_favicon_source_is_none_without_bytes():
 def _make_db(tmp_path, rows):
     db = tmp_path / "scam.db"
     con = sqlite3.connect(db)
-    con.execute("CREATE TABLE decisions (domain TEXT, features_json TEXT)")
-    con.executemany("INSERT INTO decisions VALUES (?, ?)", rows)
+    con.execute("CREATE TABLE decisions (domain TEXT, features_json TEXT, decision TEXT)")
+    con.executemany("INSERT INTO decisions VALUES (?, ?, ?)", rows)
     con.commit()
     con.close()
     return db
 
 
-def _row(domain, md5, *, source="raw", extra=None):
+def _row(domain, md5, *, source="raw", decision="block", extra=None):
     feats = {"favicon_md5": md5}
     if source is not None:
         feats["favicon_source"] = source
     feats.update(extra or {})
-    return (domain, json.dumps(feats))
+    return (domain, json.dumps(feats), decision)
 
 
 def test_build_corpus_counts_distinct_domains(tmp_path):
@@ -251,7 +251,7 @@ def test_build_corpus_counts_distinct_domains(tmp_path):
     )
     counts, origins = build_corpus(db)
     assert counts[md5] == 2
-    assert origins[md5] == "a.example"
+    assert origins[md5] == ["a.example", "b.example"]
 
 
 def test_build_corpus_ignores_legacy_records_without_raw_source(tmp_path):
@@ -276,8 +276,8 @@ def test_build_corpus_skips_generic_invalid_and_empty(tmp_path):
         [
             _row("a.example", generic),
             _row("b.example", "not-a-hash"),
-            ("c.example", "not-json"),
-            ("d.example", json.dumps({"favicon_md5": None, "favicon_source": "raw"})),
+            ("c.example", "not-json", "block"),
+            ("d.example", json.dumps({"favicon_md5": None, "favicon_source": "raw"}), "block"),
         ],
     )
     counts, origins = build_corpus(db)
@@ -302,13 +302,13 @@ def test_cli_build_pipeline_injects_corpus(tmp_path, monkeypatch):
     import favicon_corpus
 
     md5 = hashlib.md5(ICO).hexdigest()
-    monkeypatch.setattr(favicon_corpus, "build_corpus", lambda p: ({md5: 2}, {md5: "a.example"}))
+    monkeypatch.setattr(favicon_corpus, "build_corpus", lambda p: ({md5: 2}, {md5: ["a.example"]}))
     monkeypatch.setattr(
-        cli, "build_corpus", lambda p: ({md5: 2}, {md5: "a.example"}), raising=False
+        cli, "build_corpus", lambda p: ({md5: 2}, {md5: ["a.example"]}), raising=False
     )
     pipe = cli._build_pipeline(db_dir=tmp_path)
     assert pipe._favicon_counts == {md5: 2}
-    assert pipe._favicon_origins == {md5: "a.example"}
+    assert pipe._favicon_origins == {md5: ["a.example"]}
 
 
 def test_watchlist_probe_domains_injects_corpus(monkeypatch, tmp_path):
@@ -334,10 +334,10 @@ def test_watchlist_probe_domains_injects_corpus(monkeypatch, tmp_path):
     monkeypatch.setattr(probe, "Pipeline", _Pipe)
     import favicon_corpus
 
-    monkeypatch.setattr(favicon_corpus, "build_corpus", lambda p: ({md5: 2}, {md5: "a.example"}))
+    monkeypatch.setattr(favicon_corpus, "build_corpus", lambda p: ({md5: 2}, {md5: ["a.example"]}))
     watchlist.probe_domains(["shop.example"], workers=1, db_path=tmp_path / "scam.db")
     assert captured["favicon_counts"] == {md5: 2}
-    assert captured["favicon_origins"] == {md5: "a.example"}
+    assert captured["favicon_origins"] == {md5: ["a.example"]}
 
 
 def test_collision_fires_end_to_end_from_db_corpus(stub_probe_fetch, tmp_path):

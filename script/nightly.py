@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import os
 import re
 import sys
@@ -216,9 +217,12 @@ def run(
     report.setdefault("dry_run", dry_run)
 
     # P10: 手動収集リストの継続監視。probe はテストで差し替え可能。
-    cand = watchlist.monitor(
-        repo_dir, probe=candidate_probe or watchlist.probe_domains, dry_run=dry_run
-    )
+    # probe は判定と同じ DB から corpus を組む (repo_dir を差し替えたときのズレ防止)。
+    if candidate_probe is not None:
+        cand_probe = candidate_probe
+    else:
+        cand_probe = functools.partial(watchlist.probe_domains, db_path=repo_dir / "db" / "scam.db")
+    cand = watchlist.monitor(repo_dir, probe=cand_probe, dry_run=dry_run)
     report["candidate_checked"] = cand.get("candidates", 0)
     report["candidate_promoted"] = list(cand.get("promoted") or [])
 

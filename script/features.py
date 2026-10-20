@@ -30,11 +30,18 @@ ZENCART_MARKERS: tuple[str, ...] = (
     "?currency=",
 )
 
-# WordPress 等の汎用 favicon (テーマ同梱の既定アイコン)。
-# これらのハッシュは cross-origin 判定から除外する (誰のサイトでも同じ画像になるため)。
+# 汎用 favicon (誰のサイトでも同じ画像になるもの) の実測 md5。
+# これらは collision / cross-origin の両方から除外する。
+# 値はすべて実ファイルを取得して md5sum で確認したもの (2026-10-20):
+#   https://wordpress.org/favicon.ico        53a151ba1af3acdefe16fbbdad937ee4
+#   https://www.xserver.ne.jp/favicon.ico    a1bfd92e9401d9f063eb3d56b49925fc
+#   https://www.onamae.com/favicon.ico       69189948129989fa07b0d62db0f97b06
+# 追加するときは必ず実ファイルから計算する (プレースホルダを入れない)。
 GENERIC_FAVICON_MD5S: frozenset[str] = frozenset(
     {
-        "8a1e3a9b3f8e4a2c"[:0] or "dummy-placeholder-not-a-real-hash",  # 末尾 test 用ダミー
+        "53a151ba1af3acdefe16fbbdad937ee4",
+        "a1bfd92e9401d9f063eb3d56b49925fc",
+        "69189948129989fa07b0d62db0f97b06",
     }
 )
 
@@ -283,25 +290,54 @@ def _favicon_count(known_favicons, md5: str) -> int:
         return 0
 
 
-def _favicon_origin(favicon_origin_map, md5: str) -> str:
-    """corpus のオリジンをホスト名へ正規化する。
+def _normalise_origin(value) -> str:
+    """URL / ホスト名を registrable domain 比較用のホストへ正規化する。
 
-    "https://A.example/path" のような URL でも、ホストだけを取り出して
-    registrable domain を比較できるようにする。型違いは空文字に落とす。
+    プロトコル相対 (//host/path)・大文字・末尾ドット・ポートを吸収し、
+    不正 URL (壊れた IPv6 など) と 253 文字超は空文字に落とす。
     """
-    if not isinstance(favicon_origin_map, dict):
-        return ""
-    value = favicon_origin_map.get(md5)
     if not isinstance(value, str):
         return ""
     text = value.strip().lower()
     if not text:
         return ""
-    host = (urlsplit(text).hostname or "") if "://" in text else text.split("/")[0]
-    host = host.split(":")[0].strip().strip(".")
+    if text.startswith("//"):
+        text = "https:" + text
+    try:
+        if "://" in text:
+            host = urlsplit(text).hostname or ""
+        else:
+            host = urlsplit("//" + text).hostname or ""
+    except ValueError:
+        return ""
+    host = (host or "").strip().strip(".")
     if host.startswith("www."):
         host = host[4:]
+    if not host or len(host) > 253:
+        return ""
     return host
+
+
+def _favicon_origins(favicon_origin_map, md5: str) -> list[str]:
+    """corpus のオリジン集合を正規化して返す。
+
+    corpus は md5 ごとに観測ドメインのリストを持つ (旧形式の単一文字列も受け付ける)。
+    """
+    if not isinstance(favicon_origin_map, dict):
+        return []
+    value = favicon_origin_map.get(md5)
+    if isinstance(value, str):
+        values = [value]
+    elif isinstance(value, (list, tuple, set, frozenset)):
+        values = list(value)
+    else:
+        return []
+    out: list[str] = []
+    for item in values:
+        host = _normalise_origin(item)
+        if host and host not in out:
+            out.append(host)
+    return out
 
 
 def _is_challenge(result: FetchResult | None) -> bool:
@@ -405,7 +441,7 @@ def extract_features(
     *,
     favicon_bytes: bytes | None = None,
     known_favicons: dict[str, int] | None = None,
-    favicon_origin_map: dict[str, str] | None = None,
+    favicon_origin_map: dict[str, object] | None = None,
     domain_2ld_counts: dict[str, int] | None = None,
     rdap: RdapInfo | None = None,
 ) -> PageFeatures:
@@ -450,11 +486,17 @@ def extract_features(
     if f.favicon_md5 and f.favicon_md5 not in GENERIC_FAVICON_MD5S:
         # corpus は外部データなので型を信用しない (None/int/空文字で落とさない)。
         f.favicon_collision = _favicon_count(known_favicons, f.favicon_md5) > 1
-        # 同一 registrable domain のサブドメインは除外、汎用 favicon も除外。
-        origin = _favicon_origin(favicon_origin_map, f.favicon_md5)
-        f.favicon_cross_origin_of = origin
-        if origin and registrable_domain(origin) != reg:
-            f.favicon_cross_origin = True
+        # 同一 registrable domain のサブドメインは除外する。
+        # 代表を 1 つだけ見ると辞書順最小のドメインが必ず False になるため、
+        # 観測された全オリジンを比較する。
+        origins = _favicon_origins(favicon_origin_map, f.favicon_md5)
+        if origins:
+            f.favicon_cross_origin_of = origins[0]
+            for origin in origins:
+                if registrable_domain(origin) != reg:
+                    f.favicon_cross_origin_of = origin
+                    f.favicon_cross_origin = True
+                    break
     if domain_2ld_counts:
         f.shared_2ld = domain_2ld_counts.get(reg, 0) >= 3
 

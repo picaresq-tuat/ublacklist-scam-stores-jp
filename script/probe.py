@@ -103,9 +103,14 @@ class Pipeline:
                 timeout=self.timeout,
                 allow_binary=True,
             )
-        except (BlockedURL, FetchError, OSError):
+        except Exception:  # 未知の取得失敗でも夜次バッチを止めない (favicon は補助信号)
             fav = None
-        if fav is not None and not fav.discarded and fav.status < 400:
+        if fav is not None and (
+            fav.discarded or fav.status >= 400 or getattr(fav, "truncated", False)
+        ):
+            # truncated: 途中で切れた画像を MD5 化すると指紋が不安定になる。
+            fav = None
+        if fav is not None:
             # soft-404 (404 の HTML 等) を favicon として採用しない。
             # HTML の定型エラーページを MD5 化すると、corpus を汚染して
             # favicon_collision の偽陽性を量産するため magic で弾く。

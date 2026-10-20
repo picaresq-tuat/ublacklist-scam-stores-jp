@@ -93,7 +93,14 @@ cloakingリストと手動候補を並列に取得し、`block`かつ2xxのド�
 | `abuse_phone_foreign` | abuse電話の国番号が81以外 | 0 | scam 47%、正規60%。計測のみ |
 | `rdap_slow` | RDAP応答が3秒超 | 0 | 両クラスで0件。計測のみ |
 
-`favicon_collision`と`favicon_cross_origin`は、`script/favicon_corpus.py`が`db/scam.db`の判定履歴から`md5 -> distinctドメイン数`と代表ホストを組み立て、CLI・夜間ランナー・候補監視の各パイプラインに渡す。ネットワークは使わない。corpusに載るのは`favicon_source`が`raw`の行 (生の画像バイトからMD5を作った行) だけで、旧実装が本文テキスト先頭64文字から作った値は混ぜない。汎用favicon (`GENERIC_FAVICON_MD5S`) は両シグナルから除外する。
+`favicon_collision`と`favicon_cross_origin`は、`script/favicon_corpus.py`が`db/scam.db`の判定履歴から`md5 -> distinct registrable domain数`と観測オリジン一覧を組み立て、CLI・夜間ランナー・候補監視の各パイプラインに渡す。ネットワークは使わない。corpusに載るのは`favicon_source`が`raw`の行 (生の画像バイトからMD5を作った行) だけで、旧実装が本文テキスト先頭64文字から作った値は混ぜない。件数はhost単位ではなくregistrable domain単位で数えるので、同一サイトの`www`/`shop`サブドメインがcollisionを立てることはない。`favicon_collision`の母数は`block`/`hold`の行のみ、`favicon_cross_origin`の比較対象は`dismissed`も含む全観測とする。汎用favicon (`GENERIC_FAVICON_MD5S`) は両シグナルから除外する。
+
+既存DBの`favicon_md5`は旧実装のテキスト由来で、corpusには使えない。初回だけ次のbackfillを実行して`block`/`hold`の行に生バイト由来のMD5を入れる (ページ全体は取り直さず`/favicon.ico`だけを取得する)。
+
+```
+python3 script/favicon_backfill.py --db db/scam.db --dry-run --limit 20   # 確認
+python3 script/favicon_backfill.py --db db/scam.db                        # 反映
+```
 
 `shared_2ld`と`young_index`は定義と重みがあるが、実走査では値が供給されない。現状の判定に寄与するのは表の残りの項目である。
 
@@ -129,7 +136,7 @@ cloakingリストと手動候補を並列に取得し、`block`かつ2xxのド�
 
 ## テスト
 
-`python3 -m pytest -q`で469件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
+`python3 -m pytest -q`で529件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
 
 ## 運用
 
