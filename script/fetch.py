@@ -86,7 +86,8 @@ def looks_like_image_bytes(raw: bytes) -> bool:
     stripped = head.lstrip()
     if stripped[:1] == b"<":
         low = stripped.lower()
-        return low.startswith((b"<?xml", b"<svg")) or b"<svg" in low[:256]
+        # HTML エラーページは <html/<!DOCTYPE で始まる。<svg を含む本文と区別する。
+        return low.startswith((b"<?xml", b"<svg"))
     return False
 
 
