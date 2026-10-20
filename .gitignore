@@ -1,11 +1,9 @@
-# --- DB は追跡する (clone 直後から判定を再現するため) ---
-# 実行中に生成される一時ファイルだけを除外する
-db/*.db-journal
-db/*.db-wal
-db/*.db-shm
-# 手動収集した容疑ドメイン (未検証・誤検知を含むため公開しない)
-db/manual_candidates.txt
-db/manual_candidates*.txt
+# --- DB は追跡しない (判定・検索履歴に実データが入るため公開しない) ---
+# 検索履歴と判定履歴は未検証のドメインを含む。手動収集リストも同様に公開しない。
+# 開発環境では `python3 scripts/init_db.py` で models.db / whitelist.db を
+# seed から再生成し、scam.db / searches.db は各スクリプトが実行時に作る。
+db/*
+!db/.gitkeep
 
 # 未編集の生ログ (編集済みログのみ logs/nightly_scan.log* として追跡する)
 logs/*.raw.log
