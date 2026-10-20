@@ -301,6 +301,67 @@ def test_attachment_disposition_discards_even_html():
     assert r.body is None and r.discarded is True
 
 
+# ---- allow_binary: favicon 等の画像応答を生バイトで受け取る ----
+
+
+PNG = b"\x89PNG\r\n\x1a\n" + bytes(range(32))
+
+
+def _image_response(body=PNG, ctype="image/png", headers=None):
+    h = {"Content-Type": ctype, "Content-Length": str(len(body))}
+    h.update(headers or {})
+    return ok(body, h)
+
+
+def test_allow_binary_keeps_image_bytes_in_raw():
+    r = fetch(
+        "https://shop.example/favicon.ico",
+        transport=FakeTransport(_image_response()),
+        resolver=public_resolver,
+        allow_binary=True,
+    )
+    assert r.discarded is False
+    assert r.raw == PNG
+    assert r.raw_bytes == len(PNG)
+
+
+def test_image_content_type_still_discarded_without_allow_binary():
+    r = fetch(
+        "https://shop.example/favicon.ico",
+        transport=FakeTransport(_image_response()),
+        resolver=public_resolver,
+    )
+    assert r.discarded is True
+    assert r.discard_reason == "content-type:image/png"
+    assert r.raw == b""
+
+
+def test_allow_binary_does_not_bypass_attachment_or_other_mimes():
+    att = fetch(
+        "https://shop.example/favicon.ico",
+        transport=FakeTransport(
+            _image_response(headers={"Content-Disposition": "attachment; filename=f.ico"})
+        ),
+        resolver=public_resolver,
+        allow_binary=True,
+    )
+    assert att.discarded is True and att.discard_reason == "content-disposition:attachment"
+    other = fetch(
+        "https://shop.example/x.zip",
+        transport=FakeTransport(_image_response(ctype="application/zip")),
+        resolver=public_resolver,
+        allow_binary=True,
+    )
+    assert other.discarded is True and other.discard_reason == "content-type:application/zip"
+
+
+def test_html_response_raw_holds_original_bytes():
+    r = fetch("https://shop.example/item", transport=FakeTransport(ok()), resolver=public_resolver)
+    assert r.raw == HTML
+    assert "hello" in r.body
+    assert r.raw_bytes == len(HTML)
+
+
 def test_allowed_content_types_set():
     assert "text/html" in ALLOWED_CONTENT_TYPES and "application/json" in ALLOWED_CONTENT_TYPES
     assert "application/x-msdownload" not in ALLOWED_CONTENT_TYPES

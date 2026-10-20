@@ -38,6 +38,68 @@ ALLOWED_CONTENT_TYPES = frozenset(
         "application/xml",
     }
 )
+# allow_binary=True のときだけ通す画像 MIME (favicon 取得用)。
+BINARY_CONTENT_TYPES = frozenset(
+    {
+        "image/x-icon",
+        "image/vnd.microsoft.icon",
+        "image/png",
+        "image/apng",
+        "image/gif",
+        "image/jpeg",
+        "image/webp",
+        "image/avif",
+        "image/bmp",
+        "image/x-ms-bmp",
+        "image/svg+xml",
+    }
+)
+# MIME が octet-stream でも、先頭バイトが画像の magic と一致すれば画像として扱う
+# (favicon を octet-stream で返すサーバー対策)。HTML は magic を持たないので弾かれる。
+_IMAGE_MAGIC = (
+    b"\x00\x00\x01\x00",  # ICO
+    b"\x89PNG\r\n\x1a\n",
+    b"GIF87a",
+    b"GIF89a",
+    b"\xff\xd8\xff",  # JPEG
+    b"BM",  # BMP
+    b"RIFF",  # WEBP (RIFF ヘッダ)
+)
+
+
+def looks_like_image_bytes(raw: bytes) -> bool:
+    """先頭バイトから画像 (ICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVG) かを判定する。
+
+    favicon として HTML エラーページ等を採用しないための最低限の sniff。
+    """
+    if not raw:
+        return False
+    head = bytes(raw[:512])
+    if head[:4] == b"\x00\x00\x01\x00":
+        return True
+    if any(
+        head.startswith(m) for m in _IMAGE_MAGIC if m not in (b"\x00\x00\x01\x00", b"RIFF", b"BM")
+    ):
+        return True
+    # BMP は "BM" だけだと本文 (BMW 等) を誤認するため、予約領域 0 も見る。
+    if head.startswith(b"BM") and len(head) >= 14 and head[6:10] == b"\x00\x00\x00\x00":
+        return True
+    if head.startswith(b"RIFF") and head[8:12] == b"WEBP":
+        return True
+    if head[4:8] == b"ftyp" and head[8:12] in (b"avif", b"avis"):
+        return True
+    stripped = head.lstrip()
+    if stripped[:1] == b"<":
+        low = stripped.lower()
+        # HTML エラーページは <html/<!DOCTYPE で始まる。XML は <svg を含むときだけ画像。
+        if low.startswith(b"<svg"):
+            return True
+        if low.startswith(b"<?xml"):
+            return b"<svg" in low
+        return False
+    return False
+
+
 BLOCKED_PORTS = frozenset({22, 23, 25, 110, 143, 3306, 5432, 6379, 8080, 8443, 9200, 11211})
 ALLOWED_SCHEMES = frozenset({"http", "https"})
 ALLOWED_PORTS = frozenset({80, 443})
@@ -86,6 +148,7 @@ class FetchResult:
     discard_reason: str = ""
     truncated: bool = False
     raw_bytes: int = 0
+    raw: bytes = b""
     error: str = ""
 
 
@@ -225,6 +288,7 @@ def fetch(
     max_bytes: int = DEFAULT_MAX_BYTES,
     max_redirects: int = DEFAULT_MAX_REDIRECTS,
     allow_private: bool = False,
+    allow_binary: bool = False,
 ) -> FetchResult:
     if ua not in USER_AGENTS:
         raise ValueError(f"unknown ua key: {ua!r} (choose from {sorted(USER_AGENTS)})")
@@ -282,7 +346,22 @@ def fetch(
             result.discard_reason = "content-disposition:attachment"
             return result
         ctype = hdr.get("content-type", "").split(";")[0].strip().lower()
-        if ctype and ctype not in ALLOWED_CONTENT_TYPES:
+        # favicon 等: allow_binary=True なら画像 MIME を通す
+        # (content-disposition:attachment と content-length 超過の判定は維持)。
+        # MIME が text/plain / octet-stream / 無指定でも、magic が画像と一致するときだけ通す。
+        # application/zip 等の明示的な非画像 MIME は magic では救済しない。
+        binary_ctype = ctype in BINARY_CONTENT_TYPES
+        magic_ok = (
+            allow_binary
+            and ctype in ("", "text/plain", "application/octet-stream")
+            and looks_like_image_bytes(raw)
+        )
+        if (
+            ctype
+            and ctype not in ALLOWED_CONTENT_TYPES
+            and not (allow_binary and binary_ctype)
+            and not magic_ok
+        ):
             result.discarded = True
             result.discard_reason = f"content-type:{ctype}"
             return result
@@ -293,6 +372,16 @@ def fetch(
             result.body = None
             return result
 
+        if allow_binary and (binary_ctype or magic_ok):
+            # 画像は HTML として decoding / sanitize しない (巨大画像の str 化を避ける)。
+            if len(raw) > max_bytes:
+                result.truncated = True
+                raw = raw[:max_bytes]
+            result.raw = raw
+            result.body = None
+            result.html_sanitized = ""
+            return result
+
         declared_charset = re.search(r"charset=([\w\-]+)", hdr.get("content-type", ""), re.I)
         if declared_charset:
             result.charset = _normalise_charset(declared_charset.group(1))
@@ -301,6 +390,7 @@ def fetch(
         if len(raw) > max_bytes:
             result.truncated = True
             raw = raw[:max_bytes]
+        result.raw = raw
         try:
             text = raw.decode(result.charset, errors="replace")
         except LookupError:

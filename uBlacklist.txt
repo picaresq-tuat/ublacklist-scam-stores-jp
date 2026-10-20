@@ -8,3 +8,28 @@
 /https?:\/\/(?:[a-z0-9-]+\.)*xn--[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,8}\/.*/
 
 ## Hermes nightly
+*://*.achievia.com/*
+*://*.afriquedeslibertes.org/*
+*://*.aprotec.pro/*
+*://*.auszeit-theresablank.de/*
+*://*.av01.tv/*
+*://*.best-com.site/*
+*://*.buurtpreventiewernhoutsburg.nl/*
+*://*.championsofthefuture.uk/*
+*://*.dreamcity.tr/*
+*://*.dydell.com/*
+*://*.iidamizuhiki.com/*
+*://*.irrigo.no/*
+*://*.lets-play-2.com/*
+*://*.mavenbrain.com/*
+*://*.my-esthetic.com/*
+*://*.namratasnacks.in/*
+*://*.pb909.com/*
+*://*.rozwojownia.com/*
+*://*.rt23.be/*
+*://*.softest.jp/*
+*://*.stavebniny-elckner.cz/*
+*://*.top-dienst.ch/*
+*://*.universellpos.com/*
+*://*.websitemaringa.com/*
+*://*.windsormobiletyrefitting.co.uk/*

@@ -1,0 +1,89 @@
+{
+ "config_version": 1,
+ "note": "spike_s4 は部分特徴量 (zencart/favicon/cloaking/offsite 未計測) のため、スコアも FP も下限値。FP 0 は『真の FP 率 0』ではなく『この corpus で未観測』。",
+ "thresholds": {
+  "auto_block": 20,
+  "hold": 12,
+  "fast_track": 60,
+  "zencart_min_hits": 2,
+  "rdap_slow_ms": 3000,
+  "nights_required": 2
+ },
+ "weights": {
+  "redirect_to_google": 35,
+  "favicon_collision": 30,
+  "favicon_cross_origin": 5,
+  "zencart": 10,
+  "bot_only_body": 20,
+  "cloaking": 12,
+  "cloaking_promoted": 20,
+  "stolen_image": 8,
+  "dark_pattern_per_hit": 3,
+  "dark_pattern_cap": 9,
+  "risky_tld": 8,
+  "shared_2ld": 6,
+  "offsite_redirect": 10,
+  "deep_product_path": 2,
+  "young_index": 5,
+  "rdap_slow": 0,
+  "registrar_url_tld_foreign": 4,
+  "abuse_phone_foreign": 0
+ },
+ "corpora": {
+  "golden": {
+   "scam": 20,
+   "legit": 17,
+   "note": "full features (raw.json.gz + rdap.json)"
+  },
+  "spike_s4": {
+   "scam": 96,
+   "legit": 25,
+   "note": "partial features (risky_tld/stolen_image/dark/shared_2ld + RDAP); scores are lower bounds"
+  }
+ },
+ "best_in_range_fp_zero": {
+  "auto_block": 20,
+  "hold": 12,
+  "golden": {
+   "scam_n": 20,
+   "recall": 18,
+   "legit_n": 17,
+   "fp": 0,
+   "hold_fp": 0
+  },
+  "spike_s4": {
+   "scam_n": 96,
+   "recall": 42,
+   "legit_n": 25,
+   "fp": 0,
+   "hold_fp": 0
+  }
+ },
+ "best_in_range_any": {
+  "auto_block": 16,
+  "hold": 12,
+  "golden": {
+   "scam_n": 20,
+   "recall": 18,
+   "legit_n": 17,
+   "fp": 0,
+   "hold_fp": 0
+  },
+  "spike_s4": {
+   "scam_n": 96,
+   "recall": 59,
+   "legit_n": 25,
+   "fp": 0,
+   "hold_fp": 0
+  }
+ },
+ "selection_rule": "FP 0 (両コーパス) かつ auto_block - max(legit) >= 9 の範囲で recall 最大。max(legit) は両コーパスの最大値 (保守側) を採る。",
+ "max_legit_score": {
+  "golden": 11.0,
+  "spike_s4": 11.0
+ },
+ "min_scam_score": {
+  "golden": 8.0,
+  "spike_s4": 0.0
+ }
+}
