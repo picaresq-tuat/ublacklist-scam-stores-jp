@@ -354,3 +354,14 @@ def test_collision_fires_end_to_end_from_db_corpus(stub_probe_fetch, tmp_path):
     assert feats["favicon_collision"] is True
     assert feats["favicon_cross_origin"] is True
     assert feats["favicon_cross_origin_of"] == "a.example"
+
+
+def test_html_page_containing_inline_svg_is_not_a_favicon():
+    """<svg> を含むだけの HTML ページを SVG favicon と誤認しない。"""
+    from fetch import looks_like_image_bytes
+
+    html = (
+        b'<!DOCTYPE html><html><body><svg xmlns="http://www.w3.org/2000/svg"></svg></body></html>'
+    )
+    assert looks_like_image_bytes(html) is False
+    assert looks_like_image_bytes(b'<svg xmlns="http://www.w3.org/2000/svg"></svg>') is True
