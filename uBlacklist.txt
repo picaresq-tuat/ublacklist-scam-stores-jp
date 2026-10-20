@@ -19,7 +19,10 @@
 *://*.dreamcity.tr/*
 *://*.dydell.com/*
 *://*.iidamizuhiki.com/*
+*://*.iluka-hwc.com/*
 *://*.irrigo.no/*
+*://*.kalamasz-ksiegowosc.pl/*
+*://*.kon-fishing.com/*
 *://*.lets-play-2.com/*
 *://*.mavenbrain.com/*
 *://*.my-esthetic.com/*
@@ -27,9 +30,12 @@
 *://*.pb909.com/*
 *://*.rozwojownia.com/*
 *://*.rt23.be/*
+*://*.securityzone-syria.com/*
 *://*.softest.jp/*
 *://*.stavebniny-elckner.cz/*
+*://*.tequilasunrisefest.com/*
 *://*.top-dienst.ch/*
+*://*.tu-han.net/*
 *://*.universellpos.com/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
