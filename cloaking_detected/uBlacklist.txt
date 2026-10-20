@@ -27,6 +27,8 @@
 *://*.buurtpreventiewernhoutsburg.nl/*
 *://*.championsofthefuture.uk/*
 *://*.corporatelearninguk.com/*
+*://*.dakarplaquiste.com/*
+*://*.despondentserenity.com/*
 *://*.diagakbari.com/*
 *://*.dienlanhminhdang.com/*
 *://*.digitalpolicylaw.com/*
@@ -37,6 +39,7 @@
 *://*.eurasiantactical.de/*
 *://*.femsajtolo.hu/*
 *://*.flamingobeach.holiday/*
+*://*.fronius.com/*
 *://*.gloucesterbikeproject.co.uk/*
 *://*.gsss-gh.com/*
 *://*.helgaly.com/*
@@ -50,6 +53,7 @@
 *://*.kidstalentawards.ao/*
 *://*.kortekbilisim.com/*
 *://*.kundalishastra.com/*
+*://*.launchtech.in/*
 *://*.lechantdesamandes.fr/*
 *://*.lets-play-2.com/*
 *://*.libdo-immo.com/*
@@ -66,6 +70,7 @@
 *://*.muke.ai/*
 *://*.mygolfway.com/*
 *://*.nathanzola.com/*
+*://*.newdoorfiji.com/*
 *://*.ommultispecialityanddental.com/*
 *://*.ophmn.com/*
 *://*.optimizaralojamiento.com/*
@@ -75,10 +80,14 @@
 *://*.pi.tn/*
 *://*.rozwojownia.com/*
 *://*.sammatthewman.com/*
+*://*.santoamaro.com/*
 *://*.seafoodbysykes.com/*
 *://*.shahaliagro.com/*
+*://*.shrigirajjipolymers.co.in/*
+*://*.stiledabitare.com/*
 *://*.storyorium.com/*
 *://*.sunmold.com/*
+*://*.tcha.jp/*
 *://*.tecai.site/*
 *://*.torahtent.com/*
 *://*.umeedinternationalschool.com/*
