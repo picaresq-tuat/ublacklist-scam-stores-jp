@@ -27,6 +27,7 @@
 *://*.dreamcity.tr/*
 *://*.dydell.com/*
 *://*.elektrotekcai.com/*
+*://*.elibom.net/*
 *://*.estesmadine.com/*
 *://*.evan.travel/*
 *://*.gerabnationalenterprises.com/*
@@ -37,10 +38,12 @@
 *://*.kon-fishing.com/*
 *://*.lets-play-2.com/*
 *://*.mavenbrain.com/*
+*://*.monitor.kantar.com/*
 *://*.my-esthetic.com/*
 *://*.mygolfway.com/*
 *://*.namratasnacks.in/*
 *://*.orelcbt.com/*
+*://*.paolocodeluppi.com/*
 *://*.paresisauction.com/*
 *://*.pb909.com/*
 *://*.rosecokontrol.ru/*
@@ -49,6 +52,7 @@
 *://*.securityzone-syria.com/*
 *://*.shrigirajjipolymers.co.in/*
 *://*.softest.jp/*
+*://*.ssp2.pl/*
 *://*.stavebniny-elckner.cz/*
 *://*.storyorium.com/*
 *://*.szolyvaipark.org/*
