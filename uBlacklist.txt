@@ -11,6 +11,7 @@
 *://*.achievia.com/*
 *://*.afriquedeslibertes.org/*
 *://*.ajscatfishstation.com/*
+*://*.alazora.com/*
 *://*.aprotec.pro/*
 *://*.auszeit-theresablank.de/*
 *://*.av01.tv/*
@@ -21,6 +22,7 @@
 *://*.cadbattaglino.com/*
 *://*.cadenhamproperties.co.uk/*
 *://*.championsofthefuture.uk/*
+*://*.chuko-pc-lab.com/*
 *://*.corporatelearninguk.com/*
 *://*.cpitech.co.za/*
 *://*.digitalpolicylaw.com/*
@@ -30,13 +32,18 @@
 *://*.elibom.net/*
 *://*.estesmadine.com/*
 *://*.evan.travel/*
+*://*.gailing-druck.de/*
+*://*.gemini.google/*
 *://*.gerabnationalenterprises.com/*
+*://*.houseofperpetualevolution.com/*
 *://*.iidamizuhiki.com/*
 *://*.iluka-hwc.com/*
 *://*.irrigo.no/*
 *://*.kalamasz-ksiegowosc.pl/*
+*://*.karnikdentalclinic.com/*
 *://*.kon-fishing.com/*
 *://*.lets-play-2.com/*
+*://*.lundi.is/*
 *://*.mavenbrain.com/*
 *://*.monitor.kantar.com/*
 *://*.my-esthetic.com/*

@@ -39,6 +39,7 @@
 *://*.donanimhaber.com/*
 *://*.ds-cab-ivanoff.com/*
 *://*.ecofaune.org/*
+*://*.eden-europe.eu/*
 *://*.energowatch.hu/*
 *://*.eurasiantactical.de/*
 *://*.facebook.com/*
