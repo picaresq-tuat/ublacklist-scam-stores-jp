@@ -22,7 +22,6 @@
 *://*.cadbattaglino.com/*
 *://*.cadenhamproperties.co.uk/*
 *://*.championsofthefuture.uk/*
-*://*.chuko-pc-lab.com/*
 *://*.corporatelearninguk.com/*
 *://*.cpitech.co.za/*
 *://*.digitalpolicylaw.com/*
@@ -33,7 +32,6 @@
 *://*.estesmadine.com/*
 *://*.evan.travel/*
 *://*.gailing-druck.de/*
-*://*.gemini.google/*
 *://*.gerabnationalenterprises.com/*
 *://*.houseofperpetualevolution.com/*
 *://*.iidamizuhiki.com/*
@@ -66,7 +64,6 @@
 *://*.tecai.site/*
 *://*.tequilasunrisefest.com/*
 *://*.top-dienst.ch/*
-*://*.tu-han.net/*
 *://*.universellpos.com/*
 *://*.vijverwinkel.com/*
 *://*.websitemaringa.com/*

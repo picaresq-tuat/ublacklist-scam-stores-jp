@@ -180,13 +180,39 @@ MEASURED_LEGIT_BLOGS: tuple[str, ...] = (
 # PC UA とモバイル UA の差はそれぞれ jaccard=0.977 / ゲート同一で、レスポンシブ差ではない。
 MEASURED_NON_CLOAKING: tuple[str, ...] = ("bandai-hobby.net", "dmm.co.jp")
 
+
+# 2026-10-21 に運用者が報告した誤検知 9 件。いずれも実ページを確認して正規と判断した:
+#   chuko-pc-lab.com / tu-han.net / accessoires-asus.com / k-tai-iosys.com — 正規の販売・情報サイト
+#   gemini.google / deepmind.google — ブランド TLD (.google) 上の公式サービス
+#   facebook.com — 通常取得が 400 を返しただけ (cloaking ではない)
+#   bandai-hobby.net / dmm.co.jp — MEASURED_NON_CLOAKING (差分の向きが正規)
+# triage ゲートで probe 対象から外す。個別リストからも削除済み。
+MEASURED_FALSE_POSITIVES: tuple[str, ...] = (
+    "chuko-pc-lab.com",
+    "gemini.google",
+    "tu-han.net",
+    "accessoires-asus.com",
+    "bandai-hobby.net",
+    "deepmind.google",
+    "dmm.co.jp",
+    "facebook.com",
+    "k-tai-iosys.com",
+)
+
 # 上記のうち `_guess_category` の部分一致では正しく分類できないものの明示カテゴリ。
 _EXPLICIT_CATEGORIES: dict[str, str] = {
     "bandai-hobby.net": "official_store",
     "dmm.co.jp": "aggregator",
+    "chuko-pc-lab.com": "blog_platform",
+    "gemini.google": "vendor_support",
+    "deepmind.google": "vendor_support",
+    "tu-han.net": "official_store",
+    "accessoires-asus.com": "official_store",
+    "k-tai-iosys.com": "used_store",
+    "facebook.com": "blog_platform",
 }
 
-SEED = SEED + MEASURED_LEGIT_BLOGS + MEASURED_NON_CLOAKING
+SEED = SEED + MEASURED_LEGIT_BLOGS + MEASURED_NON_CLOAKING + MEASURED_FALSE_POSITIVES
 
 
 def _now() -> str:

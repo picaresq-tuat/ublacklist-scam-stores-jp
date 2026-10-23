@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 from urllib.parse import urlsplit
 
 from fetch import FetchResult
-from whois_rdap import RdapInfo
+from whois_rdap import BRAND_TLDS, RdapInfo
 
 ZENCART_MARKERS: tuple[str, ...] = (
     "main_page=",
@@ -115,6 +115,18 @@ RISKY_TLDS: frozenset[str] = frozenset(
         "bar",
     }
 )
+
+
+def is_risky_tld(tld: str) -> bool:
+    """TLD が「詐欺サイトに多い」集合に属するか。
+
+    単一企業が運営するブランド TLD (`BRAND_TLDS`) は、その企業自身しか登録できない
+    ため詐欺の兆候にならない (例: `.google`, `.gmo`)。RISKY_TLDS に同名が入っていても
+    除外する。
+    """
+    t = (tld or "").strip().lower().lstrip(".")
+    return bool(t) and t in RISKY_TLDS and t not in BRAND_TLDS
+
 
 MULTI_LABEL_SUFFIXES: tuple[str, ...] = (
     "co.jp",
@@ -476,7 +488,7 @@ def extract_features(
     dom = (domain or "").strip().lower()
     reg = registrable_domain(dom)
     f = PageFeatures(domain=dom, registrable=reg, tld=dom.rsplit(".", 1)[-1] if "." in dom else dom)
-    f.risky_tld = f.tld in RISKY_TLDS
+    f.risky_tld = is_risky_tld(f.tld)
     f.status = int(browser.status if browser else 0)
     f.discarded = bool(browser.discarded if browser else False)
     f.title = _title(browser)

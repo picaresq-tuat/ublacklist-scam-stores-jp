@@ -5,7 +5,7 @@
 配布しているリストは2本ある。
 
 - [`uBlacklist.txt`](uBlacklist.txt) — 確定分ドメインと常設正規表現3本。ブラウザに入れるのはこちら。
-- [`cloaking_detected/uBlacklist.txt`](cloaking_detected/uBlacklist.txt) — cloakingを検知したが自動確定に届かない保留分。人手で確認してから本体へ移す。
+- [`cloaking_detected/uBlacklist.txt`](cloaking_detected/uBlacklist.txt) — cloakingを検知したが自動確定に届かない保留分。人手で確認してから本体へ移す。確定リストと重複するドメインは含まない (下記)。
 
 ## 判定の流れ
 
@@ -77,20 +77,20 @@ cloakingリストと手動候補を並列に取得し、`block`かつ2xxのド�
 
 | シグナル | 何を見るか | 重み | 実測メモ |
 | --- | --- | ---: | --- |
-| `redirect_to_google` | 検索エンジンへのドアウェイ転送 | 35 | 単独で`auto_block`に届く |
-| `favicon_collision` | 判定履歴にある同じfavicon MD5 (2ドメイン以上) | 30 | `db/scam.db`から毎回corpusを構築 |
-| `bot_only_body` | Googlebotにだけ本文を返す | 20 | 単独で`auto_block`に届く |
-| `cloaking_promoted` | cloakingかつbot専用本文またはstatus差 | 20 | `cloaking`の昇格版 |
+| `redirect_to_google` | 検索エンジンへのドアウェイ転送 | 18 | 単独では`hold`。35では正規のログイン転送 (gemini.google) が単独でblockしたため引き下げ |
+| `favicon_collision` | 判定履歴にある同じfavicon MD5 (2ドメイン以上) | 18 | `db/scam.db`から毎回corpusを構築。共有favicon 1個でblockしない |
+| `bot_only_body` | Googlebotにだけ本文を返す | 18 | 単独シグナルは`hold`に留める |
+| `cloaking_promoted` | cloakingかつbot専用本文またはstatus差 | 18 | `cloaking`の昇格版。status差だけではblockしない |
 | `cloaking` | titleが異なり本文長比が0.3以上 | 12 | 実測15/15が乗っ取り型。正規0/116 |
 | `offsite_redirect` | 外部ドメインへの転送 | 10 | `redirect_to_google`と排他 |
 | `zencart` | ZenCartの構造マーカーが2個以上 | 10 | 正規ZenCart店が2〜3個返すため補助に留める |
 | `stolen_image` | 商品画像が他社ストアの資産ホスト | 8 | 自社CDNを誤検知するため15から引き下げた |
-| `risky_tld` | 安価な新規TLD | 8 | goldenのscam 20/20、正規0 |
+| `risky_tld` | 安価な新規TLD | 8 | goldenのscam 20/20、正規0。単一企業のブランドTLD (`.google`等) は対象外 |
 | `dark_pattern` | 文言パターン1個につき3、上限9 | 3 / 9 | 90% 前後のscamで発火、正規も約40% |
 | `shared_2ld` | 同一2LDの使い回し (同一夜の検索結果に3ホスト以上) | 6 | 件数は夜間ランナーが供給する (下記) |
 | `favicon_cross_origin` | 他ドメインと同一favicon (同一registrable domainは除外) | 5 | `db/scam.db`から毎回corpusを構築 |
 | `young_index` | RDAP登録日から90日以内 (公開直後の目安) | 5 | 登録日を用いる代理指標。判定は秒単位で、ちょうど90日は含む。RDAP非対応の.jpでは発火しない |
-| `registrar_url_tld_foreign` | レジストラのリンク先TLDがcom/jp以外 | 4 | scam 7/15、正規13/116 |
+| `registrar_url_tld_foreign` | レジストラのリンク先TLDがcom/jp以外 | 4 | scam 7/15、正規13/116。ブランドTLD (`internet.gmo`等) は除く |
 | `deep_product_path` | 商品ページらしい深いパス | 2 | scam 2/15、正規35/116で判別力なし |
 | `abuse_phone_foreign` | abuse電話の国番号が81以外 | 0 | scam 47%、正規60%。計測のみ |
 | `rdap_slow` | RDAP応答が3秒超 | 0 | 両クラスで0件。計測のみ |
@@ -124,6 +124,21 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 ## 出力形式
 
 各エントリはuBlacklistの`*://*.example.com/*`形式で、ドメイン順に並べる。`publish.validate()`は常設正規表現3本とセクション見出しの存在、重複、常設ルールと同形の個別登録を検査し、問題があれば書き込まない。
+
+## 2本のリストの重複排除
+
+`cloaking_detected/uBlacklist.txt`は「確定リスト (`uBlacklist.txt`) に入っていない保留分」だけを持つ。同じドメインを両方に載せると、どちらの判定が正なのかレビューで追えず、uBlacklist側でも二重に評価されるため、publish段階で次を行う。
+
+- 夜間ランナーは確定リストの現行エントリを読み、`write_cloaking_list(..., exclude=...)`に渡す。
+- `merge_cloaking_list()`は`exclude`のドメインを追記対象から外すだけでなく、既存行にも残っていれば取り除く (過去に重複した行も次回のpublishで消える)。
+
+## ブランドTLDの扱い
+
+単一企業が運営するgTLD (`.google` / `.gmo` / `.amazon` 等) は「安価な新規TLD」ではないため、`risky_tld`の対象外とする。同じ理由で、レジストラURLのTLD判定 (`registrar_url_tld_foreign`) でもブランドTLDは海外レジストラとみなさない。定義は`whois_rdap.BRAND_TLDS`、判定は`features.is_risky_tld()`に集約している。
+
+## 正規ドメインのホワイトリスト
+
+`script/whitelist.py`の`SEED`が一次情報である。トリアージはここに載るドメイン (サブドメイン含む) を以後probeしない。2026-10-21に報告された誤検知9件 (`chuko-pc-lab.com` / `gemini.google` / `tu-han.net` / `accessoires-asus.com` / `bandai-hobby.net` / `deepmind.google` / `dmm.co.jp` / `facebook.com` / `k-tai-iosys.com`) もここに追加し、確定・保留の両リストから削除した。
 
 ## データベース
 
