@@ -4,8 +4,8 @@
 
 配布しているリストは2本ある。
 
-- [`uBlacklist.txt`](uBlacklist.txt) — 確定分25ドメインと常設正規表現3本。ブラウザに入れるのはこちら。
-- [`cloaking_detected/uBlacklist.txt`](cloaking_detected/uBlacklist.txt) — cloakingを検知したが自動確定に届かない保留分91件。人手で確認してから本体へ移す。
+- [`uBlacklist.txt`](uBlacklist.txt) — 確定分ドメインと常設正規表現3本。ブラウザに入れるのはこちら。
+- [`cloaking_detected/uBlacklist.txt`](cloaking_detected/uBlacklist.txt) — cloakingを検知したが自動確定に届かない保留分。人手で確認してから本体へ移す。
 
 ## 判定の流れ
 
