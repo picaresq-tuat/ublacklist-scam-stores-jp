@@ -65,6 +65,16 @@ def build_entries(domains: Iterable[str]) -> list[str]:
     return sorted(out, key=lambda e: _ENTRY_RE.match(e).group(1))
 
 
+def entries_to_domains(entries: Iterable[str]) -> set[str]:
+    """`*://*.example.com/*` 形式の entry からドメイン集合を取り出す。"""
+    out: set[str] = set()
+    for entry in entries or ():
+        m = _ENTRY_RE.match((entry or "").strip())
+        if m:
+            out.add(m.group(1).lower())
+    return out
+
+
 def existing_entries(text: str) -> list[str]:
     return [ln.strip() for ln in (text or "").splitlines() if _ENTRY_RE.match(ln.strip())]
 

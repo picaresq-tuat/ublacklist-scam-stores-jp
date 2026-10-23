@@ -1,15 +1,23 @@
 # スコア重み定義 (P4)。scorer.py はこのファイルのみを重みの源とする (ハードコード禁止)。
 version: 1
 weights:
-  redirect_to_google: 35      # 検索エンジンへのドアウェイ転送 (実測: *.hika-jp.casa 17 件)
-  favicon_collision: 30       # 既知詐欺コーパスと favicon md5 一致 (実測: 17 件が同一)
+  # 2026-10-21: 35 -> 18。単独で auto_block(20) に到達していたため、正規サイトの
+  # ログイン/公式リダイレクト (gemini.google = 35 点で block) が確定リストへ入った。
+  # 18 は hold 帯に留まり、他のシグナル 1 つで block に届く配分に変更。
+  redirect_to_google: 18      # 検索エンジンへのドアウェイ転送 (実測: *.hika-jp.casa 17 件)
+  # 2026-10-21: 30 -> 18。共有 favicon 1 個だけで auto_block に到達し、正規店
+  # (chuko-pc-lab.com = collision 30 + rdap 4) を block していた。18 は hold 帯。
+  favicon_collision: 18       # 既知詐欺コーパスと favicon md5 一致 (実測: 17 件が同一)
   favicon_cross_origin: 5     # クロスオリジン favicon 一致 (低重み; サブドメイン/汎用は除く)
   zencart: 10                 # ZenCart 構造マーカー >= zencart_min_hits (補助シグナルのみ。S3 スパイクで
                               # 正規 ZenCart 店 (cms-server.ne.jp=2, shop.obitastar.co.jp=3) が
                               # 2-3 ヒットするため単独 auto_block 不可: 10 < hold 12)
-  bot_only_body: 20           # Googlebot にのみ本文を返す
+  # 2026-10-21: 20 -> 18 (cloaking_promoted も同じ)。status 差 1 つで block していたため
+  # (facebook.com=400 / accessoires-asus.com=403 / k-tai-iosys.com=403 が hold から
+  # auto_block 相当になっていた)。閾値と同じ 20 を単独シグナルに与えない。
+  bot_only_body: 18           # Googlebot にのみ本文を返す
   cloaking: 12                # title 差 かつ 本文長比 >= 0.3 (status 差を伴う場合は promoted)
-  cloaking_promoted: 20
+  cloaking_promoted: 18
   stolen_image: 8             # 商品画像 src が他社ストア資産ホスト (境界一致)。
                               # T4 で 15->8: legit 25 件中 3 件 (楽天 r10s.jp / Yahoo shopping
                               # yimg.jp / impress media-amazon.com) が自社 CDN を他社資産と判定され、
@@ -18,6 +26,8 @@ weights:
                               # 8 なら zencart 10 + 8 = 18、dark 9 + 8 + deep 2 = 19 で
                               # auto_block(20) 未満。代償は auto_block recall 52->45/96
                               # (失った 7 件はすべて hold 帯に残留 = review 圏内)。
+  # 2026-10-21: 据え置き。tu-han.net の +9 は whitelist + rdap 側の修正で hold (19) に収まる。
+  # ここを 2/hit cap 6 に下げると 96 件コーパスの recall が 42 -> 29 に落ちたため変更しない。
   dark_pattern_per_hit: 3
   dark_pattern_cap: 9
   risky_tld: 8

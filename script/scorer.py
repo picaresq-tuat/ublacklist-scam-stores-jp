@@ -15,13 +15,13 @@ DEFAULT_CONFIG = Path(__file__).resolve().parent / "scoring.yaml"
 
 _FALLBACK = {
     "weights": {
-        "redirect_to_google": 35,
-        "favicon_collision": 30,
+        "redirect_to_google": 18,
+        "favicon_collision": 18,
         "favicon_cross_origin": 5,
         "zencart": 10,
-        "bot_only_body": 20,
+        "bot_only_body": 18,
         "cloaking": 12,
-        "cloaking_promoted": 20,
+        "cloaking_promoted": 18,
         "stolen_image": 8,
         "dark_pattern_per_hit": 3,
         "dark_pattern_cap": 9,

@@ -289,14 +289,20 @@ def run_night(
     would_publish: list[str] = []
     if ulist_path is not None:
         current = Path(ulist_path).read_text(encoding="utf-8") if Path(ulist_path).exists() else ""
-        eligible = store.eligible_domains()
+        from publish import domains_to_remove, entries_to_domains, existing_entries
+
+        # ホワイトリストは「誤検知/正規」の最終判断なので、decisions が block のままでも
+        # 掲載しない。既存行に残っている分も publish のたびに取り除く (自己修復)。
+        listed = entries_to_domains(existing_entries(current))
+        retired = {d for d in listed if wl.match(d)}
+        eligible = [d for d in store.eligible_domains() if not wl.match(d)]
         wanted = build_entries(eligible)
         if publish:
             text = merge_list(current, eligible)  # merge_list 側で entry 化する
-            from publish import domains_to_remove
 
-            if expired:
-                text = domains_to_remove(text, expired)
+            dropped = retired | set(expired)
+            if dropped:
+                text = domains_to_remove(text, dropped)
             Path(ulist_path).write_text(text, encoding="utf-8")
             published = wanted  # entry 形式 (*://*.d/*)
             if dry_run:
@@ -305,20 +311,31 @@ def run_night(
             would_publish = wanted
 
     # --- P9b: cloaking-hold 専用リスト (cloaking_detected/uBlacklist.txt) ---
-    cloaking_holds = store.cloaking_holds()
+    cloaking_holds = [d for d in store.cloaking_holds() if not wl.match(d)]
     cloaking_would: list[str] = []
     cloaking_added: list[str] = []
     if cloaking_list_path is not None:
         from cloaking_publish import write_cloaking_list
-        from publish import existing_entries
+        from publish import entries_to_domains, existing_entries
 
         path = Path(cloaking_list_path)
         before = existing_entries(path.read_text(encoding="utf-8")) if path.exists() else []
+        # scam リスト (uBlacklist.txt) で公開済みのドメインは cloaking 側に載せない。
+        # 両リストに同じドメインが出ると、どちらの判定が正かレビューで追えなくなる。
+        scam_text = (
+            Path(ulist_path).read_text(encoding="utf-8")
+            if ulist_path is not None and Path(ulist_path).exists()
+            else ""
+        )
+        cloak_before_domains = entries_to_domains(before)
+        exclude = entries_to_domains(existing_entries(scam_text))
+        # ホワイトリスト済み (= 誤検知) は cloaking 側の既存行からも落とす。
+        exclude |= {d for d in cloak_before_domains if wl.match(d)}
         if dry_run:
-            cloaking_would = build_entries(cloaking_holds)
+            cloaking_would = build_entries([d for d in cloaking_holds if d not in exclude])
             cloaking_added = [e for e in cloaking_would if e not in before]
         else:
-            text = write_cloaking_list(path, cloaking_holds)
+            text = write_cloaking_list(path, cloaking_holds, exclude=exclude)
             cloaking_added = [e for e in existing_entries(text) if e not in before]
 
     return {

@@ -37,6 +37,48 @@ USER_AGENT = "scam-hunter-research/1.0"
 # 「Registrar の URL」とみなす link の rel。self は RDAP レコード自身を指すため除外。
 _REGISTRAR_URL_RELS = frozenset({"about", "related"})
 
+# 単一企業 (ブランド) が運営する gTLD。registrar URL のホストがこの TLD でも
+# 「海外レジストラ」とはみなさない。実測: 中古 PC 店 (chuko-pc-lab.com) の RDAP は
+# GMO Internet の正規レジストラ URL `https://internet.gmo/` を返し、TLD `.gmo` が
+# foreign 判定され +4 点の偽陽性になっていた (2026-10-21)。
+# `features.RISKY_TLDS` 側でも同じ集合を除外する (単一企業 TLD は詐欺の兆候にならない)。
+BRAND_TLDS: frozenset[str] = frozenset(
+    {
+        "google",
+        "youtube",
+        "android",
+        "chrome",
+        "gmail",
+        "gmo",
+        "amazon",
+        "aws",
+        "apple",
+        "microsoft",
+        "bing",
+        "xbox",
+        "azure",
+        "ibm",
+        "sony",
+        "canon",
+        "nikon",
+        "panasonic",
+        "sharp",
+        "hitachi",
+        "samsung",
+        "toyota",
+        "honda",
+        "nissan",
+        "bmw",
+        "audi",
+        "ford",
+        "netflix",
+        "visa",
+        "cern",
+        "mcdonalds",
+        "deloitte",
+    }
+)
+
 # 海外メーカー例外マッピング。日本で正規販売される海外ブランド (own domain) は
 # 本国のレジストラ URL TLD / abuse 電話国番号を使うため foreign 扱いにしない。
 # 実測 (S5 スパイク, logs/spike_s5_rdap.md) に基づく追加:
@@ -197,7 +239,12 @@ class RdapInfo:
         """(registrar_tld_foreign, phone_foreign, exception) を 1 回の例外ルックアップで返す。"""
         exc = maker_exception(domain)
         tld = registrar_url_tld(self.registrar_url)
-        tld_foreign = bool(tld) and not (exc and tld in exc["tlds"]) and tld not in {"com", "jp"}
+        tld_foreign = (
+            bool(tld)
+            and not (exc and tld in exc["tlds"])
+            and tld not in {"com", "jp"}
+            and tld not in BRAND_TLDS
+        )
         cc = abuse_phone_cc(self.abuse_phone)
         phone_foreign = bool(cc) and not (exc and cc in exc["ccs"]) and cc != "81"
         return tld_foreign, phone_foreign, exc is not None

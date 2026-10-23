@@ -12,7 +12,7 @@ def feat(**kw):
 
 def test_default_config_exists_and_loads():
     w = load_weights(DEFAULT_CONFIG)
-    assert w["weights"]["redirect_to_google"] == 35
+    assert w["weights"]["redirect_to_google"] == 18
     assert w["thresholds"]["auto_block"] == 20
     assert w["thresholds"]["hold"] == 12
     assert w["pivot"]["max_queries"] >= 3
@@ -39,14 +39,14 @@ def test_clean_page_scores_zero():
 
 
 def test_doorway_plus_favicon_plus_tld_matches_measured_combo():
-    """実測スパイクの代表例 (35+30+8+6)。"""
+    """実測スパイクの代表例 (18+18+8+6)。"""
     s = Scorer()
     r = s.score(
         feat(redirect_to_google=True, favicon_collision=True, risky_tld=True, shared_2ld=True)
     )
-    assert r.total == 79.0
+    assert r.total == 50.0
     assert "redirect_to_google" in r.reasons
-    assert r.reasons["redirect_to_google"] == 35
+    assert r.reasons["redirect_to_google"] == 18
 
 
 def test_zencart_requires_min_hits():
@@ -82,20 +82,20 @@ def test_cloaking_promoted_when_bot_only_body():
     assert plain.reasons["cloaking"] == 12
     assert plain.total == 12.0
     both = s.score(feat(cloaking=True, bot_only_body=True))
-    assert both.reasons["cloaking"] == 20
+    assert both.reasons["cloaking"] == 18
     assert both.reasons_src["cloaking"] == "cloaking_promoted"
 
 
 def test_bot_only_body_does_not_double_count_cloaking():
     s = Scorer()
     r = s.score(feat(cloaking=True, bot_only_body=True))
-    assert r.total == 20.0, r
+    assert r.total == 18.0, r
 
 
 def test_offsite_redirect_is_subsumed_by_doorway():
     s = Scorer()
     assert s.score(feat(offsite_redirect=True)).total == 10.0
-    assert s.score(feat(offsite_redirect=True, redirect_to_google=True)).total == 35.0
+    assert s.score(feat(offsite_redirect=True, redirect_to_google=True)).total == 18.0
 
 
 def test_dark_pattern_cap():
@@ -133,8 +133,9 @@ def test_verdict_exact_thresholds():
     # dark 9 + stolen 8 + deep 2 = 19 も auto_block 未満
     assert s.score(feat(dark_hits=3, stolen_image=True, deep_product_path=True)).total == 19.0
     assert s.score(feat(dark_hits=3, stolen_image=True, deep_product_path=True)).verdict == "hold"
-    assert s.score(feat(favicon_collision=True)).verdict == "auto_block"  # 30
-    assert s.score(feat(redirect_to_google=True)).verdict == "auto_block"  # 35
+    # 2026-10-21: 単独シグナルは hold 止まり (誤検知 9 件の主因を除去)
+    assert s.score(feat(favicon_collision=True)).verdict == "hold"  # 18
+    assert s.score(feat(redirect_to_google=True)).verdict == "hold"  # 18
 
 
 def test_verdict_allow_below_hold():
@@ -150,13 +151,23 @@ def test_verdict_allow_below_hold():
 
 
 def test_fast_track_flag():
+    """fast_track=60。重み見直し後は 4 シグナル (50) では届かず、6 シグナル (64) で届く。"""
     s = Scorer()
-    assert (
-        s.score(
-            feat(redirect_to_google=True, favicon_collision=True, risky_tld=True, shared_2ld=True)
-        ).fast_track
-        is True
+    four = s.score(
+        feat(redirect_to_google=True, favicon_collision=True, risky_tld=True, shared_2ld=True)
     )
+    assert four.total == 50.0 and four.fast_track is False
+    six = s.score(
+        feat(
+            redirect_to_google=True,
+            favicon_collision=True,
+            risky_tld=True,
+            shared_2ld=True,
+            stolen_image=True,
+            dark_hits=3,
+        )
+    )
+    assert six.total == 67.0 and six.fast_track is True
     assert s.score(feat(offsite_redirect=True)).fast_track is False
 
 
@@ -164,7 +175,7 @@ def test_explain_returns_sorted_reason_lines():
     s = Scorer()
     r = s.score(feat(redirect_to_google=True, dark_hits=2, risky_tld=True))
     text = r.explain()
-    assert "redirect_to_google" in text and "+35" in text
+    assert "redirect_to_google" in text and "+18" in text
     assert text.index("redirect_to_google") < text.index("dark_pattern")
 
 
@@ -174,7 +185,7 @@ def test_score_is_json_friendly():
     s = Scorer()
     r = s.score(feat(redirect_to_google=True))
     d = json.loads(json.dumps(r.to_dict()))
-    assert d["total"] == 35.0 and d["verdict"] == "auto_block"
+    assert d["total"] == 18.0 and d["verdict"] == "hold"
 
 
 def test_domain_score_combines_occurrences_and_pivots():
@@ -188,9 +199,9 @@ def test_domain_score_combines_occurrences_and_pivots():
 
 def test_domain_score_verdict_and_evidence():
     s = Scorer()
-    a = s.score(feat(redirect_to_google=True))  # 35
+    a = s.score(feat(redirect_to_google=True))  # 18
     dom = s.domain_score("shop.example", [a], pivot_hits=0, general_hits=1)
-    assert dom.total == 35 + 3
+    assert dom.total == 18 + 3
     assert dom.verdict == "auto_block"
     assert dom.evidence["pages_scored"] == 1
     assert dom.evidence["pivot_hits"] == 0

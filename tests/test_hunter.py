@@ -305,6 +305,44 @@ def test_dry_run_reports_would_publish(tmp_path, empty_store):
     assert rep["would_publish"] == ["*://*.old.example/*"]
 
 
+def test_publish_drops_whitelisted_domain_from_both_lists(tmp_path, empty_store):
+    """誤検知と判明して whitelist に入れたドメインは、publish で再掲載しない。
+
+    decisions 側が block のまま残っていても (過去の誤判定)、確定リストにも
+    cloaking リストにも出さず、既存行があれば取り除く。
+    """
+    ufile = tmp_path / "out" / "uBlacklist.txt"
+    ufile.parent.mkdir()
+    ufile.write_text(
+        "# test\n## ドメイン\n*://*.gemini.google/*\n*://*.keep.example/*\n", encoding="utf-8"
+    )
+    cfile = tmp_path / "out" / "cloaking" / "uBlacklist.txt"
+    cfile.parent.mkdir()
+    cfile.write_text(
+        "# test\n## ドメイン\n*://*.gemini.google/*\n*://*.hold.example/*\n", encoding="utf-8"
+    )
+    empty_store.record("gemini.google", score=80, decision="block", night="2026-09-22")
+    empty_store.record("gemini.google", score=80, decision="block", night="2026-09-23")
+    empty_store.record("keep.example", score=80, decision="block", night="2026-09-23")
+
+    hunter.run_night(
+        night="2026-09-24",
+        searx=FakeSearx([["x.example"]]),
+        pipeline=FakePipeline(),
+        store=empty_store,
+        db_dir=tmp_path,
+        ulist_path=ufile,
+        cloaking_list_path=cfile,
+        publish=True,
+    )
+    scam = ufile.read_text(encoding="utf-8")
+    cloak = cfile.read_text(encoding="utf-8")
+    assert "*://*.gemini.google/*" not in scam
+    assert "*://*.gemini.google/*" not in cloak
+    assert "*://*.keep.example/*" in scam
+    assert "*://*.hold.example/*" in cloak
+
+
 # --- RED: P8 失効監視は夜次処理の一部 ---
 
 
