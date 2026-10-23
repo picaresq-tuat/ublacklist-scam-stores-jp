@@ -147,7 +147,7 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 | ファイル | 内容 | 生成方法 |
 | --- | --- | --- |
 | `db/models.db` | 型番240件 (クエリ生成の元データ) | `scripts/init_db.py` |
-| `db/whitelist.db` | 除外する正規ドメイン120件 | `scripts/init_db.py` |
+| `db/whitelist.db` | 除外する正規ドメイン129件 | `scripts/init_db.py` |
 | `db/scam.db` | 判定履歴と特徴量、失効監視の状態 | 実行時に生成 |
 | `db/searches.db` | 検索履歴 (クエリの重複を避けるため) | 実行時に生成 |
 
@@ -155,7 +155,7 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 
 ## テスト
 
-`python3 -m pytest -q`で535件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
+`python3 -m pytest -q`で583件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
 
 ## 運用
 
