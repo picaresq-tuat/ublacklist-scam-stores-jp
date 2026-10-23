@@ -43,6 +43,7 @@
 *://*.lets-play-2.com/*
 *://*.lundi.is/*
 *://*.mavenbrain.com/*
+*://*.mingeikan-osaka.or.jp/*
 *://*.monitor.kantar.com/*
 *://*.my-esthetic.com/*
 *://*.mygolfway.com/*
@@ -59,6 +60,7 @@
 *://*.softest.jp/*
 *://*.ssp2.pl/*
 *://*.stavebniny-elckner.cz/*
+*://*.stealthone.net/*
 *://*.storyorium.com/*
 *://*.szolyvaipark.org/*
 *://*.tecai.site/*
