@@ -13,6 +13,7 @@
 *://*.ajscatfishstation.com/*
 *://*.alazora.com/*
 *://*.aprotec.pro/*
+*://*.asmo-sc.com/*
 *://*.auszeit-theresablank.de/*
 *://*.av01.tv/*
 *://*.beignet-tokyo.jp/*
@@ -37,9 +38,11 @@
 *://*.iidamizuhiki.com/*
 *://*.iluka-hwc.com/*
 *://*.irrigo.no/*
+*://*.japanes-girl.jp/*
 *://*.kalamasz-ksiegowosc.pl/*
 *://*.karnikdentalclinic.com/*
 *://*.kon-fishing.com/*
+*://*.lesclefsdor.org/*
 *://*.lets-play-2.com/*
 *://*.lundi.is/*
 *://*.mavenbrain.com/*
@@ -70,4 +73,5 @@
 *://*.vijverwinkel.com/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
+*://*.yahoo.jp/*
 *://*.yorissociety.com/*
