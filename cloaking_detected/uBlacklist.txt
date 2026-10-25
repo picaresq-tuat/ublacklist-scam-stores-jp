@@ -15,6 +15,7 @@
 *://*.albsaer.com/*
 *://*.amnt5888.com/*
 *://*.av01.media/*
+*://*.baltimorepositive.com/*
 *://*.betterhomesal.com/*
 *://*.bingobongolearning.com/*
 *://*.blackairclari.net/*
@@ -35,6 +36,7 @@
 *://*.flamingobeach.holiday/*
 *://*.fronius.com/*
 *://*.gloucesterbikeproject.co.uk/*
+*://*.goodmed.ua/*
 *://*.gsss-gh.com/*
 *://*.helgaly.com/*
 *://*.hoberg-reiche.de/*
@@ -46,6 +48,7 @@
 *://*.jsmjapan.com/*
 *://*.kdvirtualsupport.co.uk/*
 *://*.kidstalentawards.ao/*
+*://*.kojorestaurant.com/*
 *://*.kortekbilisim.com/*
 *://*.kundalishastra.com/*
 *://*.launchtech.in/*
@@ -60,6 +63,7 @@
 *://*.mobilemrcs.org/*
 *://*.mobiletta.li/*
 *://*.montrans.si/*
+*://*.mtv-handball.com/*
 *://*.muke.ai/*
 *://*.nathanzola.com/*
 *://*.newdoorfiji.com/*
