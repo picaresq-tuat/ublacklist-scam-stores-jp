@@ -11,7 +11,9 @@
 ## Hermes nightly
 *://*.20bet.id/*
 *://*.aardschok.net/*
+*://*.abubshait.family/*
 *://*.admin.ph/*
+*://*.afmaracaibo.com/*
 *://*.albsaer.com/*
 *://*.amnt5888.com/*
 *://*.av01.media/*
@@ -22,10 +24,12 @@
 *://*.bless-n-wish.com/*
 *://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
+*://*.dailymotion.com/*
 *://*.dakarplaquiste.com/*
 *://*.despondentserenity.com/*
 *://*.diagakbari.com/*
 *://*.dienlanhminhdang.com/*
+*://*.dominiquehervouet.com/*
 *://*.donanimhaber.com/*
 *://*.ds-cab-ivanoff.com/*
 *://*.ecofaune.org/*
@@ -58,6 +62,7 @@
 *://*.maghoulacademy.ir/*
 *://*.mahgoub-academy.com/*
 *://*.mangaloasis.com/*
+*://*.mediamentra.com/*
 *://*.mimoza.bg/*
 *://*.missav.run/*
 *://*.mobilemrcs.org/*
@@ -73,6 +78,7 @@
 *://*.parade-teine.com/*
 *://*.parkandfieldchicago.com/*
 *://*.pi.tn/*
+*://*.sadkon77.ru/*
 *://*.sammatthewman.com/*
 *://*.santoamaro.com/*
 *://*.seafoodbysykes.com/*
