@@ -9,6 +9,8 @@
 
 from __future__ import annotations
 
+import urllib.parse
+
 from fetch import BlockedURL, FetchError, fetch
 
 PARKING_MARKERS: tuple[str, ...] = (
@@ -23,6 +25,23 @@ PARKING_MARKERS: tuple[str, ...] = (
     "afternic",
 )
 
+REACHABLE = "reachable"
+UNREACHABLE = "unreachable"
+UNKNOWN = "unknown"
+
+
+def _host(url: str) -> str:
+    try:
+        return (urllib.parse.urlsplit(url).hostname or "").lower().rstrip(".")
+    except ValueError:
+        return ""
+
+
+def _same_site(domain: str, host: str) -> bool:
+    if not host:
+        return True
+    return host == domain or host.endswith("." + domain)
+
 
 class HealthChecker:
     """1 ドメインの到達性を判定する (副作用なし)。"""
@@ -31,16 +50,30 @@ class HealthChecker:
         self.timeout = timeout
 
     def check(self, domain: str) -> bool:
-        dom = (domain or "").strip().lower()
+        return self.check_state(domain) == REACHABLE
+
+    def check_state(self, domain: str) -> str:
+        """reachable / unreachable / unknown の 3 値を返す。
+
+        別ドメインへの転送は到達不能としない。転送先が正常なら reachable、
+        転送先で失敗した場合は unknown (元ドメインの生死は判断できない)。
+        """
+        dom = (domain or "").strip().lower().rstrip(".")
         if not dom:
-            return False
+            return UNREACHABLE
+        saw_offsite = False
         for scheme in ("https", "http"):
             try:
                 res = fetch(f"{scheme}://{dom}/", ua="browser", timeout=self.timeout)
             except (BlockedURL, FetchError, OSError, ValueError):
                 continue
+            final_host = _host(getattr(res, "final_url", "") or "")
+            if final_host and not _same_site(dom, final_host):
+                saw_offsite = True
             if res.status >= 400 or res.discarded:
                 continue
             head = (res.html_sanitized or res.body or "")[:4096].lower()
-            return not any(m in head for m in PARKING_MARKERS)
-        return False
+            if any(m in head for m in PARKING_MARKERS):
+                continue
+            return REACHABLE
+        return UNKNOWN if saw_offsite else UNREACHABLE
