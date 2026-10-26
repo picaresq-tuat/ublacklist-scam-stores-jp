@@ -3,7 +3,10 @@
 1 夜の流れ:
   discovery (searx) → triage (whitelist) → probe+score (pipeline.run_domain)
   → record (scamstore) → publish (uBlacklist.txt 更新)
-  + P8: 監視対象 (登録後30日以上) の到達性チェックと失効スイープ。
+  → lifecycle sweep (既知ドメインの再評価と 2 種類の降格ルート)。
+
+nightly 全体が失敗した夜は lifecycle sweep を実行しない (判定を進めない)。
+詳細は docs/domain-lifecycle.md。
 
 R5: 1巡目で scam.db に新規が入らなければ、クエリ生成/pageno を変えて
     最大 3 回 discovery をやり直す。
@@ -17,13 +20,11 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from publish import build_entries, merge_list
-from scamstore import RECONFIRM_MISS_LIMIT, ScamStore
+from scamstore import ScamStore
 from searchlog import PageRangeExhausted, pick_pageno
 from twold_corpus import count_2ld
 
 MAX_ROUNDS = 3
-MONITOR_AGE_DAYS = 30
-EXPIRE_STREAK_DAYS = 7
 
 # 実測 (2026-09-24): Google CSE を主引擎にすると 429 ("unusual traffic") で
 # エンジンが suspension する。1 クエリの失敗で夜全体を落とさず、かつ
@@ -122,10 +123,10 @@ def run_night(
     from searxng import EngineUnavailable
 
     known_before = {r["domain"] for r in store.all_decisions()}
-    # 夜の開始時点で「block かつ連続 2 夜確認が未了」のドメインを控えておく。
-    # known_before で discovery から除外されるため、ここで掬わないと nights_confirmed
-    # が進まない (実バグ回帰)。
-    pending_confirmation = store.reconfirm_targets()
+    # 巡回対象から完全に外したドメインは discovery の既知集合からも外す。
+    # 再発見されたら新しいドメインと同じ経路で巡回する (docs/domain-lifecycle.md)。
+    retired_before = set(store.lifecycle_domains(("retired",)))
+    known_before -= retired_before
 
     def _search(query: str, pageno: int):
         """検索 1 回。エンジン suspension は数え上げて None を返す (夜を落とさない)。"""
@@ -233,6 +234,10 @@ def run_night(
             break
 
         for domain in found_this_round:
+            if domain in retired_before:
+                # 巡回対象外だったドメインの再発見。ライフサイクルを破棄して
+                # 新しいドメインとして扱う。
+                store.clear_lifecycle(domain)
             res = pipeline.run_domain(domain)
             store.record(
                 domain,
@@ -252,53 +257,24 @@ def run_night(
         new_domains += len(found_this_round)
         break
 
-    # --- 再確認: block 判定の「連続 2 夜確認」を進める ---
-    # 再評価して「今夜も block」だったときだけ記録する (nights_confirmed が進む)。
-    # それ以外は既存の block 行をそのまま残す: 1 夜の観測で自動公開の判断を
-    # 覆さないため、また一時的な取得失敗で誤って解除しないため。
-    reconfirmed: list[str] = []
-    released: list[str] = []
-    for domain in pending_confirmation:
-        res = pipeline.run_domain(domain)
-        if res.decision == "block":
-            store.record(
-                domain,
-                score=res.score,
-                decision=res.decision,
-                features=res.features,
-                evidence=[res.reasons] if isinstance(res.reasons, dict) else list(res.reasons),
-                night=night,
-            )
-            store.clear_reconfirm_miss(domain)
-            reconfirmed.append(domain)
-            continue
-        # 今夜 block にならなかった。1 夜の観測で覆さないが、連続で確認できない
-        # ドメインを block のまま放置すると limbo (掲載も解除もされない) になる。
-        if store.note_reconfirm_miss(domain, night) < RECONFIRM_MISS_LIMIT:
-            continue
-        store.record(
-            domain,
-            score=res.score,
-            decision=res.decision,
-            features=res.features,
-            evidence=[res.reasons] if isinstance(res.reasons, dict) else list(res.reasons),
-            night=night,
-        )
-        store.clear_reconfirm_miss(domain)
-        released.append(domain)
+    # --- 巡回ライフサイクル: 2 種類の降格ルート (docs/domain-lifecycle.md) ---
+    # 到達不能ルートがスコア閾値ルートに優先する。nightly 全体が失敗した夜
+    # (engine 失敗が上限に達して aborted) は sweep 自体を実行しないので、
+    # 「閾値を下回った」「到達不能」のどちらのカウントも進まない。
+    from lifecycle import sweep as lifecycle_sweep
 
-    # --- P8: 失効スイープ ---
-    expired: list[str] = []
-    health_probed: list[str] = []
-    targets = store.monitor_targets(age_days=MONITOR_AGE_DAYS)
-    if health is not None:
-        for domain in targets:
-            reachable = bool(health.check(domain))
-            # checked_on に night を渡す: streak は「夜の観測」の連続数であって
-            # 壁時計日ではない (同日に再実行しても 1 行に潰れない)。
-            store.record_health(domain, reachable=reachable, checked_on=night)
-            health_probed.append(domain)
-    expired = store.expire_unreachable(streak_days=EXPIRE_STREAK_DAYS)
+    lifecycle = lifecycle_sweep(
+        store=store,
+        night=night,
+        pipeline=pipeline,
+        health=health,
+        whitelist=wl,
+        night_ok=not aborted,
+        skip=set(found_this_round),
+    )
+    reconfirmed = lifecycle["reconfirmed"]
+    released = lifecycle["released"]
+    expired = lifecycle["expired"]
 
     # --- publish ---
     published: list[str] = []
@@ -317,6 +293,11 @@ def run_night(
         listed = entries_to_domains(existing_entries(current))
         retired = {d for d in listed if wl.match(d)}
         eligible = [d for d in store.eligible_domains() if not wl.match(d)]
+        # 巡回ライフサイクル上、scam リストから外す状態。pending_expiration は
+        # 「まだリストから削除しない」ため含めない (docs/domain-lifecycle.md)。
+        lifecycle_out_of_scam = set(
+            store.lifecycle_domains(("pending_release", "released", "expired", "retired"))
+        )
         # 掲載されない理由を可視化する: 常設ルールが既に覆う形 (com.xx / .co / punycode)。
         from publish import is_permanent_shape as _is_permanent_shape
 
@@ -329,7 +310,7 @@ def run_night(
         if publish:
             text = merge_list(current, eligible)  # merge_list 側で entry 化する
 
-            dropped = retired | set(expired)
+            dropped = retired | lifecycle_out_of_scam
             if dropped:
                 text = domains_to_remove(text, dropped)
             Path(ulist_path).write_text(text, encoding="utf-8")
@@ -366,6 +347,8 @@ def run_night(
         exclude = entries_to_domains(existing_entries(scam_text))
         # ホワイトリスト済み (= 誤検知) は cloaking 側の既存行からも落とす。
         exclude |= {d for d in cloak_before_domains if wl.match(d)}
+        # 巡回対象外・失効・解除済みは cloaking リストからも削除する。
+        exclude |= set(store.lifecycle_domains(("released", "expired", "retired")))
         if dry_run:
             cloaking_would = build_entries([d for d in cloaking_holds if d not in exclude])
             cloaking_added = [e for e in cloaking_would if e not in before]
@@ -387,13 +370,20 @@ def run_night(
         "whitelisted": whitelisted,
         "already_known": already_known,
         "expired": expired,
-        "health_probed": health_probed,
+        "health_probed": lifecycle["checked"],
+        "lifecycle_checked": lifecycle["checked"],
+        "lifecycle_skipped": lifecycle["skipped"],
+        "pending_release": lifecycle["pending_release"],
+        "pending_expiration": lifecycle["pending_expiration"],
+        "retired": lifecycle["retired"],
+        "restored": lifecycle["restored"],
+        "confirmed_hold": lifecycle["confirmed_hold"],
+        "lifecycle_unknown": lifecycle["unknown"],
         "published_entries": len(published),
         "published": published,
         "published_total": published_total,
         "already_listed": already_listed,
         "excluded_permanent_shape": excluded_permanent_shape,
-        "pending_confirmation": pending_confirmation,
         "ulist_removed": ulist_removed,
         "ulist_changed": ulist_changed,
         "would_publish": would_publish,
