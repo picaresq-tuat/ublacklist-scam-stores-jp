@@ -22,8 +22,10 @@
 *://*.bingobongolearning.com/*
 *://*.blackairclari.net/*
 *://*.bless-n-wish.com/*
+*://*.blinkadd.com/*
 *://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
+*://*.cbfinestfood.com/*
 *://*.dailymotion.com/*
 *://*.dakarplaquiste.com/*
 *://*.despondentserenity.com/*
@@ -31,6 +33,7 @@
 *://*.dienlanhminhdang.com/*
 *://*.dominiquehervouet.com/*
 *://*.donanimhaber.com/*
+*://*.doscrealty.com/*
 *://*.ds-cab-ivanoff.com/*
 *://*.ecofaune.org/*
 *://*.eden-europe.eu/*
@@ -39,6 +42,7 @@
 *://*.femsajtolo.hu/*
 *://*.flamingobeach.holiday/*
 *://*.fronius.com/*
+*://*.garcialocation.yt/*
 *://*.gloucesterbikeproject.co.uk/*
 *://*.goodmed.ua/*
 *://*.gsss-gh.com/*
@@ -54,6 +58,7 @@
 *://*.kidstalentawards.ao/*
 *://*.kojorestaurant.com/*
 *://*.kortekbilisim.com/*
+*://*.krishnagrafix.com/*
 *://*.kundalishastra.com/*
 *://*.launchtech.in/*
 *://*.lechantdesamandes.fr/*
@@ -67,9 +72,11 @@
 *://*.missav.run/*
 *://*.mobilemrcs.org/*
 *://*.mobiletta.li/*
+*://*.monaalharbiforparties.com/*
 *://*.montrans.si/*
 *://*.mtv-handball.com/*
 *://*.muke.ai/*
+*://*.nailedbeautysherwood.com/*
 *://*.nathanzola.com/*
 *://*.newdoorfiji.com/*
 *://*.ommultispecialityanddental.com/*
@@ -78,12 +85,15 @@
 *://*.parade-teine.com/*
 *://*.parkandfieldchicago.com/*
 *://*.pi.tn/*
+*://*.qlawyers.ro/*
 *://*.sadkon77.ru/*
 *://*.sammatthewman.com/*
 *://*.santoamaro.com/*
 *://*.seafoodbysykes.com/*
 *://*.shahaliagro.com/*
+*://*.sportexfit.com/*
 *://*.stiledabitare.com/*
+*://*.sugardropit.com/*
 *://*.sunmold.com/*
 *://*.tcha.jp/*
 *://*.torahtent.com/*
@@ -92,3 +102,4 @@
 *://*.ventagringa.com/*
 *://*.volgamed34.ru/*
 *://*.web-werben.de/*
+*://*.zwillingsglueck.com/*
