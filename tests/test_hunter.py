@@ -384,8 +384,9 @@ def test_health_sweep_probes_registered_domains_older_than_month(tmp_path, empty
     from datetime import datetime, timedelta
 
     old_day = (datetime.now(UTC) - timedelta(days=45)).strftime("%Y-%m-%d")
+    recent_day = (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
     empty_store.record("old.example", score=40, decision="block", night=old_day)
-    empty_store.record("new.example", score=40, decision="block", night="2026-09-24")
+    empty_store.record("new.example", score=40, decision="block", night=recent_day)
 
     probed = []
 

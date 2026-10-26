@@ -21,6 +21,8 @@ DECISIONS: tuple[str, ...] = ("candidate", "hold", "block", "expired", "dismisse
 
 FAST_TRACK_SCORE = 60.0
 MIN_STREAK_SCORE = 55.0
+# 未確定 block (nights_confirmed<2) を観測値へ降格するまでに許容する連続ミス夜数。
+RECONFIRM_MISS_LIMIT = 2
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS decisions (
@@ -56,6 +58,11 @@ CREATE TABLE IF NOT EXISTS search_hits (
     query    TEXT NOT NULL,
     pageno   INTEGER NOT NULL,
     night    TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS reconfirm_misses (
+    domain   TEXT NOT NULL,
+    night    TEXT NOT NULL,
+    PRIMARY KEY (domain, night)
 );
 """
 
@@ -198,6 +205,33 @@ class ScamStore:
             (nights_required, score_threshold),
         )
         return [str(r[0]) for r in cur.fetchall()]
+
+    # --- 再確認ミス (未確定 block の limbo 解消) ---
+    # nights_confirmed=1 のまま再確認で block にならないドメインは、掲載条件
+    # (nights_required=2) にも解除条件にも当たらず永久に残る。連続ミスを数え、
+    # RECONFIRM_MISS_LIMIT 夜連続で block を確認できなければ観測値へ降格する。
+    def note_reconfirm_miss(self, domain: str, night: str) -> int:
+        """再確認で block にならなかった夜を記録し、通算ミス夜数を返す。
+
+        同じ夜に再実行しても 1 夜として数える (PRIMARY KEY で重複排除)。
+        """
+        domain = domain.strip().lower()
+        self._con.execute(
+            "INSERT OR IGNORE INTO reconfirm_misses(domain, night) VALUES(?,?)",
+            (domain, _norm_night(night)),
+        )
+        self._con.commit()
+        return self.reconfirm_miss_count(domain)
+
+    def reconfirm_miss_count(self, domain: str) -> int:
+        cur = self._con.execute(
+            "SELECT COUNT(*) FROM reconfirm_misses WHERE domain=?", (domain.strip().lower(),)
+        )
+        return int(cur.fetchone()[0])
+
+    def clear_reconfirm_miss(self, domain: str) -> None:
+        self._con.execute("DELETE FROM reconfirm_misses WHERE domain=?", (domain.strip().lower(),))
+        self._con.commit()
 
     def eligible_domains(
         self, *, score_threshold: float = MIN_STREAK_SCORE, nights_required: int = 2

@@ -111,8 +111,10 @@ def test_has_changes_true_when_expired():
     assert nightly.has_changes(_report(published=[], expired=["gone.example"])) is True
 
 
-def test_has_changes_true_when_cloaking_holds():
-    assert nightly.has_changes(_report(published=[], cloaking_holds=["cloak.example"])) is True
+def test_has_changes_true_when_cloaking_added():
+    """cloaking_holds は累積リストなので判定に使わない (cloaking_added を見る)。"""
+    assert nightly.has_changes(_report(published=[], cloaking_added=["cloak.example"])) is True
+    assert nightly.has_changes(_report(published=[], cloaking_holds=["cloak.example"])) is False
 
 
 def test_has_changes_false_when_nothing_changed():
