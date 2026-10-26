@@ -143,3 +143,43 @@ def test_publish_reports_removed_entries(tmp_path, store):
     assert rep["ulist_removed"] == ["*://*.dmm.co.jp/*"]
     assert rep["ulist_changed"] is True
     assert "*://*.dmm.co.jp/*" not in ufile.read_text(encoding="utf-8")
+
+
+def test_run_night_writes_new_block_into_list_across_two_nights(tmp_path, store):
+    """発見→スコア→記録→掲載の全経路で、2晩目に block が実際にリストへ書かれる。"""
+    from datetime import UTC, datetime, timedelta
+
+    from publish import render_list
+
+    ufile = tmp_path / "uBlacklist.txt"
+    ufile.write_text(render_list([]), encoding="utf-8")
+
+    # 単晩スコアでは eligible (>=55) に届かず、2晩の連続確認を要するケース
+    pipe = FakePipeline({"scam-deals.example": (40.0, {"rdap": "new"}, "block")})
+    today = datetime.now(UTC).date()
+    first, second = str(today - timedelta(days=1)), str(today)
+
+    rep1 = hunter.run_night(
+        night=first,
+        searx=FakeSearx([["scam-deals.example"]]),
+        pipeline=pipe,
+        store=store,
+        db_dir=tmp_path,
+        ulist_path=ufile,
+        publish=True,
+    )
+    assert rep1["published"] == []  # 1晩目は未確定なので掲載しない
+    assert "*://*.scam-deals.example/*" not in ufile.read_text(encoding="utf-8")
+
+    rep2 = hunter.run_night(
+        night=second,
+        searx=FakeSearx([["scam-deals.example"]]),
+        pipeline=pipe,
+        store=store,
+        db_dir=tmp_path,
+        ulist_path=ufile,
+        publish=True,
+    )
+    assert rep2["published"] == ["*://*.scam-deals.example/*"]
+    assert rep2["ulist_changed"] is True
+    assert "*://*.scam-deals.example/*" in ufile.read_text(encoding="utf-8")
