@@ -53,6 +53,29 @@ python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (120件) �
 
 `main`へのpushとmergeは行わない。トークンは環境変数`GITHUB_TOKEN`からのみ読み、引数・ログ・コミットには書かない。
 
+#### 1晩のログに残る集計
+
+`logs/nightly_scan.log`の1ブロックは、その夜に起きた差分だけを書く。`published`はその夜に追記したentry数で、累積は`published_total`に出す。
+
+| 項目 | 意味 |
+| --- | --- |
+| `blocked` / `hold` / `dismissed` / `whitelisted` | その夜の判定件数 |
+| `published` | `uBlacklist.txt`へ新しく追記したentry数 |
+| `already_listed` | 掲載対象のうち、既にリストに載っていたentry数 |
+| `published_total` | 掲載対象の累積数 (既出を含む) |
+| `removed` | 失効またはwhitelist化でリストから外した数 (`ulist_removed`) |
+| `pending_confirmation` | `block`だが連続2晩の確認が済んでいないドメイン数 |
+| `reconfirmed` | その夜の再確認で`block`を維持した数 |
+| `released` | 再確認が2晩続けて`block`にならず、観測値へ降格した数 |
+| `excluded_permanent_shape` | 常設ルールが覆うため掲載しないドメイン数 |
+| `would_publish` | 出版した場合に掲載対象となるentry数 (dry-run用) |
+| `expired` | 失効監視で落とした数 |
+| `cloaking_holds` | cloakingリストの累積数 |
+| `cloaking_added` | cloakingリストへ新しく追記した数 |
+| `checked` / `promoted` | `db/manual_candidates.txt`の再判定数と昇格数 |
+
+プロセスの標準出力には、PRを作ったかどうかを`changes=yes|no`で1行だけ出す。判定はログと同じ差分 (追記・削除・cloakingの追記・候補の昇格) で行い、累積件数では動かさない。
+
 ### 探索から出版までの各段階
 
 クエリ生成では、`db/models.db`の型番240件と用語を組み合わせて1晩のクエリを作る。ページ番号は履歴 (`db/searches.db`) を見て未消化の範囲から選ぶ。検索はSearXNG (`--searx-url`) 経由で行い、既定エンジンはGoogle CSEである。429が続く夜は指数バックオフし、失敗が上限に達したらその夜は中止する。1巡目で新規ドメインが取れなければ、クエリとページ番号を変えて最大3巡する。
@@ -61,7 +84,7 @@ python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (120件) �
 
 特徴量は下の表の各項目を1ページから計算する。取れなかった項目は0として扱う。スコアは重みの合計で、`auto_block`以上なら`block`、`hold`以上なら`hold`、未満なら`dismissed`とする。
 
-記録では`db/scam.db`に判定と特徴量を残す。`block`は連続2晩 (`nights_required`) の確認を経て`uBlacklist.txt`に入り、`hold`はcloakingリストへ回る。`dismissed`は記録だけを残す。失効監視では、登録から30日を超えたドメインの到達性を確認し、7晩連続で応答がなければリストから外す。
+記録では`db/scam.db`に判定と特徴量を残す。`block`は連続2晩 (`nights_required`) の確認を経て`uBlacklist.txt`に入り、`hold`はcloakingリストへ回る。`dismissed`は記録だけを残す。再確認が2晩続けて`block`にならなかったドメインは、`block`のまま据え置かず、その夜の判定へ降格する。掲載条件を満たさないまま永久に残る状態を作らないため。失効監視では、登録から30日を超えたドメインの到達性を確認し、7晩連続で応答がなければリストから外す。
 
 ### 既存リストの再判定 (`scripts/rejudge_lists.py`)
 
@@ -155,7 +178,7 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 
 ## テスト
 
-`python3 -m pytest -q`で583件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
+`python3 -m pytest -q`で595件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
 
 ## 運用
 

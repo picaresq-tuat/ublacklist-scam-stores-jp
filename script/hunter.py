@@ -17,7 +17,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from publish import build_entries, merge_list
-from scamstore import ScamStore
+from scamstore import RECONFIRM_MISS_LIMIT, ScamStore
 from searchlog import PageRangeExhausted, pick_pageno
 from twold_corpus import count_2ld
 
@@ -257,9 +257,24 @@ def run_night(
     # それ以外は既存の block 行をそのまま残す: 1 夜の観測で自動公開の判断を
     # 覆さないため、また一時的な取得失敗で誤って解除しないため。
     reconfirmed: list[str] = []
+    released: list[str] = []
     for domain in pending_confirmation:
         res = pipeline.run_domain(domain)
-        if res.decision != "block":
+        if res.decision == "block":
+            store.record(
+                domain,
+                score=res.score,
+                decision=res.decision,
+                features=res.features,
+                evidence=[res.reasons] if isinstance(res.reasons, dict) else list(res.reasons),
+                night=night,
+            )
+            store.clear_reconfirm_miss(domain)
+            reconfirmed.append(domain)
+            continue
+        # 今夜 block にならなかった。1 夜の観測で覆さないが、連続で確認できない
+        # ドメインを block のまま放置すると limbo (掲載も解除もされない) になる。
+        if store.note_reconfirm_miss(domain, night) < RECONFIRM_MISS_LIMIT:
             continue
         store.record(
             domain,
@@ -269,7 +284,8 @@ def run_night(
             evidence=[res.reasons] if isinstance(res.reasons, dict) else list(res.reasons),
             night=night,
         )
-        reconfirmed.append(domain)
+        store.clear_reconfirm_miss(domain)
+        released.append(domain)
 
     # --- P8: 失効スイープ ---
     expired: list[str] = []
@@ -287,6 +303,11 @@ def run_night(
     # --- publish ---
     published: list[str] = []
     would_publish: list[str] = []
+    published_total: list[str] = []
+    already_listed: list[str] = []
+    excluded_permanent_shape: list[str] = []
+    ulist_removed: list[str] = []
+    ulist_changed = False
     if ulist_path is not None:
         current = Path(ulist_path).read_text(encoding="utf-8") if Path(ulist_path).exists() else ""
         from publish import domains_to_remove, entries_to_domains, existing_entries
@@ -296,7 +317,15 @@ def run_night(
         listed = entries_to_domains(existing_entries(current))
         retired = {d for d in listed if wl.match(d)}
         eligible = [d for d in store.eligible_domains() if not wl.match(d)]
+        # 掲載されない理由を可視化する: 常設ルールが既に覆う形 (com.xx / .co / punycode)。
+        from publish import is_permanent_shape as _is_permanent_shape
+
+        excluded_permanent_shape = [d for d in eligible if _is_permanent_shape(d)]
+        eligible = [d for d in eligible if not _is_permanent_shape(d)]
         wanted = build_entries(eligible)
+        published_total = wanted
+        before_entries = set(existing_entries(current))
+        already_listed = [e for e in wanted if e in before_entries]
         if publish:
             text = merge_list(current, eligible)  # merge_list 側で entry 化する
 
@@ -304,7 +333,13 @@ def run_night(
             if dropped:
                 text = domains_to_remove(text, dropped)
             Path(ulist_path).write_text(text, encoding="utf-8")
-            published = wanted  # entry 形式 (*://*.d/*)
+            # published は「今夜 新たに追記した entry」だけ。累積を返すとログ/commit
+            # message が +23 と表示するのに差分 0 行、という誤報になる。
+            before = before_entries
+            after = set(existing_entries(text))
+            published = sorted(after - before)
+            ulist_removed = sorted(before - after)
+            ulist_changed = text != current
             if dry_run:
                 would_publish = wanted  # entry 形式で統一
         else:
@@ -355,8 +390,15 @@ def run_night(
         "health_probed": health_probed,
         "published_entries": len(published),
         "published": published,
+        "published_total": published_total,
+        "already_listed": already_listed,
+        "excluded_permanent_shape": excluded_permanent_shape,
+        "pending_confirmation": pending_confirmation,
+        "ulist_removed": ulist_removed,
+        "ulist_changed": ulist_changed,
         "would_publish": would_publish,
         "reconfirmed": reconfirmed,
+        "released": released,
         "cloaking_holds": cloaking_holds,
         "would_cloaking_holds": cloaking_would,
         "cloaking_added": cloaking_added,

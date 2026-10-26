@@ -54,6 +54,16 @@ def _safe_int(value) -> int:
         return 0
 
 
+def _count(value) -> int:
+    """hunter は list を返すため、件数フィールドは len() で数える。
+
+    int(list) は必ず失敗して 0 になる (blocked/hold/dismissed が常に 0 表示だった)。
+    """
+    if isinstance(value, (list, tuple, set, dict)):
+        return len(value)
+    return _safe_int(value)
+
+
 def format_log_block(report: dict, *, now: datetime) -> str:
     """1 実行分の編集済みログ行を組み立てる (絶対パス・トークンを含めない)。"""
     mode = "dry-run" if report.get("dry_run") else "publish"
@@ -69,11 +79,18 @@ def format_log_block(report: dict, *, now: datetime) -> str:
         f"  domains_found={_safe_int(report.get('domains_found'))} "
         f"new_domains={_safe_int(report.get('new_domains'))} "
         f"aborted={bool(report.get('aborted'))}",
-        f"  blocked={_safe_int(report.get('blocked'))} "
-        f"hold={_safe_int(report.get('hold'))} "
-        f"dismissed={_safe_int(report.get('dismissed'))} "
-        f"whitelisted={_safe_int(report.get('whitelisted'))}",
+        f"  blocked={_count(report.get('blocked'))} "
+        f"hold={_count(report.get('hold'))} "
+        f"dismissed={_count(report.get('dismissed'))} "
+        f"whitelisted={_count(report.get('whitelisted'))}",
         f"  uBlacklist.txt: published={len(report.get('published') or [])} "
+        f"already_listed={len(report.get('already_listed') or [])} "
+        f"published_total={len(report.get('published_total') or [])} "
+        f"removed={len(report.get('ulist_removed') or [])} "
+        f"pending_confirmation={len(report.get('pending_confirmation') or [])} "
+        f"reconfirmed={len(report.get('reconfirmed') or [])} "
+        f"released={len(report.get('released') or [])} "
+        f"excluded_permanent_shape={len(report.get('excluded_permanent_shape') or [])} "
         f"would_publish={len(report.get('would_publish') or [])} "
         f"expired={len(report.get('expired') or [])} "
         f"cloaking_holds={len(report.get('cloaking_holds') or [])} "
@@ -133,13 +150,17 @@ def append_log(path: Path | str, report: dict, *, now: datetime | None = None) -
 
 
 def has_changes(report: dict) -> bool:
-    """uBlacklist.txt / cloaking リストに実変化があったか。"""
-    return bool(
-        report.get("published")
-        or report.get("expired")
-        or report.get("cloaking_holds")
-        or report.get("candidate_promoted")
-    )
+    """uBlacklist.txt / cloaking リストに実変化があったか。
+
+    累積リスト (published_total / cloaking_holds) は毎晩 non-empty になるため、
+    「変更あり」の判定に使うと差分 0 行でも PR を開いてしまう。実差分
+    (ulist_changed / ulist_removed / cloaking_added) だけで判定する。
+    """
+    if report.get("ulist_changed") is not None:
+        ulist = bool(report.get("ulist_changed")) or bool(report.get("ulist_removed"))
+    else:  # 後方互換: 実差分キーが無いレポートは published/expired で判定する
+        ulist = bool(report.get("published") or report.get("expired"))
+    return bool(ulist or report.get("cloaking_added") or report.get("candidate_promoted"))
 
 
 def _default_stage(
@@ -273,7 +294,7 @@ def run(
         report.get("rows", []),
         permanent_rules=PERMANENT_RULES,
         added=len(report.get("published") or []),
-        removed=len(report.get("expired") or []),
+        removed=len(report.get("ulist_removed") or report.get("expired") or []),
         dry_run=False,
     )
     result["pr"] = gitops.open_pr(
