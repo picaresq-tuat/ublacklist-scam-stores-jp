@@ -47,6 +47,7 @@
 *://*.goodmed.ua/*
 *://*.gsss-gh.com/*
 *://*.hairroomcozy.com/*
+*://*.hannaczajkowska.pl/*
 *://*.helgaly.com/*
 *://*.hoberg-reiche.de/*
 *://*.iifscindia.com/*
@@ -95,6 +96,7 @@
 *://*.sugardropit.com/*
 *://*.sunmold.com/*
 *://*.tcha.jp/*
+*://*.tendersofyemen.com/*
 *://*.torahtent.com/*
 *://*.twlatelier.com/*
 *://*.umeedinternationalschool.com/*
