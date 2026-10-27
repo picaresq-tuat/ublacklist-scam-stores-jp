@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import sqlite3
 import urllib.parse
+from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -197,6 +198,10 @@ MEASURED_FALSE_POSITIVES: tuple[str, ...] = (
     "dmm.co.jp",
     "facebook.com",
     "k-tai-iosys.com",
+    # 2026-10-27 に運用者が誤検知として報告した 3 件 (scam 1 件 / cloaking 2 件)。
+    "yahoo.jp",
+    "dailymotion.com",
+    "jsmjapan.com",
 )
 
 # 上記のうち `_guess_category` の部分一致では正しく分類できないものの明示カテゴリ。
@@ -210,9 +215,123 @@ _EXPLICIT_CATEGORIES: dict[str, str] = {
     "accessoires-asus.com": "official_store",
     "k-tai-iosys.com": "used_store",
     "facebook.com": "blog_platform",
+    "yahoo.jp": "aggregator",
+    "dailymotion.com": "blog_platform",
+    "jsmjapan.com": "official_store",
 }
 
-SEED = SEED + MEASURED_LEGIT_BLOGS + MEASURED_NON_CLOAKING + MEASURED_FALSE_POSITIVES
+# 2026-10-27: 200 ドメイン規模への拡充。カテゴリは実測ではなく運用者の判断で固定する
+# (部分一致の推定に任せると "paypay" のような語で誤分類するため)。
+EXPANSION: dict[str, tuple[str, ...]] = {
+    "vendor_support": (
+        "intel.com",
+        "amd.com",
+        "nvidia.com",
+        "samsung.com",
+        "lg.com",
+        "huawei.com",
+        "xiaomi.com",
+        "oppo.com",
+        "motorola.com",
+        "brother.com",
+        "brother.co.jp",
+        "canon.com",
+        "canon.jp",
+        "ricoh.com",
+        "ricoh.co.jp",
+        "kyocera.com",
+        "oki.com",
+        "fujixerox.co.jp",
+        "nikon.com",
+        "casio.com",
+        "casio.jp",
+        "fujifilm.com",
+    ),
+    "official_store": (
+        "nojima.co.jp",
+        "yamada-denki.jp",
+        "kdenki.com",
+    ),
+    "used_store": ("hardoff.co.jp",),
+    "news_media": (
+        "nhk.or.jp",
+        "asahi.com",
+        "yomiuri.co.jp",
+        "mainichi.jp",
+        "sankei.com",
+        "tokyo-np.co.jp",
+        "reuters.com",
+        "bloomberg.co.jp",
+        "toyokeizai.net",
+        "diamond.jp",
+        "businessinsider.jp",
+        "wired.jp",
+        "gizmodo.jp",
+        "forbesjapan.com",
+        "president.jp",
+    ),
+    "blog_platform": (
+        # livedoor.blog は無料ブログ基盤で、配下に詐欺ページが同居しうるため除外する
+        # (shared_2ld の検出対象でもある)。
+        "hatena.ne.jp",
+        "hatenadiary.jp",
+        "hatenadiary.org",
+        "jugem.jp",
+        "nifty.com",
+        "ocn.ne.jp",
+        "plala.or.jp",
+        "tumblr.com",
+        "medium.com",
+        "substack.com",
+        "twitter.com",
+        "x.com",
+        "instagram.com",
+        "tiktok.com",
+        "youtube.com",
+        "linkedin.com",
+        "pinterest.com",
+        "reddit.com",
+        "github.com",
+        "gitlab.com",
+        "stackoverflow.com",
+    ),
+    "favicon_reference": (
+        "aeon.com",
+        "seiyu.co.jp",
+        "donki.com",
+        "uniqlo.com",
+        "muji.com",
+    ),
+    "aggregator": (
+        "qoo10.jp",
+        "paypay.ne.jp",
+        "ruten.co.jp",
+    ),
+}
+
+# 大手サイトが自社で保有する別名。canonical は必ず SEED に存在する。
+# whitelist 単体 (Whitelist(SEED)) でも DB でも同じように効くよう、両方で展開する。
+ALIASES: dict[str, tuple[str, ...]] = {
+    "yahoo.co.jp": ("yahoo.com",),
+    "rakuten.co.jp": ("rakuten.com",),
+    "amazon.co.jp": ("amazon.com", "amazon.jp"),
+    "google.co.jp": ("google.com",),
+    "apple.com": ("apple.co.jp",),
+    "microsoft.com": ("microsoft.co.jp",),
+    "dmm.co.jp": ("dmm.com",),
+    "dailymotion.com": ("dai.ly",),
+    "wikipedia.org": ("wikipedia.com",),
+    "sony.jp": ("sony.co.jp", "sony.com"),
+}
+
+_EXPANDED_SEED: tuple[str, ...] = tuple(d for domains in EXPANSION.values() for d in domains)
+_EXPLICIT_CATEGORIES.update(
+    {d: category for category, domains in EXPANSION.items() for d in domains}
+)
+
+SEED = (
+    SEED + MEASURED_LEGIT_BLOGS + MEASURED_NON_CLOAKING + MEASURED_FALSE_POSITIVES + _EXPANDED_SEED
+)
 
 
 def _now() -> str:
@@ -231,11 +350,30 @@ def normalise_host(value: str) -> str:
     return v.rsplit("@", 1)[-1].split(":")[0].strip(".")
 
 
+def expand_aliases(domains: Iterable[str]) -> frozenset[str]:
+    """登録ドメインを、そのサイトが自社で保有する別名まで広げる。
+
+    `ALIASES` は canonical -> aliases の片方向だけを持つ。ここで双方向に展開するので、
+    呼び出し側 (hunter など) は `Whitelist(SEED)` のままで別名をカバーできる。
+    """
+    hosts = {normalise_host(d) for d in domains if d}
+    hosts.discard("")
+    aliases: set[str] = set()
+    for host in hosts:
+        aliases.update(ALIASES.get(host, ()))
+    for canonical, names in ALIASES.items():
+        if canonical in hosts:
+            aliases.update(names)
+        elif any(name in hosts for name in names):
+            aliases.add(canonical)
+    return frozenset(hosts | aliases)
+
+
 class Whitelist:
     """前方一致ではなく「末尾一致 (ラベル境界)」で照合する。"""
 
     def __init__(self, domains):
-        self.domains: frozenset[str] = frozenset(normalise_host(d) for d in domains if d)
+        self.domains: frozenset[str] = expand_aliases(domains)
         self._cache: dict[str, str | None] = {}
 
     def match(self, host_or_url: str) -> str | None:
@@ -303,10 +441,20 @@ class WhitelistDB:
         return bool(cur.rowcount)
 
     def load_seed(self, entries=SEED, category: str = "") -> int:
+        """SEED と、その canonical に紐づく公式エイリアスを投入する。
+
+        エイリアスも 1 行として持たせるので、`match()` / `matcher()` は追加の
+        ルックアップなしに whitelist 単体で別名を判定できる。
+        """
         added = 0
         for d in entries:
-            cat = category or _EXPLICIT_CATEGORIES.get(d) or _guess_category(d)
-            added += int(self.add(d, cat, source="seed"))
+            host = normalise_host(d)
+            if not host:
+                continue
+            cat = category or _EXPLICIT_CATEGORIES.get(host) or _guess_category(host)
+            added += int(self.add(host, cat, source="seed"))
+            for alias in ALIASES.get(host, ()):
+                added += int(self.add(alias, cat, source=f"alias:{host}"))
         return added
 
     def categories(self) -> dict:

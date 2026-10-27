@@ -26,7 +26,6 @@
 *://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
 *://*.cbfinestfood.com/*
-*://*.dailymotion.com/*
 *://*.dakarplaquiste.com/*
 *://*.despondentserenity.com/*
 *://*.diagakbari.com/*
@@ -54,7 +53,6 @@
 *://*.innergie.com/*
 *://*.josyn.org/*
 *://*.journalhi.com/*
-*://*.jsmjapan.com/*
 *://*.kdvirtualsupport.co.uk/*
 *://*.kidstalentawards.ao/*
 *://*.kojorestaurant.com/*

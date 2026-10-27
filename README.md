@@ -27,7 +27,7 @@ python3 -m pytest -q            # 判定ロジックとゴールデンセット�
 DBはリポジトリに含めていない。判定履歴と検索履歴は未検証のドメインを含む実データなので公開しない。clone直後に一度だけ次を実行する。
 
 ```bash
-python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (120件) をseedから再生成
+python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (214件) をseedから再生成
 ```
 
 `scam.db`と`searches.db`は各スクリプトが実行時に作る。
@@ -87,7 +87,7 @@ python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (120件) �
 
 クエリ生成では、`db/models.db`の型番240件と用語を組み合わせて1晩のクエリを作る。ページ番号は履歴 (`db/searches.db`) を見て未消化の範囲から選ぶ。検索はSearXNG (`--searx-url`) 経由で行い、既定エンジンはGoogle CSEである。429が続く夜は指数バックオフし、失敗が上限に達したらその夜は中止する。1巡目で新規ドメインが取れなければ、クエリとページ番号を変えて最大3巡する。
 
-トリアージでは、whitelist (120ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を画像バイトのまま取り、先頭バイトがICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVGのいずれかで8バイト以上あるものだけをMD5化する (404のHTML等は捨てる)。RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
+トリアージでは、whitelist (202ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を画像バイトのまま取り、先頭バイトがICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVGのいずれかで8バイト以上あるものだけをMD5化する (404のHTML等は捨てる)。RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
 
 特徴量は下の表の各項目を1ページから計算する。取れなかった項目は0として扱う。スコアは重みの合計で、`auto_block`以上なら`block`、`hold`以上なら`hold`、未満なら`dismissed`とする。
 
@@ -175,7 +175,9 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 
 ## 正規ドメインのホワイトリスト
 
-`script/whitelist.py`の`SEED`が一次情報である。トリアージはここに載るドメイン (サブドメイン含む) を以後probeしない。2026-10-21に報告された誤検知9件 (`chuko-pc-lab.com` / `gemini.google` / `tu-han.net` / `accessoires-asus.com` / `bandai-hobby.net` / `deepmind.google` / `dmm.co.jp` / `facebook.com` / `k-tai-iosys.com`) もここに追加し、確定・保留の両リストから削除した。
+`script/whitelist.py`の`SEED`が一次情報である。トリアージはここに載るドメイン (サブドメイン含む) を以後probeしない。2026-10-21に報告された誤検知9件 (`chuko-pc-lab.com` / `gemini.google` / `tu-han.net` / `accessoires-asus.com` / `bandai-hobby.net` / `deepmind.google` / `dmm.co.jp` / `facebook.com` / `k-tai-iosys.com`) もここに追加し、確定・保留の両リストから削除した。2026-10-27には追加で3件 (`yahoo.jp` / `dailymotion.com` / `jsmjapan.com`) を誤検知として取り込み、同時に202ドメインまで拡充した。
+
+`ALIASES`は、大手サイトが自社で保有する別名をcanonicalドメインに紐づける。たとえば`yahoo.co.jp`には`yahoo.com`、`rakuten.co.jp`には`rakuten.com`、`dailymotion.com`には`dai.ly`が対応する。`Whitelist`は`SEED`を渡された時点で別名を展開するため、hunterのようにDBを介さず`SEED`だけを使う経路でも別名が効く。`init_db.py`は別名を`source='alias:<canonical>'`の行として`whitelist.db`に書き出すので、DBを引く経路でも同じ判定になる。照合はラベル境界の末尾一致であり、`yahoo.com.evil.example`のような紛れ込ませは除外しない。
 
 ## データベース
 
@@ -184,7 +186,7 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 | ファイル | 内容 | 生成方法 |
 | --- | --- | --- |
 | `db/models.db` | 型番240件 (クエリ生成の元データ) | `scripts/init_db.py` |
-| `db/whitelist.db` | 除外する正規ドメイン129件 | `scripts/init_db.py` |
+| `db/whitelist.db` | 除外する正規ドメイン202件と別名12件 (計214行) | `scripts/init_db.py` |
 | `db/scam.db` | 判定履歴と特徴量、巡回ライフサイクルの状態 | 実行時に生成 |
 | `db/searches.db` | 検索履歴 (クエリの重複を避けるため) | 実行時に生成 |
 
@@ -192,7 +194,7 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 
 ## テスト
 
-`python3 -m pytest -q`で633件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視、巡回ライフサイクルの状態遷移の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
+`python3 -m pytest -q`で646件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視、巡回ライフサイクルの状態遷移の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
 
 型検査は`pyright`で、`pyrightconfig.json`の`include`に載せたモジュールだけを`strict`で見る。既存モジュールは型注釈が無いため、型を入れた範囲から順に対象へ足していく。新しいモジュールを書くときは最初から`include`へ入れる。
 
