@@ -41,16 +41,17 @@
 *://*.eurasiantactical.de/*
 *://*.femsajtolo.hu/*
 *://*.flamingobeach.holiday/*
+*://*.frauengesundheit-ueberlingen.de/*
 *://*.fronius.com/*
 *://*.garcialocation.yt/*
 *://*.gloucesterbikeproject.co.uk/*
 *://*.goodmed.ua/*
 *://*.gsss-gh.com/*
+*://*.hairroomcozy.com/*
 *://*.helgaly.com/*
 *://*.hoberg-reiche.de/*
 *://*.iifscindia.com/*
 *://*.innergie.com/*
-*://*.iziappx.com/*
 *://*.josyn.org/*
 *://*.journalhi.com/*
 *://*.jsmjapan.com/*
@@ -102,4 +103,3 @@
 *://*.ventagringa.com/*
 *://*.volgamed34.ru/*
 *://*.web-werben.de/*
-*://*.zwillingsglueck.com/*
