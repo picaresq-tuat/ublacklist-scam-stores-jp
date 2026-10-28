@@ -250,6 +250,9 @@ def test_run_dry_run_never_pushes(repo, monkeypatch):
 
 
 def test_default_stage_forwards_max_queries(tmp_path, monkeypatch):
+    # Import cli before patching: cli binds run_night at import time, so patching
+    # hunter alone would leave cli.run_night pointing at the fake after the test.
+    import cli
     import hunter
 
     seen = {}
@@ -259,8 +262,7 @@ def test_default_stage_forwards_max_queries(tmp_path, monkeypatch):
         return _report(dry_run=kw["dry_run"])
 
     monkeypatch.setattr(hunter, "run_night", fake_run_night)
-    import cli
-
+    monkeypatch.setattr(cli, "run_night", fake_run_night)
     monkeypatch.setattr(cli, "_build_searx", lambda **kw: object())
     monkeypatch.setattr(cli, "_build_pipeline", lambda **kw: object())
 
@@ -283,12 +285,13 @@ def test_default_stage_forwards_max_queries(tmp_path, monkeypatch):
 
 
 def test_default_stage_publishes_when_not_dry_run(tmp_path, monkeypatch):
+    import cli
     import hunter
 
     seen = {}
-    monkeypatch.setattr(hunter, "run_night", lambda **kw: seen.update(kw) or _report())
-    import cli
-
+    fake_run_night = lambda **kw: seen.update(kw) or _report()  # noqa: E731
+    monkeypatch.setattr(hunter, "run_night", fake_run_night)
+    monkeypatch.setattr(cli, "run_night", fake_run_night)
     monkeypatch.setattr(cli, "_build_searx", lambda **kw: object())
     monkeypatch.setattr(cli, "_build_pipeline", lambda **kw: object())
 
