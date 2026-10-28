@@ -18,6 +18,7 @@
 *://*.av01.tv/*
 *://*.beignet-tokyo.jp/*
 *://*.best-com.site/*
+*://*.best-style.co.jp/*
 *://*.bobbysfashions.com/*
 *://*.buurtpreventiewernhoutsburg.nl/*
 *://*.cadbattaglino.com/*
@@ -28,6 +29,7 @@
 *://*.digitalpolicylaw.com/*
 *://*.dreamcity.tr/*
 *://*.dydell.com/*
+*://*.e-coating.jp/*
 *://*.elektrotekcai.com/*
 *://*.elibom.net/*
 *://*.estesmadine.com/*
@@ -35,6 +37,7 @@
 *://*.gadgetdai.com/*
 *://*.gailing-druck.de/*
 *://*.gerabnationalenterprises.com/*
+*://*.ghostintheshell-sac2045.jp/*
 *://*.houseofperpetualevolution.com/*
 *://*.iidamizuhiki.com/*
 *://*.iluka-hwc.com/*
@@ -77,6 +80,7 @@
 *://*.universellpos.com/*
 *://*.upakarma.eu/*
 *://*.vijverwinkel.com/*
+*://*.web.app/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
 *://*.yorissociety.com/*
