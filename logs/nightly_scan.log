@@ -123,3 +123,10 @@
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=23 would_publish=0 expired=0 cloaking_holds=123 cloaking_added=11
   manual_candidates: checked=202 promoted=0
+
+[2026-10-29T04:30+09:00] night=2026-10-29 mode=publish
+  queries=1 empty_queries=11 engine_failures=0
+  domains_found=152 new_domains=39 aborted=False
+  blocked=1 hold=2 dismissed=36 whitelisted=31
+  uBlacklist.txt: published=15 already_listed=33 published_total=48 removed=0 pending_confirmation=6 reconfirmed=5 released=0 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=74 cloaking_added=5
+  manual_candidates: checked=206 promoted=0
