@@ -79,6 +79,5 @@
 *://*.vijverwinkel.com/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
-*://*.yahoo.jp/*
 *://*.yorissociety.com/*
 *://*.zwillingsglueck.com/*
