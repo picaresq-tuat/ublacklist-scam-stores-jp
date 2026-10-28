@@ -27,7 +27,7 @@ python3 -m pytest -q            # 判定ロジックとゴールデンセット�
 DBはリポジトリに含めていない。判定履歴と検索履歴は未検証のドメインを含む実データなので公開しない。clone直後に一度だけ次を実行する。
 
 ```bash
-python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (120件) をseedから再生成
+python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (130件) をseedから再生成
 ```
 
 `scam.db`と`searches.db`は各スクリプトが実行時に作る。
@@ -80,7 +80,7 @@ python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (120件) �
 
 クエリ生成では、`db/models.db`の型番240件と用語を組み合わせて1晩のクエリを作る。ページ番号は履歴 (`db/searches.db`) を見て未消化の範囲から選ぶ。検索はSearXNG (`--searx-url`) 経由で行い、既定エンジンはGoogle CSEである。429が続く夜は指数バックオフし、失敗が上限に達したらその夜は中止する。1巡目で新規ドメインが取れなければ、クエリとページ番号を変えて最大3巡する。
 
-トリアージでは、whitelist (120ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を画像バイトのまま取り、先頭バイトがICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVGのいずれかで8バイト以上あるものだけをMD5化する (404のHTML等は捨てる)。RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
+トリアージでは、whitelist (130ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を画像バイトのまま取り、先頭バイトがICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVGのいずれかで8バイト以上あるものだけをMD5化する (404のHTML等は捨てる)。RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
 
 特徴量は下の表の各項目を1ページから計算する。取れなかった項目は0として扱う。スコアは重みの合計で、`auto_block`以上なら`block`、`hold`以上なら`hold`、未満なら`dismissed`とする。
 
@@ -163,6 +163,8 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 
 `script/whitelist.py`の`SEED`が一次情報である。トリアージはここに載るドメイン (サブドメイン含む) を以後probeしない。2026-10-21に報告された誤検知9件 (`chuko-pc-lab.com` / `gemini.google` / `tu-han.net` / `accessoires-asus.com` / `bandai-hobby.net` / `deepmind.google` / `dmm.co.jp` / `facebook.com` / `k-tai-iosys.com`) もここに追加し、確定・保留の両リストから削除した。
 
+`web.app` は Google の Firebase Hosting が使う共有基盤で、`project.web.app` 形式の全サブドメインが同一2LDを共有する。ユーザー判断によりプラットフォーム単位で除外する (個別の詐欺サイトもトリアージを通らない点は許容する)。ラベル境界の末尾一致なので `web.app` 1件で全サブドメインを覆い、`web.app.evil.example` のような別ドメインは対象外のまま。
+
 ## データベース
 
 `db/`のDBは追跡しない。判定履歴と検索履歴は未検証のドメインを含む実データであり、リポジトリに公開しない方針のため。clone直後は`db/`が空なので、`scripts/init_db.py`でseedから作り直す。
@@ -170,7 +172,7 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 | ファイル | 内容 | 生成方法 |
 | --- | --- | --- |
 | `db/models.db` | 型番240件 (クエリ生成の元データ) | `scripts/init_db.py` |
-| `db/whitelist.db` | 除外する正規ドメイン129件 | `scripts/init_db.py` |
+| `db/whitelist.db` | 除外する正規ドメイン130件 | `scripts/init_db.py` |
 | `db/scam.db` | 判定履歴と特徴量、失効監視の状態 | 実行時に生成 |
 | `db/searches.db` | 検索履歴 (クエリの重複を避けるため) | 実行時に生成 |
 

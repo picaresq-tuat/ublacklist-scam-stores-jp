@@ -123,6 +123,10 @@ SEED: tuple[str, ...] = (
     "cocolog-nifty.com",
     "wordpress.com",
     "github.io",
+    # Firebase Hosting (Google)。`project.web.app` 形式の全サブドメインが
+    # 同一 2LD を共有する共有ホスティング基盤なので、ブログ基盤と同じ扱い。
+    # ラベル境界の末尾一致なので `web.app` 1 件でサブドメイン全体を覆う。
+    "web.app",
     "qiita.com",
     "zenn.dev",
     "speakerdeck.com",
@@ -210,6 +214,7 @@ _EXPLICIT_CATEGORIES: dict[str, str] = {
     "accessoires-asus.com": "official_store",
     "k-tai-iosys.com": "used_store",
     "facebook.com": "blog_platform",
+    "web.app": "blog_platform",
 }
 
 SEED = SEED + MEASURED_LEGIT_BLOGS + MEASURED_NON_CLOAKING + MEASURED_FALSE_POSITIVES
