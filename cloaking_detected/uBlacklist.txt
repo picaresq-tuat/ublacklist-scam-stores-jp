@@ -26,6 +26,7 @@
 *://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
 *://*.cbfinestfood.com/*
+*://*.cryptonaat.com/*
 *://*.dailymotion.com/*
 *://*.dakarplaquiste.com/*
 *://*.despondentserenity.com/*
@@ -54,6 +55,7 @@
 *://*.iifscindia.com/*
 *://*.innergie.com/*
 *://*.jannyscott.com/*
+*://*.jorudan.co.jp/*
 *://*.josyn.org/*
 *://*.journalhi.com/*
 *://*.jsmjapan.com/*
@@ -101,7 +103,9 @@
 *://*.tcha.jp/*
 *://*.tendersofyemen.com/*
 *://*.torahtent.com/*
+*://*.transwellnessinitiative.ca/*
 *://*.twlatelier.com/*
+*://*.ucp.mg/*
 *://*.umeedinternationalschool.com/*
 *://*.ventagringa.com/*
 *://*.volgamed34.ru/*
