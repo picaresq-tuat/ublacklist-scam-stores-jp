@@ -38,6 +38,7 @@
 *://*.gailing-druck.de/*
 *://*.gerabnationalenterprises.com/*
 *://*.ghostintheshell-sac2045.jp/*
+*://*.grabmale-langenbahn.de/*
 *://*.houseofperpetualevolution.com/*
 *://*.iidamizuhiki.com/*
 *://*.iluka-hwc.com/*

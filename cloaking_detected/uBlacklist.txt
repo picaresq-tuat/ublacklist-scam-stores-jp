@@ -98,7 +98,9 @@
 *://*.tcha.jp/*
 *://*.tendersofyemen.com/*
 *://*.torahtent.com/*
+*://*.transwellnessinitiative.ca/*
 *://*.twlatelier.com/*
+*://*.ucp.mg/*
 *://*.umeedinternationalschool.com/*
 *://*.ventagringa.com/*
 *://*.volgamed34.ru/*
