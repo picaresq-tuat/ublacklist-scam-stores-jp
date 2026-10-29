@@ -179,6 +179,8 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 
 `ALIASES`は、大手サイトが自社で保有する別名をcanonicalドメインに紐づける。たとえば`yahoo.co.jp`には`yahoo.com`、`rakuten.co.jp`には`rakuten.com`、`dailymotion.com`には`dai.ly`が対応する。`Whitelist`は`SEED`を渡された時点で別名を展開するため、hunterのようにDBを介さず`SEED`だけを使う経路でも別名が効く。`init_db.py`は別名を`source='alias:<canonical>'`の行として`whitelist.db`に書き出すので、DBを引く経路でも同じ判定になる。照合はラベル境界の末尾一致であり、`yahoo.com.evil.example`のような紛れ込ませは除外しない。
 
+`web.app` は Google の Firebase Hosting が使う共有基盤で、`project.web.app` 形式の全サブドメインが同一2LDを共有する。ユーザー判断によりプラットフォーム単位で除外する (個別の詐欺サイトもトリアージを通らない点は許容する)。ラベル境界の末尾一致なので `web.app` 1件で全サブドメインを覆い、`web.app.evil.example` のような別ドメインは対象外のまま。
+
 ## データベース
 
 `db/`のDBは追跡しない。判定履歴と検索履歴は未検証のドメインを含む実データであり、リポジトリに公開しない方針のため。clone直後は`db/`が空なので、`scripts/init_db.py`でseedから作り直す。
