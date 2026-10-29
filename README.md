@@ -27,7 +27,7 @@ python3 -m pytest -q            # 判定ロジックとゴールデンセット�
 DBはリポジトリに含めていない。判定履歴と検索履歴は未検証のドメインを含む実データなので公開しない。clone直後に一度だけ次を実行する。
 
 ```bash
-python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (130件) をseedから再生成
+python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (214件) をseedから再生成
 ```
 
 `scam.db`と`searches.db`は各スクリプトが実行時に作る。
@@ -63,15 +63,22 @@ python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (130件) �
 | `published` | `uBlacklist.txt`へ新しく追記したentry数 |
 | `already_listed` | 掲載対象のうち、既にリストに載っていたentry数 |
 | `published_total` | 掲載対象の累積数 (既出を含む) |
-| `removed` | 失効またはwhitelist化でリストから外した数 (`ulist_removed`) |
-| `pending_confirmation` | `block`だが連続2晩の確認が済んでいないドメイン数 |
-| `reconfirmed` | その夜の再確認で`block`を維持した数 |
-| `released` | 再確認が2晩続けて`block`にならず、観測値へ降格した数 |
+| `removed` | リストから外した数 (`ulist_removed`) |
+| `reconfirmed` | その夜の巡回で`block`を維持した数 |
+| `released` | スコア閾値未満が続き、観測へ降格した数 |
 | `excluded_permanent_shape` | 常設ルールが覆うため掲載しないドメイン数 |
 | `would_publish` | 出版した場合に掲載対象となるentry数 (dry-run用) |
-| `expired` | 失効監視で落とした数 |
+| `expired` | 到達不能が続きリストから外した数 |
 | `cloaking_holds` | cloakingリストの累積数 |
 | `cloaking_added` | cloakingリストへ新しく追記した数 |
+| `lifecycle_checked` | その夜に巡回した既知ドメイン数 |
+| `lifecycle_skip` | 巡回を回さなかった理由 (`night_failed` / `already_completed` / `-`) |
+| `pending_release` | スコア閾値未満が3晩続き、観測中のドメイン数 |
+| `pending_expiration` | 到達不能が3晩続き、スコア算出を止めたドメイン数 |
+| `retired` | 巡回対象から外したドメイン数 |
+| `restored` | 到達できて元の判定に戻したドメイン数 |
+| `confirmed_hold` | 観測の末にcloakingで確定したドメイン数 |
+| `lifecycle_unknown` | 転送先で判定できず、どちらのカウントも動かさなかった数 |
 | `checked` / `promoted` | `db/manual_candidates.txt`の再判定数と昇格数 |
 
 プロセスの標準出力には、PRを作ったかどうかを`changes=yes|no`で1行だけ出す。判定はログと同じ差分 (追記・削除・cloakingの追記・候補の昇格) で行い、累積件数では動かさない。
@@ -80,11 +87,18 @@ python3 scripts/init_db.py      # models.db (240件) とwhitelist.db (130件) �
 
 クエリ生成では、`db/models.db`の型番240件と用語を組み合わせて1晩のクエリを作る。ページ番号は履歴 (`db/searches.db`) を見て未消化の範囲から選ぶ。検索はSearXNG (`--searx-url`) 経由で行い、既定エンジンはGoogle CSEである。429が続く夜は指数バックオフし、失敗が上限に達したらその夜は中止する。1巡目で新規ドメインが取れなければ、クエリとページ番号を変えて最大3巡する。
 
-トリアージでは、whitelist (130ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を画像バイトのまま取り、先頭バイトがICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVGのいずれかで8バイト以上あるものだけをMD5化する (404のHTML等は捨てる)。RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
+トリアージでは、whitelist (202ドメイン) に載るホストを除外する。取得では`https://`を通常UAで開き、4xxか5xxなら`http://`も試す。続いてGooglebot、Bingbotの順に取得し、差が出るかを見る。faviconは`/favicon.ico`を画像バイトのまま取り、先頭バイトがICO/PNG/GIF/JPEG/BMP/WEBP/AVIF/SVGのいずれかで8バイト以上あるものだけをMD5化する (404のHTML等は捨てる)。RDAPは対応TLDのみ引く。応答が3秒を超えた場合は「遅い」として記録する。
 
 特徴量は下の表の各項目を1ページから計算する。取れなかった項目は0として扱う。スコアは重みの合計で、`auto_block`以上なら`block`、`hold`以上なら`hold`、未満なら`dismissed`とする。
 
-記録では`db/scam.db`に判定と特徴量を残す。`block`は連続2晩 (`nights_required`) の確認を経て`uBlacklist.txt`に入り、`hold`はcloakingリストへ回る。`dismissed`は記録だけを残す。再確認が2晩続けて`block`にならなかったドメインは、`block`のまま据え置かず、その夜の判定へ降格する。掲載条件を満たさないまま永久に残る状態を作らないため。失効監視では、登録から30日を超えたドメインの到達性を確認し、7晩連続で応答がなければリストから外す。
+記録では`db/scam.db`に判定と特徴量を残す。`block`は連続2晩 (`nights_required`) の確認を経て`uBlacklist.txt`に入り、`hold`はcloakingリストへ回る。`dismissed`は記録だけを残す。
+
+リストに載ったドメインは、その後の夜も巡回して状態を進める。降格のルートは2つあり、到達不能の判定をスコアの判定より先に見る。どちらのルートも「完了した夜」を数えて間隔を測り、nightly全体が失敗した夜は数に入れない。詳細は[`docs/domain-lifecycle.md`](docs/domain-lifecycle.md)に置く。
+
+- 到達不能: 3晩連続で応答がなければ`pending_expiration`へ降格してスコア算出を止める (リストには残す)。そのまま5回続けば`expired`としてリストから外し、さらに5回続けば`retired`として巡回対象から外す。途中で到達できれば元の判定とスコア算出に戻り、`expired`だったものは元のリストへ戻す。
+- スコア閾値未満: 3晩連続で閾値を下回れば`pending_release`へ降格し、scamリストからcloakingリストへ移す。3晩の観測で`block`が一度でも出ればscamリストで確定、`hold`が出ればcloakingリストで確定、`hold`未満だけなら`released`としてcloakingリストからも外す。`released`は`block`が1回出れば即座にscamリストへ戻り、直近5回で`hold`が2回以上ならcloakingリストへ戻る。5回連続で`hold`未満なら`retired`として巡回対象から外す。
+
+巡回の頻度は、リスト上と`pending_release`が毎晩、`pending_expiration`が3回に1回、`released`と`expired`が7回に1回である。`retired`は巡回しない。別ドメインへの転送は到達不能とせず、転送先の応答で判定する。転送先でも判定できない夜は`lifecycle_unknown`として数え、どちらのカウントも動かさない。`retired`にしたドメインはwhitelistへ足さず、翌夜以降に検索で見つかれば新しいドメインとして最初から巡回する。
 
 ### 既存リストの再判定 (`scripts/rejudge_lists.py`)
 
@@ -161,7 +175,9 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 
 ## 正規ドメインのホワイトリスト
 
-`script/whitelist.py`の`SEED`が一次情報である。トリアージはここに載るドメイン (サブドメイン含む) を以後probeしない。2026-10-21に報告された誤検知9件 (`chuko-pc-lab.com` / `gemini.google` / `tu-han.net` / `accessoires-asus.com` / `bandai-hobby.net` / `deepmind.google` / `dmm.co.jp` / `facebook.com` / `k-tai-iosys.com`) もここに追加し、確定・保留の両リストから削除した。
+`script/whitelist.py`の`SEED`が一次情報である。トリアージはここに載るドメイン (サブドメイン含む) を以後probeしない。2026-10-21に報告された誤検知9件 (`chuko-pc-lab.com` / `gemini.google` / `tu-han.net` / `accessoires-asus.com` / `bandai-hobby.net` / `deepmind.google` / `dmm.co.jp` / `facebook.com` / `k-tai-iosys.com`) もここに追加し、確定・保留の両リストから削除した。2026-10-27には追加で3件 (`yahoo.jp` / `dailymotion.com` / `jsmjapan.com`) を誤検知として取り込み、同時に202ドメインまで拡充した。
+
+`ALIASES`は、大手サイトが自社で保有する別名をcanonicalドメインに紐づける。たとえば`yahoo.co.jp`には`yahoo.com`、`rakuten.co.jp`には`rakuten.com`、`dailymotion.com`には`dai.ly`が対応する。`Whitelist`は`SEED`を渡された時点で別名を展開するため、hunterのようにDBを介さず`SEED`だけを使う経路でも別名が効く。`init_db.py`は別名を`source='alias:<canonical>'`の行として`whitelist.db`に書き出すので、DBを引く経路でも同じ判定になる。照合はラベル境界の末尾一致であり、`yahoo.com.evil.example`のような紛れ込ませは除外しない。
 
 `web.app` は Google の Firebase Hosting が使う共有基盤で、`project.web.app` 形式の全サブドメインが同一2LDを共有する。ユーザー判断によりプラットフォーム単位で除外する (個別の詐欺サイトもトリアージを通らない点は許容する)。ラベル境界の末尾一致なので `web.app` 1件で全サブドメインを覆い、`web.app.evil.example` のような別ドメインは対象外のまま。
 
@@ -172,15 +188,17 @@ python3 script/favicon_backfill.py --db db/scam.db                        # 反�
 | ファイル | 内容 | 生成方法 |
 | --- | --- | --- |
 | `db/models.db` | 型番240件 (クエリ生成の元データ) | `scripts/init_db.py` |
-| `db/whitelist.db` | 除外する正規ドメイン130件 | `scripts/init_db.py` |
-| `db/scam.db` | 判定履歴と特徴量、失効監視の状態 | 実行時に生成 |
+| `db/whitelist.db` | 除外する正規ドメイン202件と別名12件 (計214行) | `scripts/init_db.py` |
+| `db/scam.db` | 判定履歴と特徴量、巡回ライフサイクルの状態 | 実行時に生成 |
 | `db/searches.db` | 検索履歴 (クエリの重複を避けるため) | 実行時に生成 |
 
-`scam.db`は判定の履歴そのものなので、消すと確定済みドメインの再確認と失効監視が振り出しに戻る。手動収集した容疑ドメインの`db/manual_candidates.txt`も、未検証の情報を含むため追跡しない。
+`scam.db`は判定の履歴そのものなので、消すと確定済みドメインの再確認と巡回ライフサイクルの状態が振り出しに戻る。手動収集した容疑ドメインの`db/manual_candidates.txt`も、未検証の情報を含むため追跡しない。
 
 ## テスト
 
-`python3 -m pytest -q`で600件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
+`python3 -m pytest -q`で646件を実行する。内訳は、ゴールデンセット40ドメインの回帰、閾値と重みの校正値、取得と出版の境界、リスト再判定と候補監視、巡回ライフサイクルの状態遷移の単体テストである。テストはネットワークを使わず、記録済みのレスポンスとスタブで動く。
+
+型検査は`pyright`で、`pyrightconfig.json`の`include`に載せたモジュールだけを`strict`で見る。既存モジュールは型注釈が無いため、型を入れた範囲から順に対象へ足していく。新しいモジュールを書くときは最初から`include`へ入れる。
 
 ## 運用
 

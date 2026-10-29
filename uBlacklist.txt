@@ -85,8 +85,8 @@
 *://*.universellpos.com/*
 *://*.upakarma.eu/*
 *://*.vijverwinkel.com/*
+*://*.web.app/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
-*://*.yahoo.jp/*
 *://*.yorissociety.com/*
 *://*.zwillingsglueck.com/*
