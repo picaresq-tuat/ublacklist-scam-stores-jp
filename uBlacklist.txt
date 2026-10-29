@@ -23,9 +23,7 @@
 *://*.buurtpreventiewernhoutsburg.nl/*
 *://*.cadbattaglino.com/*
 *://*.cadenhamproperties.co.uk/*
-*://*.campodopartido.com/*
 *://*.championsofthefuture.uk/*
-*://*.connectiot.org/*
 *://*.corporatelearninguk.com/*
 *://*.cpitech.co.za/*
 *://*.digitalpolicylaw.com/*
@@ -34,7 +32,6 @@
 *://*.e-coating.jp/*
 *://*.elektrotekcai.com/*
 *://*.elibom.net/*
-*://*.elohimmusic.store/*
 *://*.estesmadine.com/*
 *://*.evan.travel/*
 *://*.gadgetdai.com/*
@@ -57,7 +54,6 @@
 *://*.lundi.is/*
 *://*.matsumasabog.com/*
 *://*.mavenbrain.com/*
-*://*.meso-aesthetik-berlin.de/*
 *://*.mingeikan-osaka.or.jp/*
 *://*.monitor.kantar.com/*
 *://*.my-esthetic.com/*
@@ -68,7 +64,6 @@
 *://*.paolocodeluppi.com/*
 *://*.paresisauction.com/*
 *://*.pb909.com/*
-*://*.rafie.cloud/*
 *://*.rosecokontrol.ru/*
 *://*.rozwojownia.com/*
 *://*.rt23.be/*
@@ -86,8 +81,8 @@
 *://*.universellpos.com/*
 *://*.upakarma.eu/*
 *://*.vijverwinkel.com/*
+*://*.web.app/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
-*://*.yahoo.jp/*
 *://*.yorissociety.com/*
 *://*.zwillingsglueck.com/*
