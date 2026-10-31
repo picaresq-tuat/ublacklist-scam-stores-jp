@@ -12,6 +12,7 @@
 *://*.20bet.id/*
 *://*.aardschok.net/*
 *://*.abubshait.family/*
+*://*.aca-etterbeek.be/*
 *://*.admin.ph/*
 *://*.afmaracaibo.com/*
 *://*.albsaer.com/*
@@ -27,6 +28,7 @@
 *://*.bonaventurelab.com/*
 *://*.cbfinestfood.com/*
 *://*.dakarplaquiste.com/*
+*://*.daskornried.at/*
 *://*.despondentserenity.com/*
 *://*.diagakbari.com/*
 *://*.dienlanhminhdang.com/*
@@ -74,6 +76,7 @@
 *://*.mobiletta.li/*
 *://*.monaalharbiforparties.com/*
 *://*.montrans.si/*
+*://*.moomoo.com/*
 *://*.mtv-handball.com/*
 *://*.muke.ai/*
 *://*.nailedbeautysherwood.com/*

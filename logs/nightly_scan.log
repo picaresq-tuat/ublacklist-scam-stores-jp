@@ -154,3 +154,9 @@
   uBlacklist.txt: published=1 already_listed=48 published_total=49 removed=0 pending_confirmation=2 reconfirmed=1 released=1 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=78 cloaking_added=4
   manual_candidates: checked=206 promoted=0
 
+[2026-10-31T04:30+09:00] night=2026-10-31 mode=publish
+  queries=1 empty_queries=7 engine_failures=0
+  domains_found=235 new_domains=84 aborted=False
+  blocked=1 hold=5 dismissed=78 whitelisted=31
+  uBlacklist.txt: published=3 already_listed=49 published_total=52 removed=0 pending_confirmation=4 reconfirmed=3 released=0 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=81 cloaking_added=3
+  manual_candidates: checked=206 promoted=0

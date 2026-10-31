@@ -34,6 +34,8 @@
 *://*.elibom.net/*
 *://*.estesmadine.com/*
 *://*.evan.travel/*
+*://*.ezoe-clinic.com/*
+*://*.foothillmontessori.com/*
 *://*.gadgetdai.com/*
 *://*.gailing-druck.de/*
 *://*.gerabnationalenterprises.com/*
@@ -77,6 +79,7 @@
 *://*.szolyvaipark.org/*
 *://*.tecai.site/*
 *://*.tequilasunrisefest.com/*
+*://*.tokashiki.info/*
 *://*.top-dienst.ch/*
 *://*.universellpos.com/*
 *://*.upakarma.eu/*
