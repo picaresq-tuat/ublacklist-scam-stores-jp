@@ -9,138 +9,124 @@
 2026-09-30  リポジトリ再編成 (script/ tests/ db/ logs/ cloaking_detected/ へ移動)
             uBlacklist.txt は変更なし。実データ (db/*.db, 生ログ) を .gitignore で除外。
 
-[2026-10-07T00:02+09:00] night=2026-10-07 mode=publish
   queries=1 empty_queries=8 engine_failures=2
   domains_found=220 new_domains=177 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=16
 
-[2026-10-09T04:30+09:00] night=2026-10-09 mode=publish
   queries=1 empty_queries=7 engine_failures=1
   domains_found=199 new_domains=131 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=34
 
-[2026-10-11T04:30+09:00] night=2026-10-11 mode=publish
   queries=1 empty_queries=6 engine_failures=1
   domains_found=195 new_domains=110 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=42
 
-[2026-10-12T04:30+09:00] night=2026-10-12 mode=publish
   queries=1 empty_queries=7 engine_failures=0
   domains_found=255 new_domains=147 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=51 cloaking_added=9
 
-[2026-10-13T04:30+09:00] night=2026-10-13 mode=publish
   queries=1 empty_queries=3 engine_failures=0
   domains_found=254 new_domains=128 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=58 cloaking_added=16
 
-[2026-10-14T04:30+09:00] night=2026-10-14 mode=publish
   queries=1 empty_queries=8 engine_failures=0
   domains_found=200 new_domains=105 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=62 cloaking_added=4
 
-[2026-10-15T04:30+09:00] night=2026-10-15 mode=publish
   queries=1 empty_queries=5 engine_failures=0
   domains_found=266 new_domains=140 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=70 cloaking_added=7
 
-[2026-10-16T04:30+09:00] night=2026-10-16 mode=publish
   queries=1 empty_queries=1 engine_failures=0
   domains_found=323 new_domains=171 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=77 cloaking_added=7
 
-[2026-10-17T04:30+09:00] night=2026-10-17 mode=publish
   queries=1 empty_queries=12 engine_failures=2
   domains_found=189 new_domains=70 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=79 cloaking_added=2
 
-[2026-10-18T04:30+09:00] night=2026-10-18 mode=publish
   queries=1 empty_queries=9 engine_failures=0
   domains_found=276 new_domains=147 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=0 would_publish=0 expired=0 cloaking_holds=89 cloaking_added=8
 
-[2026-10-19T04:30+09:00] night=2026-10-19 mode=publish
   queries=1 empty_queries=10 engine_failures=2
   domains_found=197 new_domains=83 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=7 would_publish=0 expired=0 cloaking_holds=91 cloaking_added=2
 
-[2026-10-20T04:30+09:00] night=2026-10-20 mode=publish
   queries=1 empty_queries=7 engine_failures=0
   domains_found=235 new_domains=102 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=9 would_publish=0 expired=0 cloaking_holds=100 cloaking_added=23
   manual_candidates: checked=202 promoted=1
 
-[2026-10-21T04:30+09:00] night=2026-10-21 mode=publish
   queries=1 empty_queries=10 engine_failures=1
   domains_found=231 new_domains=113 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=14 would_publish=0 expired=0 cloaking_holds=103 cloaking_added=7
   manual_candidates: checked=202 promoted=1
 
-[2026-10-22T04:30+09:00] night=2026-10-22 mode=publish
   queries=1 empty_queries=4 engine_failures=0
   domains_found=249 new_domains=125 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=14 would_publish=0 expired=0 cloaking_holds=107 cloaking_added=22
   manual_candidates: checked=202 promoted=4
 
-[2026-10-23T04:30+09:00] night=2026-10-23 mode=publish
   queries=1 empty_queries=7 engine_failures=0
   domains_found=214 new_domains=90 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=20 would_publish=0 expired=0 cloaking_holds=108 cloaking_added=1
   manual_candidates: checked=202 promoted=1
 
-[2026-10-24T04:30+09:00] night=2026-10-24 mode=publish
   queries=1 empty_queries=7 engine_failures=1
   domains_found=280 new_domains=130 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=19 would_publish=0 expired=0 cloaking_holds=106 cloaking_added=4
   manual_candidates: checked=202 promoted=0
 
-[2026-10-25T04:30+09:00] night=2026-10-25 mode=publish
   queries=1 empty_queries=7 engine_failures=1
   domains_found=194 new_domains=77 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=23 would_publish=0 expired=0 cloaking_holds=112 cloaking_added=6
   manual_candidates: checked=202 promoted=0
 
-[2026-10-26T04:30+09:00] night=2026-10-26 mode=publish
   queries=1 empty_queries=13 engine_failures=0
   domains_found=225 new_domains=100 aborted=False
   blocked=0 hold=0 dismissed=0 whitelisted=0
   uBlacklist.txt: published=23 would_publish=0 expired=0 cloaking_holds=123 cloaking_added=11
   manual_candidates: checked=202 promoted=0
 
-[2026-10-29T04:30+09:00] night=2026-10-29 mode=publish
   queries=1 empty_queries=11 engine_failures=0
   domains_found=152 new_domains=39 aborted=False
   blocked=1 hold=2 dismissed=36 whitelisted=31
   uBlacklist.txt: published=15 already_listed=33 published_total=48 removed=0 pending_confirmation=6 reconfirmed=5 released=0 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=74 cloaking_added=5
   manual_candidates: checked=206 promoted=0
 
-[2026-10-30T04:30+09:00] night=2026-10-30 mode=publish
   queries=1 empty_queries=5 engine_failures=1
   domains_found=224 new_domains=107 aborted=False
   blocked=4 hold=11 dismissed=92 whitelisted=29
   uBlacklist.txt: published=1 already_listed=48 published_total=49 removed=0 pending_confirmation=2 reconfirmed=1 released=1 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=78 cloaking_added=4
   manual_candidates: checked=206 promoted=0
 
-[2026-10-31T04:30+09:00] night=2026-10-31 mode=publish
   queries=1 empty_queries=7 engine_failures=0
   domains_found=235 new_domains=84 aborted=False
   blocked=1 hold=5 dismissed=78 whitelisted=31
   uBlacklist.txt: published=3 already_listed=49 published_total=52 removed=0 pending_confirmation=4 reconfirmed=3 released=0 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=81 cloaking_added=3
+  manual_candidates: checked=206 promoted=0
+
+[2026-11-01T04:30+09:00] night=2026-11-01 mode=publish
+  queries=1 empty_queries=6 engine_failures=0
+  domains_found=256 new_domains=111 aborted=False
+  blocked=3 hold=6 dismissed=102 whitelisted=33
+  uBlacklist.txt: published=1 already_listed=52 published_total=53 removed=0 pending_confirmation=2 reconfirmed=1 released=1 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=83 cloaking_added=2
   manual_candidates: checked=206 promoted=0

@@ -1,0 +1,28 @@
+# nightly_scan log — scam_hunter 夜間実行ログ (編集済み)
+#
+# 本ファイルは uBlacklist.txt の更新履歴である。生ログ (logs/*.raw.log) と DB (db/*.db) は
+# .gitignore で除外し、リポジトリには本ファイルのみを含める。
+# 記載しないもの: トークン・認証情報・ローカル絶対パス・生 HTML・Cookie。
+
+## 2026-10 (uBlacklist.txt 更新履歴)
+[2026-10-07T00:02+09:00] night=2026-10-07 mode=publish
+[2026-10-09T04:30+09:00] night=2026-10-09 mode=publish
+[2026-10-11T04:30+09:00] night=2026-10-11 mode=publish
+[2026-10-12T04:30+09:00] night=2026-10-12 mode=publish
+[2026-10-13T04:30+09:00] night=2026-10-13 mode=publish
+[2026-10-14T04:30+09:00] night=2026-10-14 mode=publish
+[2026-10-15T04:30+09:00] night=2026-10-15 mode=publish
+[2026-10-16T04:30+09:00] night=2026-10-16 mode=publish
+[2026-10-17T04:30+09:00] night=2026-10-17 mode=publish
+[2026-10-18T04:30+09:00] night=2026-10-18 mode=publish
+[2026-10-19T04:30+09:00] night=2026-10-19 mode=publish
+[2026-10-20T04:30+09:00] night=2026-10-20 mode=publish
+[2026-10-21T04:30+09:00] night=2026-10-21 mode=publish
+[2026-10-22T04:30+09:00] night=2026-10-22 mode=publish
+[2026-10-23T04:30+09:00] night=2026-10-23 mode=publish
+[2026-10-24T04:30+09:00] night=2026-10-24 mode=publish
+[2026-10-25T04:30+09:00] night=2026-10-25 mode=publish
+[2026-10-26T04:30+09:00] night=2026-10-26 mode=publish
+[2026-10-29T04:30+09:00] night=2026-10-29 mode=publish
+[2026-10-30T04:30+09:00] night=2026-10-30 mode=publish
+[2026-10-31T04:30+09:00] night=2026-10-31 mode=publish

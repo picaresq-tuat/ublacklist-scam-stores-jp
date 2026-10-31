@@ -39,6 +39,7 @@
 *://*.doscrealty.com/*
 *://*.ds-cab-ivanoff.com/*
 *://*.ecofaune.org/*
+*://*.ecpp.eu/*
 *://*.eden-europe.eu/*
 *://*.energowatch.hu/*
 *://*.eurasiantactical.de/*
@@ -103,6 +104,7 @@
 *://*.stiledabitare.com/*
 *://*.sugardropit.com/*
 *://*.sunmold.com/*
+*://*.talys.mg/*
 *://*.tcha.jp/*
 *://*.tendersofyemen.com/*
 *://*.torahtent.com/*
