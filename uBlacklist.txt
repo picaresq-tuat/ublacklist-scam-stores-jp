@@ -42,6 +42,7 @@
 *://*.ghostintheshell-sac2045.jp/*
 *://*.grabmale-langenbahn.de/*
 *://*.houseofperpetualevolution.com/*
+*://*.iicthk.org/*
 *://*.iidamizuhiki.com/*
 *://*.iluka-hwc.com/*
 *://*.irrigo.no/*
@@ -71,6 +72,7 @@
 *://*.rozwojownia.com/*
 *://*.rt23.be/*
 *://*.securityzone-syria.com/*
+*://*.shinkenchiku.online/*
 *://*.shrigirajjipolymers.co.in/*
 *://*.softest.jp/*
 *://*.ssp2.pl/*

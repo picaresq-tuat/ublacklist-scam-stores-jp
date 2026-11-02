@@ -10,6 +10,7 @@
 
 ## Hermes nightly
 *://*.20bet.id/*
+*://*.360digiboost.com/*
 *://*.aardschok.net/*
 *://*.abubshait.family/*
 *://*.aca-etterbeek.be/*
@@ -58,19 +59,23 @@
 *://*.josyn.org/*
 *://*.journalhi.com/*
 *://*.kdvirtualsupport.co.uk/*
+*://*.khcaa.com/*
 *://*.kidstalentawards.ao/*
 *://*.kojorestaurant.com/*
 *://*.kortekbilisim.com/*
 *://*.krishnagrafix.com/*
 *://*.kundalishastra.com/*
+*://*.lanamequipmentfinance.com/*
 *://*.launchtech.in/*
 *://*.lechantdesamandes.fr/*
 *://*.libdo-immo.com/*
+*://*.logopedievooriedereen.nl/*
 *://*.madelineguide.net/*
 *://*.maghoulacademy.ir/*
 *://*.mahgoub-academy.com/*
 *://*.mangaloasis.com/*
 *://*.mediamentra.com/*
+*://*.menuoneca.com/*
 *://*.mimoza.bg/*
 *://*.missav.run/*
 *://*.mobilemrcs.org/*
@@ -101,6 +106,7 @@
 *://*.sunmold.com/*
 *://*.talys.mg/*
 *://*.tcha.jp/*
+*://*.techngineers.com/*
 *://*.tendersofyemen.com/*
 *://*.torahtent.com/*
 *://*.transwellnessinitiative.ca/*
@@ -109,4 +115,5 @@
 *://*.umeedinternationalschool.com/*
 *://*.ventagringa.com/*
 *://*.volgamed34.ru/*
+*://*.watertotsla.com/*
 *://*.web-werben.de/*
