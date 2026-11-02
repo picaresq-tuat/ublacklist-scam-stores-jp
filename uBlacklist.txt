@@ -62,6 +62,7 @@
 *://*.mygolfway.com/*
 *://*.namratasnacks.in/*
 *://*.nicolenaworld.com/*
+*://*.niva.skin/*
 *://*.orelcbt.com/*
 *://*.paolocodeluppi.com/*
 *://*.paresisauction.com/*
