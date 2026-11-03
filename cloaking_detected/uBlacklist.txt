@@ -54,6 +54,7 @@
 *://*.hannaczajkowska.pl/*
 *://*.helgaly.com/*
 *://*.hoberg-reiche.de/*
+*://*.idahomeconcreteepoxyandstain.com/*
 *://*.iifscindia.com/*
 *://*.innergie.com/*
 *://*.josyn.org/*
@@ -110,6 +111,7 @@
 *://*.tendersofyemen.com/*
 *://*.torahtent.com/*
 *://*.transwellnessinitiative.ca/*
+*://*.tver.jp/*
 *://*.twlatelier.com/*
 *://*.ucp.mg/*
 *://*.umeedinternationalschool.com/*
