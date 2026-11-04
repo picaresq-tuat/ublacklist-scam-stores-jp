@@ -9,6 +9,7 @@
 
 ## Hermes nightly
 *://*.achievia.com/*
+*://*.adipap.eu/*
 *://*.afriquedeslibertes.org/*
 *://*.ajscatfishstation.com/*
 *://*.alazora.com/*
