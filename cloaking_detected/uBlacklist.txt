@@ -37,6 +37,7 @@
 *://*.donanimhaber.com/*
 *://*.doscrealty.com/*
 *://*.ds-cab-ivanoff.com/*
+*://*.eabs.ug/*
 *://*.ecofaune.org/*
 *://*.ecpp.eu/*
 *://*.eden-europe.eu/*
@@ -82,6 +83,7 @@
 *://*.mobilemrcs.org/*
 *://*.mobiletta.li/*
 *://*.monaalharbiforparties.com/*
+*://*.monsieurlist.com/*
 *://*.montrans.si/*
 *://*.moomoo.com/*
 *://*.mtv-handball.com/*

@@ -9,6 +9,7 @@
 
 ## Hermes nightly
 *://*.achievia.com/*
+*://*.adipap.eu/*
 *://*.afriquedeslibertes.org/*
 *://*.ajscatfishstation.com/*
 *://*.alazora.com/*
@@ -70,6 +71,8 @@
 *://*.paolocodeluppi.com/*
 *://*.paresisauction.com/*
 *://*.pb909.com/*
+*://*.rafie.cloud/*
+*://*.renkindo.com/*
 *://*.rosecokontrol.ru/*
 *://*.rozwojownia.com/*
 *://*.rt23.be/*
