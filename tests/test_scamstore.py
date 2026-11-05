@@ -15,7 +15,18 @@ def day(n: int) -> str:
 
 
 def test_decisions_are_the_defined_ones():
-    assert set(DECISIONS) == {"candidate", "hold", "block", "expired", "dismissed"}
+    """判定値は巡回ライフサイクルの状態も含む (docs/domain-lifecycle.md)。"""
+    assert set(DECISIONS) == {
+        "candidate",
+        "hold",
+        "block",
+        "expired",
+        "dismissed",
+        "pending_release",
+        "pending_expiration",
+        "released",
+        "retired",
+    }
 
 
 def test_record_and_fetch(tmp_path):

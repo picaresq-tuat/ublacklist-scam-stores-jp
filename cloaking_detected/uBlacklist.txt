@@ -28,8 +28,6 @@
 *://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
 *://*.cbfinestfood.com/*
-*://*.cryptonaat.com/*
-*://*.dailymotion.com/*
 *://*.dakarplaquiste.com/*
 *://*.daskornried.at/*
 *://*.despondentserenity.com/*
@@ -60,11 +58,8 @@
 *://*.idahomeconcreteepoxyandstain.com/*
 *://*.iifscindia.com/*
 *://*.innergie.com/*
-*://*.jannyscott.com/*
-*://*.jorudan.co.jp/*
 *://*.josyn.org/*
 *://*.journalhi.com/*
-*://*.jsmjapan.com/*
 *://*.kdvirtualsupport.co.uk/*
 *://*.khcaa.com/*
 *://*.kidstalentawards.ao/*
