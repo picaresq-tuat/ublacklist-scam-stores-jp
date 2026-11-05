@@ -160,3 +160,17 @@
   blocked=4 hold=4 dismissed=45 whitelisted=34
   uBlacklist.txt: published=1 already_listed=55 published_total=56 removed=0 pending_confirmation=3 reconfirmed=1 released=1 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=92 cloaking_added=2
   manual_candidates: checked=206 promoted=0
+
+[2026-11-04T04:30+09:00] night=2026-11-04 mode=publish
+  queries=1 empty_queries=11 engine_failures=1
+  domains_found=220 new_domains=76 aborted=False
+  blocked=0 hold=3 dismissed=73 whitelisted=34
+  uBlacklist.txt: published=4 already_listed=56 published_total=60 removed=0 pending_confirmation=5 reconfirmed=4 released=1 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=92 cloaking_added=0
+  manual_candidates: checked=206 promoted=0
+
+[2026-11-05T04:30+09:00] night=2026-11-05 mode=publish
+  queries=1 empty_queries=5 engine_failures=1
+  domains_found=238 new_domains=87 aborted=False
+  blocked=4 hold=3 dismissed=80 whitelisted=35
+  uBlacklist.txt: published=0 already_listed=60 published_total=60 removed=0 pending_confirmation=0 reconfirmed=0 released=0 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=95 cloaking_added=2
+  manual_candidates: checked=206 promoted=1
