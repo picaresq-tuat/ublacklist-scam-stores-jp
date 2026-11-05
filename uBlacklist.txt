@@ -26,6 +26,8 @@
 *://*.cadenhamproperties.co.uk/*
 *://*.campodopartido.com/*
 *://*.championsofthefuture.uk/*
+*://*.chinafix.tech/*
+*://*.club535.com/*
 *://*.connectiot.org/*
 *://*.corporatelearninguk.com/*
 *://*.cpitech.co.za/*
@@ -69,12 +71,14 @@
 *://*.my-esthetic.com/*
 *://*.mygolfway.com/*
 *://*.namratasnacks.in/*
+*://*.nichiden-rika.com/*
 *://*.nicolenaworld.com/*
 *://*.niva.skin/*
 *://*.orelcbt.com/*
 *://*.paolocodeluppi.com/*
 *://*.paresisauction.com/*
 *://*.pb909.com/*
+*://*.projectweb.cloud/*
 *://*.rafie.cloud/*
 *://*.renkindo.com/*
 *://*.rosecokontrol.ru/*
