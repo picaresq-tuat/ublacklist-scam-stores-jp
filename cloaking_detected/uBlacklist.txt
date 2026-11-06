@@ -73,6 +73,7 @@
 *://*.krishnagrafix.com/*
 *://*.kundalishastra.com/*
 *://*.lanamequipmentfinance.com/*
+*://*.laravellive.pk/*
 *://*.launchtech.in/*
 *://*.lechantdesamandes.fr/*
 *://*.libdo-immo.com/*
