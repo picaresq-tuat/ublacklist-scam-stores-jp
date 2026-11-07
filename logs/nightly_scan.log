@@ -181,3 +181,10 @@
   blocked=0 hold=3 dismissed=55 whitelisted=35
   uBlacklist.txt: published=4 already_listed=60 published_total=64 removed=0 pending_confirmation=4 reconfirmed=4 released=0 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=97 cloaking_added=2
   manual_candidates: checked=206 promoted=0
+
+[2026-11-07T04:30+09:00] night=2026-11-07 mode=publish
+  queries=1 empty_queries=10 engine_failures=1
+  domains_found=221 new_domains=66 aborted=False
+  blocked=1 hold=4 dismissed=61 whitelisted=34
+  uBlacklist.txt: published=0 already_listed=64 published_total=64 removed=0 pending_confirmation=0 reconfirmed=0 released=0 excluded_permanent_shape=4 would_publish=0 expired=0 cloaking_holds=98 cloaking_added=1
+  manual_candidates: checked=206 promoted=0
