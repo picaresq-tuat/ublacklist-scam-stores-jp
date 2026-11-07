@@ -27,6 +27,7 @@
 *://*.blinkadd.com/*
 *://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
+*://*.borradailetrust.com/*
 *://*.cbfinestfood.com/*
 *://*.cryptonaat.com/*
 *://*.dailymotion.com/*
@@ -43,6 +44,7 @@
 *://*.ecofaune.org/*
 *://*.ecpp.eu/*
 *://*.eden-europe.eu/*
+*://*.energokompressor.kz/*
 *://*.energowatch.hu/*
 *://*.eurasiantactical.de/*
 *://*.femsajtolo.hu/*
@@ -82,6 +84,8 @@
 *://*.maghoulacademy.ir/*
 *://*.mahgoub-academy.com/*
 *://*.mangaloasis.com/*
+*://*.manifestlao.com/*
+*://*.mastersolut.com/*
 *://*.mediamentra.com/*
 *://*.menuoneca.com/*
 *://*.mimoza.bg/*
@@ -98,7 +102,9 @@
 *://*.nathanzola.com/*
 *://*.nbkomputer.com/*
 *://*.newdoorfiji.com/*
+*://*.oaa.ao/*
 *://*.ommultispecialityanddental.com/*
+*://*.omomakay.com/*
 *://*.ophmn.com/*
 *://*.optimizaralojamiento.com/*
 *://*.parade-teine.com/*
@@ -121,11 +127,13 @@
 *://*.tendersofyemen.com/*
 *://*.torahtent.com/*
 *://*.transwellnessinitiative.ca/*
+*://*.trustmachineries.com/*
 *://*.tver.jp/*
 *://*.twlatelier.com/*
 *://*.ucp.mg/*
 *://*.umeedinternationalschool.com/*
 *://*.ventagringa.com/*
+*://*.ventures.pk/*
 *://*.volgamed34.ru/*
 *://*.watertotsla.com/*
 *://*.web-werben.de/*
