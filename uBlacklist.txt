@@ -56,6 +56,7 @@
 *://*.japanes-girl.jp/*
 *://*.kalamasz-ksiegowosc.pl/*
 *://*.karnikdentalclinic.com/*
+*://*.kixi.jp/*
 *://*.kon-fishing.com/*
 *://*.lesclefsdor.org/*
 *://*.lets-play-2.com/*
