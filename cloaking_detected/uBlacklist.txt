@@ -60,6 +60,7 @@
 *://*.hairroomcozy.com/*
 *://*.hannaczajkowska.pl/*
 *://*.helgaly.com/*
+*://*.hitachi-solutions.co.jp/*
 *://*.hoberg-reiche.de/*
 *://*.idahomeconcreteepoxyandstain.com/*
 *://*.iifscindia.com/*
