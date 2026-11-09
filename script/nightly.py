@@ -64,6 +64,57 @@ def _count(value) -> int:
     return _safe_int(value)
 
 
+def _skip_token(value) -> str:
+    """sweep を回さなかった理由をログ用トークンにする (未実行なら "-")。"""
+    token = str(value or "").strip()
+    ok = bool(token) and all(ch.isalnum() or ch == "_" for ch in token)
+    return token if ok else "-"
+
+
+# ログの並びは README の集計表と対応する。項目を足すときは README も直す。
+_SEARCH_FIELDS: tuple[tuple[str, str], ...] = (
+    ("queries", "rounds"),
+    ("empty_queries", "empty_queries"),
+    ("engine_failures", "engine_failures"),
+)
+_FOUND_FIELDS: tuple[tuple[str, str], ...] = (
+    ("domains_found", "domains_found"),
+    ("new_domains", "new_domains"),
+)
+_VERDICT_FIELDS: tuple[tuple[str, str], ...] = (
+    ("blocked", "blocked"),
+    ("hold", "hold"),
+    ("dismissed", "dismissed"),
+    ("whitelisted", "whitelisted"),
+)
+_ULIST_FIELDS: tuple[tuple[str, str], ...] = (
+    ("published", "published"),
+    ("already_listed", "already_listed"),
+    ("published_total", "published_total"),
+    ("removed", "ulist_removed"),
+    ("reconfirmed", "reconfirmed"),
+    ("released", "released"),
+    ("excluded_permanent_shape", "excluded_permanent_shape"),
+    ("would_publish", "would_publish"),
+    ("expired", "expired"),
+    ("cloaking_holds", "cloaking_holds"),
+    ("cloaking_added", "cloaking_added"),
+)
+_LIFECYCLE_FIELDS: tuple[tuple[str, str], ...] = (
+    ("lifecycle_checked", "lifecycle_checked"),
+    ("pending_release", "pending_release"),
+    ("pending_expiration", "pending_expiration"),
+    ("retired", "retired"),
+    ("restored", "restored"),
+    ("confirmed_hold", "confirmed_hold"),
+    ("lifecycle_unknown", "lifecycle_unknown"),
+)
+
+
+def _kv(report: dict, fields: tuple[tuple[str, str], ...]) -> str:
+    return " ".join(f"{label}={_count(report.get(key))}" for label, key in fields)
+
+
 def format_log_block(report: dict, *, now: datetime) -> str:
     """1 実行分の編集済みログ行を組み立てる (絶対パス・トークンを含めない)。"""
     mode = "dry-run" if report.get("dry_run") else "publish"
@@ -73,30 +124,14 @@ def format_log_block(report: dict, *, now: datetime) -> str:
     lines = [
         "",
         f"[{stamp}] night={night} mode={mode}",
-        f"  queries={_safe_int(report.get('rounds'))} "
-        f"empty_queries={_safe_int(report.get('empty_queries'))} "
-        f"engine_failures={_safe_int(report.get('engine_failures'))}",
-        f"  domains_found={_safe_int(report.get('domains_found'))} "
-        f"new_domains={_safe_int(report.get('new_domains'))} "
-        f"aborted={bool(report.get('aborted'))}",
-        f"  blocked={_count(report.get('blocked'))} "
-        f"hold={_count(report.get('hold'))} "
-        f"dismissed={_count(report.get('dismissed'))} "
-        f"whitelisted={_count(report.get('whitelisted'))}",
-        f"  uBlacklist.txt: published={len(report.get('published') or [])} "
-        f"already_listed={len(report.get('already_listed') or [])} "
-        f"published_total={len(report.get('published_total') or [])} "
-        f"removed={len(report.get('ulist_removed') or [])} "
-        f"pending_confirmation={len(report.get('pending_confirmation') or [])} "
-        f"reconfirmed={len(report.get('reconfirmed') or [])} "
-        f"released={len(report.get('released') or [])} "
-        f"excluded_permanent_shape={len(report.get('excluded_permanent_shape') or [])} "
-        f"would_publish={len(report.get('would_publish') or [])} "
-        f"expired={len(report.get('expired') or [])} "
-        f"cloaking_holds={len(report.get('cloaking_holds') or [])} "
-        f"cloaking_added={len(report.get('cloaking_added') or [])}",
+        f"  {_kv(report, _SEARCH_FIELDS)}",
+        f"  {_kv(report, _FOUND_FIELDS)} aborted={bool(report.get('aborted'))}",
+        f"  {_kv(report, _VERDICT_FIELDS)}",
+        f"  uBlacklist.txt: {_kv(report, _ULIST_FIELDS)}",
+        f"  {_kv(report, _LIFECYCLE_FIELDS)} "
+        f"lifecycle_skip={_skip_token(report.get('lifecycle_skipped'))}",
         f"  manual_candidates: checked={_safe_int(report.get('candidate_checked'))} "
-        f"promoted={len(report.get('candidate_promoted') or [])}",
+        f"promoted={_count(report.get('candidate_promoted'))}",
     ]
     return "\n".join(lines) + "\n"
 
