@@ -47,6 +47,7 @@
 *://*.eurasiantactical.de/*
 *://*.femsajtolo.hu/*
 *://*.flamingobeach.holiday/*
+*://*.foodusgroup.com/*
 *://*.frauengesundheit-ueberlingen.de/*
 *://*.fronius.com/*
 *://*.garcialocation.yt/*
@@ -120,6 +121,7 @@
 *://*.tcha.jp/*
 *://*.techngineers.com/*
 *://*.tendersofyemen.com/*
+*://*.tgg-leer.de/*
 *://*.torahtent.com/*
 *://*.transwellnessinitiative.ca/*
 *://*.trustmachineries.com/*

@@ -97,6 +97,7 @@
 *://*.tipstour.net/*
 *://*.tokashiki.info/*
 *://*.top-dienst.ch/*
+*://*.u15dvdinfo.com/*
 *://*.universellpos.com/*
 *://*.upakarma.eu/*
 *://*.vijverwinkel.com/*
