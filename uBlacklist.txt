@@ -8,6 +8,7 @@
 /https?:\/\/(?:[a-z0-9-]+\.)*xn--[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,8}\/.*/
 
 ## Hermes nightly
+*://*.68gb.wiki/*
 *://*.achievia.com/*
 *://*.adipap.eu/*
 *://*.afriquedeslibertes.org/*
@@ -76,6 +77,7 @@
 *://*.paolocodeluppi.com/*
 *://*.paresisauction.com/*
 *://*.pb909.com/*
+*://*.pc-buybyestore.com/*
 *://*.projectweb.cloud/*
 *://*.rafie.cloud/*
 *://*.renkindo.com/*
