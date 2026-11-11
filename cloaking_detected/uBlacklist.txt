@@ -29,6 +29,7 @@
 *://*.bonaventurelab.com/*
 *://*.borradailetrust.com/*
 *://*.cbfinestfood.com/*
+*://*.cloud.microsoft/*
 *://*.creditfoncier.cm/*
 *://*.cryptonaat.com/*
 *://*.dailymotion.com/*

@@ -87,7 +87,9 @@
 *://*.rosecokontrol.ru/*
 *://*.rozwojownia.com/*
 *://*.rt23.be/*
+*://*.sakata-engineer.work/*
 *://*.securityzone-syria.com/*
+*://*.shaho.co.jp/*
 *://*.shikosakugo.net/*
 *://*.shinkenchiku.online/*
 *://*.shrigirajjipolymers.co.in/*
