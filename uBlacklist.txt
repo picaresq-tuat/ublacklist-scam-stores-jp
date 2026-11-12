@@ -25,7 +25,6 @@
 *://*.buurtpreventiewernhoutsburg.nl/*
 *://*.cadbattaglino.com/*
 *://*.cadenhamproperties.co.uk/*
-*://*.campodopartido.com/*
 *://*.championsofthefuture.uk/*
 *://*.chinafix.tech/*
 *://*.club535.com/*
@@ -38,7 +37,6 @@
 *://*.e-coating.jp/*
 *://*.elektrotekcai.com/*
 *://*.elibom.net/*
-*://*.elohimmusic.store/*
 *://*.estesmadine.com/*
 *://*.evan.travel/*
 *://*.ezoe-clinic.com/*
@@ -67,7 +65,6 @@
 *://*.lundi.is/*
 *://*.matsumasabog.com/*
 *://*.mavenbrain.com/*
-*://*.meso-aesthetik-berlin.de/*
 *://*.mingeikan-osaka.or.jp/*
 *://*.monitor.kantar.com/*
 *://*.my-esthetic.com/*
@@ -110,6 +107,5 @@
 *://*.vijverwinkel.com/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
-*://*.yahoo.jp/*
 *://*.yorissociety.com/*
 *://*.zwillingsglueck.com/*
