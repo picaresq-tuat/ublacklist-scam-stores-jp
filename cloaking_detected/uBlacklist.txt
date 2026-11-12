@@ -50,6 +50,7 @@
 *://*.energowatch.hu/*
 *://*.eurasiantactical.de/*
 *://*.femsajtolo.hu/*
+*://*.feuerwehr-liebenburg.de/*
 *://*.flamingobeach.holiday/*
 *://*.foodusgroup.com/*
 *://*.frauengesundheit-ueberlingen.de/*

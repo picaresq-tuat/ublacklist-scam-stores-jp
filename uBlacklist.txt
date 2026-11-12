@@ -52,8 +52,10 @@
 *://*.houseofperpetualevolution.com/*
 *://*.iicthk.org/*
 *://*.iidamizuhiki.com/*
+*://*.ikusa.jp/*
 *://*.iluka-hwc.com/*
 *://*.irrigo.no/*
+*://*.it-tool-labo.top/*
 *://*.itojisan.xyz/*
 *://*.iziappx.com/*
 *://*.japanes-girl.jp/*
