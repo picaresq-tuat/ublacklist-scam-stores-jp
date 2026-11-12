@@ -209,3 +209,17 @@
   blocked=0 hold=2 dismissed=55 whitelisted=33
   uBlacklist.txt: published=2 already_listed=66 published_total=68 removed=0 pending_confirmation=2 reconfirmed=2 released=0 excluded_permanent_shape=5 would_publish=0 expired=0 cloaking_holds=110 cloaking_added=1
   manual_candidates: checked=206 promoted=0
+
+[2026-11-11T04:30+09:00] night=2026-11-11 mode=publish
+  queries=1 empty_queries=6 engine_failures=0
+  domains_found=237 new_domains=76 aborted=False
+  blocked=2 hold=6 dismissed=68 whitelisted=34
+  uBlacklist.txt: published=0 already_listed=68 published_total=68 removed=0 pending_confirmation=0 reconfirmed=0 released=0 excluded_permanent_shape=5 would_publish=0 expired=0 cloaking_holds=110 cloaking_added=0
+  manual_candidates: checked=206 promoted=0
+
+[2026-11-12T04:30+09:00] night=2026-11-12 mode=publish
+  queries=1 empty_queries=6 engine_failures=4
+  domains_found=215 new_domains=82 aborted=False
+  blocked=2 hold=10 dismissed=70 whitelisted=29
+  uBlacklist.txt: published=2 already_listed=68 published_total=70 removed=0 pending_confirmation=2 reconfirmed=2 released=0 excluded_permanent_shape=5 would_publish=0 expired=0 cloaking_holds=111 cloaking_added=1
+  manual_candidates: checked=206 promoted=0
