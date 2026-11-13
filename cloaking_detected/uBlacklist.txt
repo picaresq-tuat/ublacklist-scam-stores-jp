@@ -56,6 +56,7 @@
 *://*.frauengesundheit-ueberlingen.de/*
 *://*.fronius.com/*
 *://*.garcialocation.yt/*
+*://*.gbiz.go.jp/*
 *://*.gloucesterbikeproject.co.uk/*
 *://*.goodmed.ua/*
 *://*.gsss-gh.com/*
@@ -83,6 +84,7 @@
 *://*.laravellive.pk/*
 *://*.launchtech.in/*
 *://*.lechantdesamandes.fr/*
+*://*.ledia.se/*
 *://*.libdo-immo.com/*
 *://*.logopedievooriedereen.nl/*
 *://*.madelineguide.net/*
@@ -115,6 +117,7 @@
 *://*.parade-teine.com/*
 *://*.parkandfieldchicago.com/*
 *://*.pi.tn/*
+*://*.piwswidnik.pl/*
 *://*.qlawyers.ro/*
 *://*.sadkon77.ru/*
 *://*.sammatthewman.com/*

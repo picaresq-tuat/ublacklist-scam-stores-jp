@@ -48,6 +48,7 @@
 *://*.gailing-druck.de/*
 *://*.gerabnationalenterprises.com/*
 *://*.ghostintheshell-sac2045.jp/*
+*://*.gotojimuki.co.jp/*
 *://*.grabmale-langenbahn.de/*
 *://*.houseofperpetualevolution.com/*
 *://*.iicthk.org/*
@@ -106,6 +107,7 @@
 *://*.tipstour.net/*
 *://*.tokashiki.info/*
 *://*.top-dienst.ch/*
+*://*.tuncayhafriyatbodrum.com/*
 *://*.u15dvdinfo.com/*
 *://*.universellpos.com/*
 *://*.upakarma.eu/*
