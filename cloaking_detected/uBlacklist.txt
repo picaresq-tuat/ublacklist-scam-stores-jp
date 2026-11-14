@@ -18,6 +18,7 @@
 *://*.afmaracaibo.com/*
 *://*.albsaer.com/*
 *://*.amnt5888.com/*
+*://*.anict-mali.com/*
 *://*.av01.media/*
 *://*.baltimorepositive.com/*
 *://*.betterhomesal.com/*
