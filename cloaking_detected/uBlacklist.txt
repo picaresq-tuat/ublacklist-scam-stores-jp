@@ -48,6 +48,7 @@
 *://*.ds-cab-ivanoff.com/*
 *://*.eabs.ug/*
 *://*.ecofaune.org/*
+*://*.econnect.mv/*
 *://*.ecpp.eu/*
 *://*.eden-europe.eu/*
 *://*.energokompressor.kz/*
@@ -97,6 +98,7 @@
 *://*.mahgoub-academy.com/*
 *://*.mangaloasis.com/*
 *://*.manifestlao.com/*
+*://*.marangoniadvocaciainternacional.com/*
 *://*.mastersolut.com/*
 *://*.mediamentra.com/*
 *://*.menuoneca.com/*
@@ -133,8 +135,10 @@
 *://*.seafoodbysykes.com/*
 *://*.seaqmep.com/*
 *://*.shahaliagro.com/*
+*://*.socialniprace.cz/*
 *://*.sophie-sam.ch/*
 *://*.sportexfit.com/*
+*://*.stern-werkzeuge.com/*
 *://*.stiledabitare.com/*
 *://*.sugardropit.com/*
 *://*.sunmold.com/*
@@ -156,3 +160,4 @@
 *://*.volgamed34.ru/*
 *://*.watertotsla.com/*
 *://*.web-werben.de/*
+*://*.zonapers.com/*
