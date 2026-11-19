@@ -41,6 +41,7 @@
 *://*.evan.travel/*
 *://*.ezoe-clinic.com/*
 *://*.festa-1.com/*
+*://*.finances.bj/*
 *://*.foothillmontessori.com/*
 *://*.gadgetdai.com/*
 *://*.gailing-druck.de/*

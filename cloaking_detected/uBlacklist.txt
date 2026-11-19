@@ -17,6 +17,7 @@
 *://*.admin.ph/*
 *://*.afmaracaibo.com/*
 *://*.albsaer.com/*
+*://*.aldhiyainternational.com/*
 *://*.amnt5888.com/*
 *://*.anict-mali.com/*
 *://*.av01.media/*
@@ -74,6 +75,7 @@
 *://*.josyn.org/*
 *://*.journalhi.com/*
 *://*.kdvirtualsupport.co.uk/*
+*://*.khaata.app/*
 *://*.khcaa.com/*
 *://*.kidstalentawards.ao/*
 *://*.kojorestaurant.com/*
@@ -120,6 +122,7 @@
 *://*.phoopwintsan.com/*
 *://*.pi.tn/*
 *://*.piwswidnik.pl/*
+*://*.promvishivka.by/*
 *://*.qlawyers.ro/*
 *://*.sadkon77.ru/*
 *://*.sammatthewman.com/*
@@ -132,6 +135,7 @@
 *://*.stiledabitare.com/*
 *://*.sugardropit.com/*
 *://*.sunmold.com/*
+*://*.sunstar-travel.ru/*
 *://*.talys.mg/*
 *://*.tcha.jp/*
 *://*.techngineers.com/*
