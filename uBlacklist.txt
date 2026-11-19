@@ -69,11 +69,13 @@
 *://*.matsumasabog.com/*
 *://*.mavenbrain.com/*
 *://*.mingeikan-osaka.or.jp/*
+*://*.minto.tech/*
 *://*.monitor.kantar.com/*
 *://*.my-esthetic.com/*
 *://*.mygolfway.com/*
 *://*.namratasnacks.in/*
 *://*.nichiden-rika.com/*
+*://*.nichinichi.com/*
 *://*.nicolenaworld.com/*
 *://*.niva.skin/*
 *://*.orelcbt.com/*

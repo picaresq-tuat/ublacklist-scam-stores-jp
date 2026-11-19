@@ -29,6 +29,7 @@
 *://*.bmhmerchants.com/*
 *://*.bonaventurelab.com/*
 *://*.borradailetrust.com/*
+*://*.c-cesar.com/*
 *://*.cbfinestfood.com/*
 *://*.cloud.microsoft/*
 *://*.creditfoncier.cm/*
@@ -39,6 +40,7 @@
 *://*.despondentserenity.com/*
 *://*.diagakbari.com/*
 *://*.dienlanhminhdang.com/*
+*://*.dmdhakamanpower.com/*
 *://*.dominiquehervouet.com/*
 *://*.donanimhaber.com/*
 *://*.doscrealty.com/*
@@ -104,6 +106,7 @@
 *://*.mtv-handball.com/*
 *://*.muke.ai/*
 *://*.nailedbeautysherwood.com/*
+*://*.nas-oman.com/*
 *://*.nathanzola.com/*
 *://*.nbkomputer.com/*
 *://*.newdoorfiji.com/*
@@ -114,6 +117,7 @@
 *://*.optimizaralojamiento.com/*
 *://*.parade-teine.com/*
 *://*.parkandfieldchicago.com/*
+*://*.phoopwintsan.com/*
 *://*.pi.tn/*
 *://*.piwswidnik.pl/*
 *://*.qlawyers.ro/*
@@ -121,6 +125,7 @@
 *://*.sammatthewman.com/*
 *://*.santoamaro.com/*
 *://*.seafoodbysykes.com/*
+*://*.seaqmep.com/*
 *://*.shahaliagro.com/*
 *://*.sophie-sam.ch/*
 *://*.sportexfit.com/*
