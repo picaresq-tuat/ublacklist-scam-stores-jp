@@ -105,6 +105,7 @@
 *://*.stavebniny-elckner.cz/*
 *://*.stealthone.net/*
 *://*.storyorium.com/*
+*://*.surftrip.fr/*
 *://*.szolyvaipark.org/*
 *://*.tecai.site/*
 *://*.tequilasunrisefest.com/*
@@ -119,5 +120,6 @@
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
 *://*.yahoo.jp/*
+*://*.yilmazturknalburiye.com/*
 *://*.yorissociety.com/*
 *://*.zwillingsglueck.com/*
