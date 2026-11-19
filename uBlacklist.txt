@@ -89,6 +89,7 @@
 *://*.rt23.be/*
 *://*.sakata-engineer.work/*
 *://*.securityzone-syria.com/*
+*://*.senior-kurashi.online/*
 *://*.shaho.co.jp/*
 *://*.shikosakugo.net/*
 *://*.shinkenchiku.online/*
