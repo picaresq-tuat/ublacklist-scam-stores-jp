@@ -122,6 +122,7 @@
 *://*.oaa.ao/*
 *://*.ommultispecialityanddental.com/*
 *://*.omomakay.com/*
+*://*.openclassrooms.com/*
 *://*.ophmn.com/*
 *://*.optimizaralojamiento.com/*
 *://*.parade-teine.com/*
