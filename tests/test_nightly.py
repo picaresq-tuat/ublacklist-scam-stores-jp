@@ -322,6 +322,41 @@ def test_format_log_block_has_cloaking_added():
     assert "cloaking_added=1" in block
 
 
+def test_format_log_block_has_lifecycle_fields():
+    """巡回ライフサイクルの集計をログに載せる (pending_confirmation は廃止)。"""
+    block = nightly.format_log_block(
+        _report(
+            lifecycle_checked=["a.example", "b.example"],
+            lifecycle_skipped="",
+            pending_release=["weak.example"],
+            pending_expiration=["dead.example"],
+            retired=["gone.example"],
+            restored=["revive.example"],
+            lifecycle_unknown=["unclear.example"],
+            confirmed_hold=["cloak.example"],
+        ),
+        now=datetime(2026, 10, 5, 4, 30, tzinfo=JST),
+    )
+    assert "lifecycle_checked=2" in block
+    assert "lifecycle_skip=-" in block
+    assert "pending_release=1" in block
+    assert "pending_expiration=1" in block
+    assert "retired=1" in block
+    assert "restored=1" in block
+    assert "lifecycle_unknown=1" in block
+    assert "confirmed_hold=1" in block
+    assert "pending_confirmation" not in block
+
+
+def test_format_log_block_reports_skipped_lifecycle_reason():
+    """nightly 全体失敗の夜は sweep を回していないことをログで示す。"""
+    block = nightly.format_log_block(
+        _report(lifecycle_skipped="night_failed"), now=datetime(2026, 10, 5, 4, 30, tzinfo=JST)
+    )
+    assert "lifecycle_skip=night_failed" in block
+    assert "lifecycle_checked=0" in block
+
+
 def test_format_log_block_cloaking_added_defaults_to_zero():
     block = nightly.format_log_block(_report(), now=datetime(2026, 10, 5, 4, 30, tzinfo=JST))
     assert "cloaking_added=0" in block

@@ -17,12 +17,21 @@ PKG_ROOT = Path(__file__).resolve().parent.parent  # リポジトリルート
 DB_DIR = PKG_ROOT / "db"
 DEFAULT_DB = DB_DIR / "scam.db"
 
-DECISIONS: tuple[str, ...] = ("candidate", "hold", "block", "expired", "dismissed")
+DECISIONS: tuple[str, ...] = (
+    "candidate",
+    "hold",
+    "block",
+    "expired",
+    "dismissed",
+    # 巡回ライフサイクル (docs/domain-lifecycle.md)
+    "pending_release",
+    "pending_expiration",
+    "released",
+    "retired",
+)
 
 FAST_TRACK_SCORE = 60.0
 MIN_STREAK_SCORE = 55.0
-# 未確定 block (nights_confirmed<2) を観測値へ降格するまでに許容する連続ミス夜数。
-RECONFIRM_MISS_LIMIT = 2
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS decisions (
@@ -59,10 +68,29 @@ CREATE TABLE IF NOT EXISTS search_hits (
     pageno   INTEGER NOT NULL,
     night    TEXT NOT NULL
 );
-CREATE TABLE IF NOT EXISTS reconfirm_misses (
-    domain   TEXT NOT NULL,
-    night    TEXT NOT NULL,
-    PRIMARY KEY (domain, night)
+CREATE TABLE IF NOT EXISTS lifecycle (
+    domain             TEXT PRIMARY KEY,
+    status             TEXT NOT NULL,
+    base_decision      TEXT NOT NULL,
+    since_night        TEXT NOT NULL DEFAULT '',
+    last_check_seq     INTEGER NOT NULL DEFAULT 0,
+    unreachable_streak INTEGER NOT NULL DEFAULT 0,
+    below_streak       INTEGER NOT NULL DEFAULT 0,
+    pending_checks     INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS lifecycle_observations (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    domain    TEXT NOT NULL,
+    seq       INTEGER NOT NULL,
+    night     TEXT NOT NULL,
+    verdict   TEXT NOT NULL,
+    reachable TEXT NOT NULL,
+    UNIQUE(domain, seq)
+);
+CREATE TABLE IF NOT EXISTS nightly_runs (
+    seq          INTEGER PRIMARY KEY,
+    night        TEXT NOT NULL UNIQUE,
+    completed_at TEXT NOT NULL
 );
 """
 
@@ -170,15 +198,21 @@ class ScamStore:
         return [str(r[0]) for r in cur.fetchall()]
 
     def cloaking_holds(self) -> list[str]:
-        """cloaking 検知かつ decision=='hold' のドメイン (昇順)。
+        """cloaking リストに載せるドメイン (昇順)。
 
-        features_json.cloaking が真 (cloaking_promoted を含む) であることを要求する。
-        features が空/壊れている行は対象外。
+        - `decision='hold'` かつ features_json.cloaking が真
+        - `decision='pending_release'`（scam から cloaking へ移した観測待ち。
+          spec 上は hold 未満のスコアでも cloaking リストに置く）
+        features が空/壊れている行は hold 側では対象外。
         """
         out: list[str] = []
         for row in self._con.execute(
-            "SELECT domain, features_json FROM decisions WHERE decision='hold' ORDER BY domain"
+            "SELECT domain, decision, features_json FROM decisions"
+            " WHERE decision IN ('hold','pending_release') ORDER BY domain"
         ):
+            if str(row["decision"]) == "pending_release":
+                out.append(str(row["domain"]))
+                continue
             try:
                 feats = json.loads(row["features_json"] or "{}")
             except (ValueError, TypeError):
@@ -189,49 +223,17 @@ class ScamStore:
                 out.append(str(row["domain"]))
         return out
 
-    def reconfirm_targets(
-        self, *, nights_required: int = 2, score_threshold: float = MIN_STREAK_SCORE
-    ) -> list[str]:
-        """翌夜に再評価すべき `block` ドメイン (連続 2 夜確認が未了のもの)。
-
-        `known_before` は既判定ドメインを discovery から除外するため、これが無いと
-        `nights_confirmed` が 1 のまま固定され `eligible_domains(nights_required=2)` が
-        永久に発火しない (実バグ)。fast_track (score >= score_threshold) は 1 夜で
-        登録されるので対象外。
-        """
+    def lifecycle_domains(self, statuses: Iterable[str]) -> list[str]:
+        """指定ステータスのドメイン (昇順)。リストからの削除対象を引くのに使う。"""
+        wanted = tuple(statuses)
+        if not wanted:
+            return []
+        marks = ",".join("?" for _ in wanted)
         cur = self._con.execute(
-            "SELECT domain FROM decisions WHERE decision='block'"
-            " AND nights_confirmed < ? AND score < ? ORDER BY domain",
-            (nights_required, score_threshold),
+            f"SELECT domain FROM lifecycle WHERE status IN ({marks}) ORDER BY domain",
+            wanted,
         )
         return [str(r[0]) for r in cur.fetchall()]
-
-    # --- 再確認ミス (未確定 block の limbo 解消) ---
-    # nights_confirmed=1 のまま再確認で block にならないドメインは、掲載条件
-    # (nights_required=2) にも解除条件にも当たらず永久に残る。連続ミスを数え、
-    # RECONFIRM_MISS_LIMIT 夜連続で block を確認できなければ観測値へ降格する。
-    def note_reconfirm_miss(self, domain: str, night: str) -> int:
-        """再確認で block にならなかった夜を記録し、通算ミス夜数を返す。
-
-        同じ夜に再実行しても 1 夜として数える (PRIMARY KEY で重複排除)。
-        """
-        domain = domain.strip().lower()
-        self._con.execute(
-            "INSERT OR IGNORE INTO reconfirm_misses(domain, night) VALUES(?,?)",
-            (domain, _norm_night(night)),
-        )
-        self._con.commit()
-        return self.reconfirm_miss_count(domain)
-
-    def reconfirm_miss_count(self, domain: str) -> int:
-        cur = self._con.execute(
-            "SELECT COUNT(*) FROM reconfirm_misses WHERE domain=?", (domain.strip().lower(),)
-        )
-        return int(cur.fetchone()[0])
-
-    def clear_reconfirm_miss(self, domain: str) -> None:
-        self._con.execute("DELETE FROM reconfirm_misses WHERE domain=?", (domain.strip().lower(),))
-        self._con.commit()
 
     def eligible_domains(
         self, *, score_threshold: float = MIN_STREAK_SCORE, nights_required: int = 2
@@ -244,6 +246,157 @@ class ScamStore:
             (nights_required, score_threshold),
         )
         return [str(r[0]) for r in cur.fetchall()]
+
+    # --- 巡回ライフサイクル (docs/domain-lifecycle.md) ---
+    def ensure_lifecycle(self) -> int:
+        """decisions の block / hold / expired を lifecycle 行へ取り込む。
+
+        既存 DB には lifecycle 行が無いため、初回の sweep で後方互換に補完する。
+        戻り値は追加した行数。
+        """
+        added = 0
+        rows = self._con.execute(
+            "SELECT d.domain, d.decision, d.last_seen FROM decisions d"
+            " LEFT JOIN lifecycle l ON l.domain = d.domain"
+            " WHERE l.domain IS NULL AND d.decision IN ('block','hold','expired')"
+        ).fetchall()
+        for row in rows:
+            decision = str(row["decision"])
+            status = "active" if decision in ("block", "hold") else "expired"
+            base = decision if decision in ("block", "hold") else "block"
+            self._con.execute(
+                "INSERT INTO lifecycle(domain, status, base_decision, since_night, last_check_seq)"
+                " VALUES(?,?,?,?,0)",
+                (str(row["domain"]), status, base, str(row["last_seen"])[:10]),
+            )
+            added += 1
+        self._con.commit()
+        return added
+
+    def lifecycle_all(self) -> list[dict]:
+        cur = self._con.execute("SELECT * FROM lifecycle ORDER BY domain")
+        return [dict(r) for r in cur.fetchall()]
+
+    def lifecycle_get(self, domain: str) -> dict | None:
+        row = self._con.execute(
+            "SELECT * FROM lifecycle WHERE domain=?", (domain.strip().lower(),)
+        ).fetchone()
+        return dict(row) if row else None
+
+    def save_lifecycle(self, state) -> None:
+        """lifecycle 行を丸ごと保存する (State は lifecycle.State)。"""
+        self._con.execute(
+            "INSERT INTO lifecycle(domain, status, base_decision, since_night, last_check_seq,"
+            " unreachable_streak, below_streak, pending_checks) VALUES(?,?,?,?,?,?,?,?)"
+            " ON CONFLICT(domain) DO UPDATE SET status=excluded.status,"
+            " base_decision=excluded.base_decision, since_night=excluded.since_night,"
+            " last_check_seq=excluded.last_check_seq,"
+            " unreachable_streak=excluded.unreachable_streak,"
+            " below_streak=excluded.below_streak, pending_checks=excluded.pending_checks",
+            (
+                state.domain,
+                state.status,
+                state.base_decision,
+                state.since_night,
+                int(state.last_check_seq),
+                int(state.unreachable_streak),
+                int(state.below_streak),
+                int(state.pending_checks),
+            ),
+        )
+        self._con.commit()
+
+    def clear_lifecycle(self, domain: str) -> None:
+        """再発見した retired ドメインを新しいドメインとして扱うために破棄する。"""
+        domain = domain.strip().lower()
+        self._con.execute("DELETE FROM lifecycle WHERE domain=?", (domain,))
+        self._con.execute("DELETE FROM lifecycle_observations WHERE domain=?", (domain,))
+        self._con.commit()
+
+    def record_observation(
+        self, domain: str, *, seq: int, night: str, verdict: str, reachable: str
+    ) -> None:
+        self._con.execute(
+            "INSERT OR REPLACE INTO lifecycle_observations(domain, seq, night, verdict, reachable)"
+            " VALUES(?,?,?,?,?)",
+            (domain.strip().lower(), int(seq), _norm_night(night), verdict, reachable),
+        )
+        self._con.commit()
+
+    def recent_verdicts(self, domain: str, *, limit: int = 4) -> list[str]:
+        """直近の観測 verdict (古い順)。unknown は数えない。"""
+        cur = self._con.execute(
+            "SELECT verdict FROM lifecycle_observations WHERE domain=? AND verdict!='unknown'"
+            " ORDER BY seq DESC, id DESC LIMIT ?",
+            (domain.strip().lower(), int(limit)),
+        )
+        return [str(r[0]) for r in reversed(cur.fetchall())]
+
+    def set_decision(
+        self,
+        domain: str,
+        *,
+        decision: str,
+        night: str | None = None,
+        score: float | None = None,
+        features: dict | None = None,
+        evidence: Iterable | None = None,
+    ) -> dict | None:
+        """判定だけを差し替える (nights_confirmed は動かさない)。
+
+        到達性だけを見た夜や集計上の降格で使う。
+        """
+        if decision not in DECISIONS:
+            raise ValueError(f"unknown decision: {decision!r}")
+        domain = domain.strip().lower()
+        row = self.get(domain)
+        if row is None:
+            raise ValueError(f"unknown domain: {domain!r}")
+        day = _norm_night(night)
+        sets = ["decision=?", "last_seen=?", "decided_at=?"]
+        params: list[object] = [decision, _night_iso(day), _utcnow()]
+        if score is not None:
+            sets += ["score=?", "night_score=?"]
+            params += [float(score), float(score)]
+        if features is not None:
+            sets.append("features_json=?")
+            params.append(json.dumps(features, ensure_ascii=False, sort_keys=True))
+        if evidence is not None:
+            sets.append("evidences_json=?")
+            params.append(json.dumps(list(evidence), ensure_ascii=False, default=str))
+        params.append(domain)
+        self._con.execute(f"UPDATE decisions SET {', '.join(sets)} WHERE domain=?", params)
+        current_score = float(row["score"]) if score is None else float(score)
+        self._con.execute(
+            "INSERT INTO decision_history(domain, decision, score, recorded_at) VALUES(?,?,?,?)",
+            (domain, decision, current_score, _utcnow()),
+        )
+        self._con.commit()
+        return self.get(domain)
+
+    # --- nightly run カウンタ (間隔を壁時計で数えない) ---
+    def completed_runs(self) -> int:
+        return int(self._con.execute("SELECT COUNT(*) FROM nightly_runs").fetchone()[0])
+
+    def night_completed(self, night: str) -> bool:
+        row = self._con.execute(
+            "SELECT 1 FROM nightly_runs WHERE night=?", (_norm_night(night),)
+        ).fetchone()
+        return row is not None
+
+    def complete_run(self, night: str) -> int:
+        """正常に終わった夜を 1 run として記録する。同じ夜は 1 回だけ。"""
+        day = _norm_night(night)
+        if self.night_completed(day):
+            row = self._con.execute("SELECT seq FROM nightly_runs WHERE night=?", (day,)).fetchone()
+            return int(row[0])
+        seq = self.completed_runs() + 1
+        self._con.execute(
+            "INSERT INTO nightly_runs(seq, night, completed_at) VALUES(?,?,?)",
+            (seq, day, _utcnow()),
+        )
+        self._con.commit()
+        return seq
 
     # --- domain_health (P8) ---
     def record_health(

@@ -74,11 +74,8 @@
 *://*.idahomeconcreteepoxyandstain.com/*
 *://*.iifscindia.com/*
 *://*.innergie.com/*
-*://*.jannyscott.com/*
-*://*.jorudan.co.jp/*
 *://*.josyn.org/*
 *://*.journalhi.com/*
-*://*.jsmjapan.com/*
 *://*.kdvirtualsupport.co.uk/*
 *://*.khaata.app/*
 *://*.khcaa.com/*

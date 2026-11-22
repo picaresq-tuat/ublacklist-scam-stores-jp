@@ -223,8 +223,10 @@ def test_already_known_domains_are_skipped(tmp_path, empty_store):
     rep = hunter.run_night(
         night="2026-09-24", searx=sx, pipeline=pipe, store=store, db_dir=tmp_path, max_queries=5
     )
-    assert pipe.probed == ["new.example"]
+    assert "new.example" in pipe.probed, "新規ドメインが probe されていない"
     assert "known.example" in rep["already_known"]
+    # 既知ドメインは discovery では拾わないが、ライフサイクル巡回で毎晩再評価される。
+    assert pipe.probed.count("known.example") == 1
 
 
 # --- RED: publish モード ---
@@ -346,41 +348,31 @@ def test_publish_drops_whitelisted_domain_from_both_lists(tmp_path, empty_store)
 # --- RED: P8 失効監視は夜次処理の一部 ---
 
 
-def test_expire_sweep_removes_dead_domains(tmp_path, empty_store):
+def test_expired_domain_is_removed_from_the_list_on_publish(tmp_path, empty_store):
     ufile = tmp_path / "out" / "uBlacklist.txt"
     ufile.parent.mkdir()
     ufile.write_text("*://*.dead.example/*\n", encoding="utf-8")
-    from datetime import datetime, timedelta
+    _seed_listed(empty_store, "dead.example", status="pending_expiration", unreachable_streak=4)
 
-    store = empty_store
-    store.record(
-        "dead.example",
-        score=40,
-        decision="block",
-        night=(datetime.now(UTC) - timedelta(days=40)).strftime("%Y-%m-%d"),
-    )
-    for i in range(1, 8):
-        store.record_health("dead.example", reachable=False, checked_on=f"2026-09-{10 + i:02d}")
-
-    sx = FakeSearx([[]])
-    pipe = FakePipeline()
     rep = hunter.run_night(
         night="2026-09-24",
-        searx=sx,
-        pipeline=pipe,
-        store=store,
+        searx=FakeSearx([[]]),
+        pipeline=FakePipeline(),
+        store=empty_store,
         db_dir=tmp_path,
         ulist_path=ufile,
         publish=True,
+        health=_DeadHealth(),
+        max_queries=0,
     )
     text = ufile.read_text(encoding="utf-8")
     assert "*://*.dead.example/*" not in text
-    assert store.get("dead.example")["decision"] == "expired"
+    assert empty_store.get("dead.example")["decision"] == "expired"
     assert rep["expired"] == ["dead.example"]
 
 
-def test_health_sweep_probes_registered_domains_older_than_month(tmp_path, empty_store):
-    """監視対象 (登録から1ヶ月以上) には到達性チェックを実施する。"""
+def test_health_sweep_checks_every_registered_domain(tmp_path, empty_store):
+    """登録からの経過日数ではなく、リスト上の全ドメインを巡回する。"""
     from datetime import datetime, timedelta
 
     old_day = (datetime.now(UTC) - timedelta(days=45)).strftime("%Y-%m-%d")
@@ -391,21 +383,19 @@ def test_health_sweep_probes_registered_domains_older_than_month(tmp_path, empty
     probed = []
 
     class FakeHealth:
-        def check(self, domain: str) -> bool:
+        def check_state(self, domain: str) -> str:
             probed.append(domain)
-            return True
+            return "reachable"
 
-    sx = FakeSearx([[]])
-    pipe = FakePipeline()
     hunter.run_night(
         night="2026-09-24",
-        searx=sx,
-        pipeline=pipe,
+        searx=FakeSearx([[]]),
+        pipeline=FakePipeline(),
         store=empty_store,
         db_dir=tmp_path,
         health=FakeHealth(),
     )
-    assert probed == ["old.example"]
+    assert probed == ["new.example", "old.example"]
 
 
 # --- RED: クエリ数とベース URL ---
@@ -633,7 +623,7 @@ def test_no_backoff_sleep_on_successful_night(empty_store, tmp_path):
     assert slept == []
 
 
-# --- P8: 失効監視を hunter 経由でエンドツーエンド検証 ---
+# --- 巡回ライフサイクル: 到達不能ルートを hunter 経由で検証 ---
 
 
 class _DeadHealth:
@@ -642,37 +632,67 @@ class _DeadHealth:
     def __init__(self):
         self.checked: list[str] = []
 
-    def check(self, domain: str) -> bool:
+    def check_state(self, domain: str) -> str:
         self.checked.append(domain)
-        return False
+        return "unreachable"
+
+    def check(self, domain: str) -> bool:
+        return self.check_state(domain) == "reachable"
 
 
-def test_p8_probes_only_domains_older_than_30_days(empty_store, tmp_path):
-    """登録から 30 日未満のドメインは到達性チェックの対象にしない。"""
-    empty_store.record("old.example", score=80, decision="block", night=_days_ago(31))
-    empty_store.record("fresh.example", score=80, decision="block", night=_days_ago(3))
-    health = _DeadHealth()
+class _AliveHealth:
+    def __init__(self):
+        self.checked: list[str] = []
+
+    def check_state(self, domain: str) -> str:
+        self.checked.append(domain)
+        return "reachable"
+
+    def check(self, domain: str) -> bool:
+        return True
+
+
+def _seed_listed(store, domain: str, *, night="2026-09-20", **lifecycle):
+    """2 夜確認済み = scam リスト掲載中のドメインを作る。"""
+    from lifecycle import State
+
+    store.record(domain, score=80.0, decision="block", night=night)
+    store.record(domain, score=80.0, decision="block", night=night)
+    if lifecycle:
+        store.save_lifecycle(
+            State(
+                domain=domain,
+                status=lifecycle.pop("status", "active"),
+                base_decision="block",
+                since_night=lifecycle.pop("since_night", night),
+                **lifecycle,
+            )
+        )
+
+
+def test_every_listed_domain_is_probed_every_night(empty_store, tmp_path):
+    """30 日経過を待たず、リスト上のドメインは毎晩巡回する。"""
+    _seed_listed(empty_store, "fresh.example", night=_days_ago(2))
+    health = _AliveHealth()
     rep = hunter.run_night(
         night="2026-09-24",
         searx=FakeSearx([[]]),
-        pipeline=FakePipeline(),
+        pipeline=FakePipeline({"fresh.example": (80.0, {}, "block")}),
         store=empty_store,
         db_dir=tmp_path,
         max_queries=0,
         health=health,
     )
-    assert health.checked == ["old.example"]
-    assert rep["health_probed"] == ["old.example"]
+    assert health.checked == ["fresh.example"]
+    assert rep["lifecycle_checked"] == ["fresh.example"]
 
 
-def test_p8_expires_after_seven_consecutive_unreachable_days(empty_store, tmp_path):
-    """7 夜連続で到達不能なら expired になり、uBlacklist から削除される。"""
-    empty_store.record("dead.example", score=80, decision="block", night=_days_ago(40))
+def test_unreachable_three_nights_demote_to_pending_expiration(empty_store, tmp_path):
+    """3 晩連続で到達不能 → pending_expiration。リストからの削除はまだ行わない。"""
+    _seed_listed(empty_store, "dead.example")
     health = _DeadHealth()
-    nights = [_days_ago(n)[:10] for n in range(30, 23, -1)]  # 7 夜
-
-    # 6 夜目までは expired にならない
-    for night in nights[:6]:
+    nights = ["2026-09-24", "2026-09-25", "2026-09-26"]
+    for night in nights[:2]:
         rep = hunter.run_night(
             night=night,
             searx=FakeSearx([[]]),
@@ -682,9 +702,25 @@ def test_p8_expires_after_seven_consecutive_unreachable_days(empty_store, tmp_pa
             max_queries=0,
             health=health,
         )
-        assert rep["expired"] == []
-    assert empty_store.unreachable_streak("dead.example") == 6
+        assert rep["pending_expiration"] == []
+        assert empty_store.get("dead.example")["decision"] == "block"
 
+    rep = hunter.run_night(
+        night=nights[2],
+        searx=FakeSearx([[]]),
+        pipeline=FakePipeline(),
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=0,
+        health=health,
+    )
+    assert rep["pending_expiration"] == ["dead.example"]
+    assert empty_store.get("dead.example")["decision"] == "pending_expiration"
+    assert empty_store.eligible_domains() == [], "スコア算出を停止し、掲載候補から外す"
+
+
+def test_pending_expiration_expires_after_five_more_unreachable_checks(empty_store, tmp_path):
+    _seed_listed(empty_store, "gone.example", status="pending_expiration", unreachable_streak=4)
     ulist = tmp_path / "uBlacklist.txt"
     ulist.write_text(
         "# uBlacklist - scam stores JP (Hermes nightly)\n"
@@ -692,91 +728,11 @@ def test_p8_expires_after_seven_consecutive_unreachable_days(empty_store, tmp_pa
         "## Permanent rules (regex)\n" + "\n".join(PERMANENT_RULES) + "\n"
         "\n"
         "## Hermes nightly\n"
-        "*://*.dead.example/*\n"
+        "*://*.gone.example/*\n"
         "*://*.other.example/*\n",
         encoding="utf-8",
     )
 
-    rep = hunter.run_night(
-        night=nights[6],
-        searx=FakeSearx([[]]),
-        pipeline=FakePipeline(),
-        store=empty_store,
-        db_dir=tmp_path,
-        max_queries=0,
-        health=health,
-        ulist_path=ulist,
-        publish=True,
-    )
-    assert rep["expired"] == ["dead.example"]
-    assert empty_store.get("dead.example")["decision"] == "expired"
-    text = ulist.read_text(encoding="utf-8")
-    assert "dead.example" not in text, "失効ドメインが uBlacklist に残っている"
-    assert "other.example" in text, "失効していないエントリまで消してはいけない"
-    assert ".*\\.co\\/.*" in text, "常設ルールまで消してはいけない"
-
-
-def test_p8_healthy_domain_is_not_expired(empty_store, tmp_path):
-    """到達可能なら streak が途切れ、expired にならない。"""
-    empty_store.record("alive.example", score=80, decision="block", night=_days_ago(40))
-
-    class Alive:
-        def check(self, domain: str) -> bool:
-            return True
-
-    for n in range(30, 22, -1):
-        rep = hunter.run_night(
-            night=_days_ago(n)[:10],
-            searx=FakeSearx([[]]),
-            pipeline=FakePipeline(),
-            store=empty_store,
-            db_dir=tmp_path,
-            max_queries=0,
-            health=Alive(),
-        )
-        assert rep["expired"] == []
-    assert empty_store.get("alive.example")["decision"] == "block"
-
-
-def test_p8_streak_breaks_when_domain_recovers(empty_store, tmp_path):
-    """6 夜到達不能のあと到達可能になったら、streak は 0 に戻る。"""
-    empty_store.record("recovers.example", score=80, decision="block", night=_days_ago(40))
-
-    class Toggle:
-        def __init__(self):
-            self.dead = True
-
-        def check(self, domain: str) -> bool:
-            return not self.dead
-
-    h = Toggle()
-    for n in range(30, 24, -1):
-        hunter.run_night(
-            night=_days_ago(n)[:10],
-            searx=FakeSearx([[]]),
-            pipeline=FakePipeline(),
-            store=empty_store,
-            db_dir=tmp_path,
-            max_queries=0,
-            health=h,
-        )
-    assert empty_store.unreachable_streak("recovers.example") == 6
-    h.dead = False
-    hunter.run_night(
-        night=_days_ago(23)[:10],
-        searx=FakeSearx([[]]),
-        pipeline=FakePipeline(),
-        store=empty_store,
-        db_dir=tmp_path,
-        max_queries=0,
-        health=h,
-    )
-    assert empty_store.unreachable_streak("recovers.example") == 0
-    assert empty_store.get("recovers.example")["decision"] == "block"
-
-
-def test_p8_skips_probe_when_no_health_checker(empty_store, tmp_path):
-    empty_store.record("old.example", score=80, decision="block", night=_days_ago(31))
     rep = hunter.run_night(
         night="2026-09-24",
         searx=FakeSearx([[]]),
@@ -784,10 +740,110 @@ def test_p8_skips_probe_when_no_health_checker(empty_store, tmp_path):
         store=empty_store,
         db_dir=tmp_path,
         max_queries=0,
+        health=_DeadHealth(),
+        ulist_path=ulist,
+        publish=True,
+    )
+    assert rep["expired"] == ["gone.example"]
+    assert empty_store.get("gone.example")["decision"] == "expired"
+    text = ulist.read_text(encoding="utf-8")
+    assert "gone.example" not in text, "失効ドメインが uBlacklist に残っている"
+    assert "other.example" in text, "失効していないエントリまで消してはいけない"
+    assert ".*\\.co\\/.*" in text, "常設ルールまで消してはいけない"
+
+
+def test_expired_domain_is_restored_and_relisted_when_reachable(empty_store, tmp_path):
+    _seed_listed(empty_store, "revive.example", status="expired", unreachable_streak=3)
+    ulist = tmp_path / "uBlacklist.txt"
+    ulist.write_text(
+        "# uBlacklist - scam stores JP (Hermes nightly)\n"
+        "\n"
+        "## Permanent rules (regex)\n" + "\n".join(PERMANENT_RULES) + "\n"
+        "\n"
+        "## Hermes nightly\n",
+        encoding="utf-8",
+    )
+
+    rep = hunter.run_night(
+        night="2026-09-24",
+        searx=FakeSearx([[]]),
+        pipeline=FakePipeline({"revive.example": (80.0, {}, "block")}),
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=0,
+        health=_AliveHealth(),
+        ulist_path=ulist,
+        publish=True,
+    )
+    assert rep["restored"] == ["revive.example"]
+    assert empty_store.get("revive.example")["decision"] == "block"
+    assert "*://*.revive.example/*" in ulist.read_text(encoding="utf-8")
+
+
+def test_failed_night_does_not_count_unreachable(empty_store, tmp_path):
+    """nightly 全体が失敗した夜は到達不能として数えない。"""
+    from searxng import EngineUnavailable
+
+    _seed_listed(empty_store, "dead.example")
+
+    class Dead:
+        def search(self, query, *, pageno):
+            raise EngineUnavailable("engines unavailable")
+
+    for night in ("2026-09-24", "2026-09-25", "2026-09-26", "2026-09-27"):
+        rep = hunter.run_night(
+            night=night,
+            searx=Dead(),
+            pipeline=FakePipeline(),
+            store=empty_store,
+            db_dir=tmp_path,
+            max_queries=2,
+            max_engine_failures=1,
+            engine_backoff_sec=0.0,
+            health=_DeadHealth(),
+            sleep=lambda _s: None,
+        )
+        assert rep["lifecycle_skipped"] == "night_failed"
+        assert rep["pending_expiration"] == []
+    assert empty_store.get("dead.example")["decision"] == "block"
+    assert (empty_store.lifecycle_get("dead.example") or {}).get("unreachable_streak", 0) == 0
+    assert empty_store.completed_runs() == 0
+
+
+def test_without_health_checker_unreachable_route_is_disabled(empty_store, tmp_path):
+    _seed_listed(empty_store, "nodead.example")
+    rep = hunter.run_night(
+        night="2026-09-24",
+        searx=FakeSearx([[]]),
+        pipeline=FakePipeline({"nodead.example": (80.0, {}, "block")}),
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=0,
         health=None,
     )
-    assert rep["health_probed"] == []
-    assert rep["expired"] == []
+    assert rep["pending_expiration"] == []
+    assert empty_store.get("nodead.example")["decision"] == "block"
+
+
+def test_retired_domain_is_rediscovered_like_a_new_domain(empty_store, tmp_path):
+    """巡回対象外のドメインが再発見されたら、新規と同じ経路で巡回する。"""
+
+    _seed_listed(
+        empty_store, "return.example", status="retired", since_night="2026-08-01", last_check_seq=9
+    )
+    rep = hunter.run_night(
+        night="2026-09-24",
+        searx=FakeSearx([["return.example"]]),
+        pipeline=FakePipeline({"return.example": (80.0, {}, "block")}),
+        store=empty_store,
+        db_dir=tmp_path,
+        max_queries=1,
+        health=_AliveHealth(),
+    )
+    assert rep["new_domains"] == 1
+    assert empty_store.get("return.example")["decision"] == "block"
+    assert empty_store.lifecycle_get("return.example")["status"] == "active"
+    assert empty_store.lifecycle_get("return.example")["last_check_seq"] == 0
 
 
 def test_max_queries_bounds_search_calls(empty_store, tmp_path):
@@ -927,12 +983,17 @@ def test_block_domain_is_reconfirmed_on_a_later_night(empty_store, tmp_path):
     assert rep["reconfirmed"] == ["repeat.example"]
 
 
-def test_reconfirm_skips_already_confirmed_and_low_score(empty_store, tmp_path):
-    """2 夜確認済み / block 未満のドメインは再評価しない (無駄な取得をしない)。"""
+def test_confirmed_domains_are_rechecked_nightly(empty_store, tmp_path):
+    """2 夜確認済みでも毎晩再評価する (降格ルートの入力になる)。"""
     empty_store.record("done.example", score=35.0, decision="block", night="2026-09-24")
     empty_store.record("done.example", score=35.0, decision="block", night="2026-09-25")
     empty_store.record("weak.example", score=20.0, decision="hold", night="2026-09-24")
-    pipe = FakePipeline()
+    pipe = FakePipeline(
+        {
+            "done.example": (35.0, {}, "block"),
+            "weak.example": (20.0, {"favicon_collision": 18}, "hold"),
+        }
+    )
     rep = hunter.run_night(
         night="2026-09-26",
         searx=FakeSearx([["other.example"]]),
@@ -941,9 +1002,9 @@ def test_reconfirm_skips_already_confirmed_and_low_score(empty_store, tmp_path):
         db_dir=tmp_path,
         max_queries=1,
     )
-    assert "done.example" not in pipe.probed, "2 夜確認済みは再評価しない"
-    assert "weak.example" not in pipe.probed, "block 未満は再評価しない"
-    assert rep["reconfirmed"] == []
+    assert "done.example" in pipe.probed
+    assert "weak.example" in pipe.probed
+    assert rep["reconfirmed"] == ["done.example"]
 
 
 def test_reconfirmed_block_domain_becomes_eligible(empty_store, tmp_path):
