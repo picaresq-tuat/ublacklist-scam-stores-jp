@@ -31,6 +31,7 @@
 *://*.bonaventurelab.com/*
 *://*.borradailetrust.com/*
 *://*.c-cesar.com/*
+*://*.cartierinfo.com/*
 *://*.cbfinestfood.com/*
 *://*.cloud.microsoft/*
 *://*.creditfoncier.cm/*

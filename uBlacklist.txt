@@ -102,6 +102,7 @@
 *://*.stavebniny-elckner.cz/*
 *://*.stealthone.net/*
 *://*.storyorium.com/*
+*://*.surftrip.fr/*
 *://*.szolyvaipark.org/*
 *://*.tecai.site/*
 *://*.tequilasunrisefest.com/*
