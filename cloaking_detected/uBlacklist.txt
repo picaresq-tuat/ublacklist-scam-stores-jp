@@ -58,6 +58,7 @@
 *://*.farhaantipu.com/*
 *://*.femsajtolo.hu/*
 *://*.feuerwehr-liebenburg.de/*
+*://*.fffholidaygiftguide.com/*
 *://*.flamingobeach.holiday/*
 *://*.foodusgroup.com/*
 *://*.frauengesundheit-ueberlingen.de/*
@@ -132,6 +133,7 @@
 *://*.piwswidnik.pl/*
 *://*.promvishivka.by/*
 *://*.qlawyers.ro/*
+*://*.rts49.com/*
 *://*.sadkon77.ru/*
 *://*.sammatthewman.com/*
 *://*.santoamaro.com/*
