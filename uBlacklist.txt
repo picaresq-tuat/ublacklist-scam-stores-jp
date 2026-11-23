@@ -79,6 +79,7 @@
 *://*.nichinichi.com/*
 *://*.nicolenaworld.com/*
 *://*.niva.skin/*
+*://*.omocoro.jp/*
 *://*.orelcbt.com/*
 *://*.paolocodeluppi.com/*
 *://*.paresisauction.com/*
