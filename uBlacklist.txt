@@ -19,7 +19,6 @@
 *://*.auszeit-theresablank.de/*
 *://*.av01.tv/*
 *://*.beignet-tokyo.jp/*
-*://*.best-com.site/*
 *://*.best-style.co.jp/*
 *://*.bobbysfashions.com/*
 *://*.buurtpreventiewernhoutsburg.nl/*
@@ -63,6 +62,7 @@
 *://*.japanes-girl.jp/*
 *://*.kalamasz-ksiegowosc.pl/*
 *://*.karnikdentalclinic.com/*
+*://*.kingram.jp/*
 *://*.kixi.jp/*
 *://*.kon-fishing.com/*
 *://*.lesclefsdor.org/*
@@ -120,6 +120,7 @@
 *://*.vijverwinkel.com/*
 *://*.websitemaringa.com/*
 *://*.windsormobiletyrefitting.co.uk/*
+*://*.workingkawamoto.com/*
 *://*.yahoo.jp/*
 *://*.yilmazturknalburiye.com/*
 *://*.yorissociety.com/*
