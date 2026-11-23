@@ -55,6 +55,7 @@
 *://*.energokompressor.kz/*
 *://*.energowatch.hu/*
 *://*.eurasiantactical.de/*
+*://*.farhaantipu.com/*
 *://*.femsajtolo.hu/*
 *://*.feuerwehr-liebenburg.de/*
 *://*.flamingobeach.holiday/*
