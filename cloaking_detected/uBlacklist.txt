@@ -19,7 +19,9 @@
 *://*.albsaer.com/*
 *://*.aldhiyainternational.com/*
 *://*.amnt5888.com/*
+*://*.amwajalmasharia.sa/*
 *://*.anict-mali.com/*
+*://*.apply.ua/*
 *://*.av01.media/*
 *://*.baltimorepositive.com/*
 *://*.betterhomesal.com/*
@@ -95,6 +97,7 @@
 *://*.lechantdesamandes.fr/*
 *://*.ledia.se/*
 *://*.libdo-immo.com/*
+*://*.limo-deal.de/*
 *://*.logopedievooriedereen.nl/*
 *://*.madelineguide.net/*
 *://*.maghoulacademy.ir/*
@@ -120,6 +123,7 @@
 *://*.nathanzola.com/*
 *://*.nbkomputer.com/*
 *://*.newdoorfiji.com/*
+*://*.novxcloud.com/*
 *://*.oaa.ao/*
 *://*.ommultispecialityanddental.com/*
 *://*.omomakay.com/*
