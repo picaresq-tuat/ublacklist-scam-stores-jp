@@ -102,6 +102,7 @@
 *://*.madelineguide.net/*
 *://*.maghoulacademy.ir/*
 *://*.mahgoub-academy.com/*
+*://*.mangadex.org/*
 *://*.mangaloasis.com/*
 *://*.manifestlao.com/*
 *://*.marangoniadvocaciainternacional.com/*
@@ -138,6 +139,7 @@
 *://*.promvishivka.by/*
 *://*.qlawyers.ro/*
 *://*.rts49.com/*
+*://*.sabrinapotvin.com/*
 *://*.sadkon77.ru/*
 *://*.sammatthewman.com/*
 *://*.santoamaro.com/*
@@ -169,4 +171,5 @@
 *://*.volgamed34.ru/*
 *://*.watertotsla.com/*
 *://*.web-werben.de/*
+*://*.weinschelassociates.com/*
 *://*.zonapers.com/*

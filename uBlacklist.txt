@@ -43,6 +43,7 @@
 *://*.ezoe-clinic.com/*
 *://*.festa-1.com/*
 *://*.finances.bj/*
+*://*.floridatoyshows.com/*
 *://*.foothillmontessori.com/*
 *://*.gadgetdai.com/*
 *://*.gailing-druck.de/*
@@ -90,6 +91,7 @@
 *://*.pc-buybyestore.com/*
 *://*.projectweb.cloud/*
 *://*.rafie.cloud/*
+*://*.reigersburgh.nl/*
 *://*.renkindo.com/*
 *://*.rosecokontrol.ru/*
 *://*.rozwojownia.com/*
