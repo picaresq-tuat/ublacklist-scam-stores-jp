@@ -124,6 +124,7 @@
 *://*.nathanzola.com/*
 *://*.nbkomputer.com/*
 *://*.newdoorfiji.com/*
+*://*.notesentinel.com/*
 *://*.novxcloud.com/*
 *://*.oaa.ao/*
 *://*.ommultispecialityanddental.com/*
@@ -143,6 +144,7 @@
 *://*.sadkon77.ru/*
 *://*.sammatthewman.com/*
 *://*.santoamaro.com/*
+*://*.scuolapescarini.it/*
 *://*.seafoodbysykes.com/*
 *://*.seaqmep.com/*
 *://*.shahaliagro.com/*
@@ -166,6 +168,7 @@
 *://*.twlatelier.com/*
 *://*.ucp.mg/*
 *://*.umeedinternationalschool.com/*
+*://*.uramauritius.mu/*
 *://*.ventagringa.com/*
 *://*.ventures.pk/*
 *://*.volgamed34.ru/*
